@@ -1,0 +1,13 @@
+[importlinter]
+root_package = modules
+include_external_packages=True
+
+[importlinter:contract:1]
+name = No imports from infrastructures folder are allowed to modules folder
+type = forbidden
+source_modules =
+    modules
+forbidden_modules =
+    infrastructures
+    django
+    inject

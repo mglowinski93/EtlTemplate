@@ -1,0 +1,18 @@
+-r base.txt
+
+black==23.7.*
+ruff==0.3.*
+mypy==1.9.*
+django-stubs==4.2.*
+bandit==1.7.*
+import-linter==1.10.*
+pytest==7.4.*
+pytest-django==4.5.*
+Faker==37.1.*
+factory-boy==3.3.*
+isort==6.0.*
+types-python-dateutil==2.9.0.*
+pytest-mock==3.14.*
+freezegun==1.5.*
+pandas-stubs==2.2.3.*
+types-openpyxl==3.1.*
