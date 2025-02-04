@@ -1,9 +1,8 @@
 # pylint: disable=wildcard-import,unused-wildcard-import
 
-from .django_settings import *  # noqa: F403
-from .auth_settings import *  # noqa: F403
 from .app_settings import *  # noqa: F403
-
+from .auth_settings import *  # noqa: F403
+from .django_settings import *  # noqa: F403
 
 DEBUG = False
 

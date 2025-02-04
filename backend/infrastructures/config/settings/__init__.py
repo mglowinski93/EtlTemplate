@@ -1,6 +1,6 @@
-from .django_settings import *  # noqa: F403
-from .auth_settings import *  # noqa: F403
 from .app_settings import *  # noqa: F403
+from .auth_settings import *  # noqa: F403
+from .django_settings import *  # noqa: F403
 from .logging_settings import *  # noqa: F403
 
 try:
