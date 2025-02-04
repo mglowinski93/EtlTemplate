@@ -48,3 +48,8 @@ end-to-end-tests:
 	echo "Running end to end tests..."
 	pytest tests/end_to_end/
 	echo "End to end tests passed."
+
+isort-check:
+	echo "Sorting imports ..."
+	isort .
+	echo "Isort passed."
