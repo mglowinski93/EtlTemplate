@@ -61,6 +61,9 @@ jobs:
       - name: Run black check
         run: make black-check
 
+      - name: Run isort
+        run: make isort-check
+
       - name: Lint code check
         run: make ruff-check
 
@@ -78,6 +81,3 @@ jobs:
 
       - name: Run tests
         run: make tests
-
-      - name: Run isort 
-        run: make isort-check
