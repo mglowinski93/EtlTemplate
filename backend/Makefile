@@ -1,9 +1,6 @@
 all: black-check ruff-check mypy-check bandit-check import-linter-check migrations-check tests isort-check
 	echo "All checks passed!"
 
-tests: unit-tests integrated-tests end-to-end-tests
-	echo "All tests passed!"
-
 black-check:
 	echo "Checking black..."
 	black --check ./
@@ -19,6 +16,24 @@ mypy-check:
 	mypy ./ --explicit-package-bases
 	echo "Mypy passed."
 
+tests: unit-tests integrated-tests end-to-end-tests
+	echo "All tests passed!"
+
+end-to-end-tests:
+	echo "Running end to end tests..."
+	pytest tests/end_to_end/ --continue-on-collection-errors || true
+	echo "End to end tests passed."
+
+unit-tests:
+	echo "Running unit tests..."
+	pytest tests/unit/ --continue-on-collection-errors || true
+	echo "Unit tests passed."
+
+integrated-tests:
+	echo "Running integrated tests..."
+	pytest tests/integrated/ --continue-on-collection-errors || true
+	echo "Integrated tests passed."
+
 bandit-check:
 	echo "Checking bandit..."
 	find . -name '*.py' | grep -v tests | xargs bandit
@@ -33,21 +48,6 @@ migrations-check:
 	echo "Running migrations check..."
 	infrastructures/manage.py makemigrations --dry-run --check
 	echo "Migrations check passed."
-
-unit-tests:
-	echo "Running unit tests..."
-	pytest tests/unit/ --continue-on-collection-errors || true
-	echo "Unit tests passed."
-
-integrated-tests:
-	echo "Running integrated tests..."
-	pytest tests/integrated/ --continue-on-collection-errors || true
-	echo "Integrated tests passed."
-
-end-to-end-tests:
-	echo "Running end to end tests..."
-	pytest tests/end_to_end/ --continue-on-collection-errors || true
-	echo "End to end tests passed."
 
 isort-check:
 	echo "Sorting imports ..."
