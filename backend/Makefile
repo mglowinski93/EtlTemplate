@@ -51,5 +51,5 @@ end-to-end-tests:
 
 isort-check:
 	echo "Sorting imports ..."
-	isort .
+	isort --check-only .
 	echo "Isort passed."
