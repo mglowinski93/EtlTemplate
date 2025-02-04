@@ -46,6 +46,12 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: List files
+        run: ls -R
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
