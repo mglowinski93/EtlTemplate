@@ -20,9 +20,9 @@ jobs:
       TZ: "Etc/UCT"
       POSTGRES_DB_HOST: "localhost"
       POSTGRES_DB_PORT: 5432
-      POSTGRES_DB: "etl_template"
-      POSTGRES_USER: "etl_template_user"
-      POSTGRES_PASSWORD: "etl_template_password"
+      POSTGRES_DB_NAME: "etl_template"
+      POSTGRES_DB_USER: "etl_template_user"
+      POSTGRES_DB_PASSWORD: "etl_template_password"
 
     services:
       db:
@@ -30,9 +30,9 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_DB: "etl_template"
-          POSTGRES_USER: "etl_template_user"
-          POSTGRES_PASSWORD: "etl_template_password"
+          POSTGRES_DB_NAME: "etl_template"
+          POSTGRES_DB_USER: "etl_template_user"
+          POSTGRES_DB_PASSWORD: "etl_template_password"
     steps:
       - name: Cache python dependencies
         uses: actions/cache@v3
