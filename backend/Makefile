@@ -1,13 +1,15 @@
-all: black-check ruff-check mypy-check bandit-check import-linter-check migrations-check tests
+all: black-check isort-check ruff-check mypy-check bandit-check import-linter-check migrations-check tests
 	echo "All checks passed!"
-
-tests: unit-tests integrated-tests end-to-end-tests
-	echo "All tests passed!"
 
 black-check:
 	echo "Checking black..."
 	black --check ./
 	echo "Black passed."
+
+isort-check:
+	echo "Sorting imports ..."
+	isort --settings-path .isort.cfg --check-only .
+	echo "Isort passed."
 
 ruff-check:
 	echo "Checking ruff..."
@@ -33,6 +35,9 @@ migrations-check:
 	echo "Running migrations check..."
 	infrastructures/manage.py makemigrations --dry-run --check
 	echo "Migrations check passed."
+
+tests: unit-tests integrated-tests end-to-end-tests
+	echo "All tests passed!"
 
 unit-tests:
 	echo "Running unit tests..."

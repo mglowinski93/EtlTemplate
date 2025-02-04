@@ -1,6 +1,6 @@
 import sys
-from importlib import reload
 from http import HTTPStatus
+from importlib import reload
 
 import pytest
 from django.conf import settings

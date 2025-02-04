@@ -1,0 +1,83 @@
+name: Run backend code checks
+
+defaults:
+  run:
+    shell: bash
+    working-directory: "backend/"
+
+on:
+  pull_request:
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+
+    env:
+      DJANGO_SETTINGS_MODULE: "infrastructures.config.settings"
+      SECRET_KEY: "fd!=^e#_pukzl#+2@apf-i2x7e*-%6@ucwg%fo9@ic-s(*t7jh"
+      ALLOWED_HOSTS: "localhost"
+      CORS_ALLOWED_ORIGINS: "http://localhost:8000"
+      TZ: "Etc/UCT"
+      POSTGRES_DB_HOST: "localhost"
+      POSTGRES_DB_PORT: 5432
+      POSTGRES_DB_NAME: "etl_template"
+      POSTGRES_DB_USER: "etl_template_user"
+      POSTGRES_DB_PASSWORD: "etl_template_password"
+      LOG_LEVEL: "INFO"
+
+    services:
+      db:
+        image: "postgres:15"
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB_NAME: "etl_template"
+          POSTGRES_DB_USER: "etl_template_user"
+          POSTGRES_DB_PASSWORD: "etl_template_password"
+    steps:
+      - name: Cache python dependencies
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-python
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/requirements/*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install python dependencies
+        run: pip install -r requirements/development.txt
+
+      - name: Run black check
+        run: make black-check
+
+      - name: Run isort
+        run: make isort-check
+
+      - name: Lint code check
+        run: make ruff-check
+
+      - name: Run mypy check
+        run: make mypy-check
+
+      - name: Run bandit check
+        run: make bandit-check
+
+      - name: Run import linter check
+        run: make import-linter-check
+
+      - name: Run migrations check
+        run: make migrations-check
+
+      - name: Run tests
+        run: make tests

@@ -12,7 +12,6 @@ import sys
 
 from django.core.wsgi import get_wsgi_application
 
-
 sys.path.append(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 )
