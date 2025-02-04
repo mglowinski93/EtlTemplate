@@ -1,4 +1,4 @@
-all: black-check ruff-check mypy-check bandit-check import-linter-check migrations-check tests
+all: black-check ruff-check mypy-check bandit-check import-linter-check migrations-check tests isort-check
 	echo "All checks passed!"
 
 tests: unit-tests integrated-tests end-to-end-tests
