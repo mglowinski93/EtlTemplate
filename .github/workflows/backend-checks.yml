@@ -23,6 +23,7 @@ jobs:
       POSTGRES_DB_NAME: "etl_template"
       POSTGRES_DB_USER: "etl_template_user"
       POSTGRES_DB_PASSWORD: "etl_template_password"
+      LOG_LEVEL: "INFO"
 
     services:
       db:
