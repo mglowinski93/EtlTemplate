@@ -2,4 +2,3 @@ django==4.2.*
 psycopg2-binary==2.9.*
 djangorestframework==3.14.*
 drf-spectacular==0.26.*
-isort==6.0.0
