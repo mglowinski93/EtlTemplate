@@ -21,17 +21,17 @@ tests: unit-tests integrated-tests end-to-end-tests
 
 end-to-end-tests:
 	echo "Running end to end tests..."
-	pytest tests/end_to_end/ --continue-on-collection-errors || true
+	pytest tests/end_to_end/ 
 	echo "End to end tests passed."
 
 unit-tests:
 	echo "Running unit tests..."
-	pytest tests/unit/ --continue-on-collection-errors || true
+	pytest tests/unit/ 
 	echo "Unit tests passed."
 
 integrated-tests:
 	echo "Running integrated tests..."
-	pytest tests/integrated/ --continue-on-collection-errors || true
+	pytest tests/integrated/ 
 	echo "Integrated tests passed."
 
 bandit-check:
