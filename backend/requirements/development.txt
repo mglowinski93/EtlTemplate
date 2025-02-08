@@ -11,3 +11,5 @@ pytest-django==4.5.*
 Faker==19.3.*
 factory-boy==3.3.*
 isort==6.0.*
+pandas==2.2.*
+openpyxl==3.1.*
