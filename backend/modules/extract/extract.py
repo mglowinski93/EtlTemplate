@@ -3,7 +3,6 @@ from typing import Optional
 
 import pandas as pd
 
-
 class FileExtractor:
     def __init__(self):
         pass
