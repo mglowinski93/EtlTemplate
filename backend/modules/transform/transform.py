@@ -13,7 +13,7 @@ class EtlHandler(ABC):
     def process(self, data):
         pass
 
-    def next(self, data: pd.DataFrame):
+    def next(self, data: pd.DataFrame) -> pd.DataFrame:
         return self.next_handler.process() if self.next_handler != None else data
 
 # TODO - add Extractor Handler
@@ -28,7 +28,7 @@ class ExtractHandler(EtlHandler):
         strat = self._chooseStrategy(file_extension)
         extract_context = extract.ExtractContext(strat)
         df = extract_context.extract(self.path_to_file)
-        self.next(df)
+        return self.next(df)
 
     def _chooseStrategy(file_extension: str) -> extract.ExtractStrategy:
         if file_extension.lower() == ".csv":
