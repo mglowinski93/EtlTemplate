@@ -16,9 +16,9 @@ class EtlHandler(ABC):
     def next(self, data: pd.DataFrame) -> pd.DataFrame:
         return self.next_handler.process() if self.next_handler != None else data
 
-# TODO - add Extractor Handler
+
 class ExtractHandler(EtlHandler):
-    def __init__(self, path_to_file: str, next_handler: Optional["EtlHandler"] = None):
+    def __init__(self, path_to_file: str, next_handler: EtlHandler = None):
         self.path_to_file = path_to_file
         self.next_handler = next_handler
 
@@ -42,4 +42,13 @@ class ExtractHandler(EtlHandler):
 
 
 # TODO - add Transformation Handler
+class ProcessHandler(EtlHandler):
+    def __init__(self, next_handler: EtlHandler = None):
+        self.next_handler = next_handler
+
+    def process(self, df: pd.DataFrame):
+        if df == None:
+            raise ValueError("Input DataFrame doesn't exist")
+        # process handler logic to be discussed.
+        return self.next(df)        
 # TODO - add Persistance Handler
