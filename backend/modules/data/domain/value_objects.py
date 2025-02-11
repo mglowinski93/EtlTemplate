@@ -7,4 +7,9 @@ class EtlEntryData(pa.SchemaModel):
     age: Series[int] = pa.Field(ge=0)
     is_satisfied: Series[bool]
 
+class EtlOutputData(pa.SchemaModel):
+    name_surname: Series[str]
+    age: Series[int] = pa.Field(ge=0)
+    is_satisfied: Series[bool]
+
 
