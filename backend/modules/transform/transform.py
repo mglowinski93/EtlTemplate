@@ -2,15 +2,17 @@ from abc import ABC, abstractmethod
 from typing import Optional
 from pathlib import Path
 import pandas as pd
+from typing import Self
 
 import modules.extract.extract as extract
 
+
 class EtlHandler(ABC):
-    def __init__(self, next_handler: Optional["EtlHandler"] = None):
+    def __init__(self, next_handler: Self|None = None):
         self.next_handler = next_handler
-    
+
     @abstractmethod
-    def process(self, data):
+    def process(self, data: pd.DataFrame):
         pass
 
     def next(self, data: pd.DataFrame) -> pd.DataFrame:
@@ -22,7 +24,7 @@ class ExtractHandler(EtlHandler):
         self.path_to_file = path_to_file
         self.next_handler = next_handler
 
-    def process(self, data = None):
+    def process(self, data=None):
         data_file_path = Path(self.path_to_file)
         file_extension = data_file_path.suffix()
         strat = self._chooseStrategy(file_extension)
@@ -37,11 +39,10 @@ class ExtractHandler(EtlHandler):
             return extract.ExtractExcelStrategy()
         elif file_extension.lower() in [".pdf"]:
             return extract.ExtractPdfStrategy
-        else :
+        else:
             raise TypeError(file_extension)
 
 
-# TODO - add Transformation Handler
 class ProcessHandler(EtlHandler):
     def __init__(self, next_handler: EtlHandler = None):
         self.next_handler = next_handler
@@ -50,5 +51,7 @@ class ProcessHandler(EtlHandler):
         if df == None:
             raise ValueError("Input DataFrame doesn't exist")
         # process handler logic to be discussed.
-        return self.next(df)        
+        return self.next(df)
+
+
 # TODO - add Persistance Handler

@@ -1,33 +1,38 @@
 from abc import ABC, abstractmethod
 import pandas as pd
+import logging
+from pathlib import Path
+
+logger = logging.getLogger(_name_)
 
 class ExtractStrategy(ABC):
-    @abstractmethod    
+    @abstractmethod
     def extract(path_to_file: str):
         pass
 
+
 class ExtractCsvStrategy(ExtractStrategy):
- 
-    def extract(path_to_file: str):
-        print("loading csv...")
+    def extract(path_to_file: Path):
+        logger.info("loading csv...")
         return pd.read_csv(path_to_file)
 
-class ExtractExcelStrategy(ExtractStrategy):
 
-    def extract(path_to_file: str):
-        print("loading excel...")
+class ExtractExcelStrategy(ExtractStrategy):
+    def extract(path_to_file: Path):
+        logger.info("loading excel...")  
         return pd.read_excel(path_to_file)
 
+
 class ExtractPdfStrategy(ExtractStrategy):
- 
-    def extract(path_to_file: str):
+    def extract(path_to_file: Path):
         raise NotImplementedError("PDF not implemented yet")
 
-class ExtractContext():
+
+class ExtractManager:
     def __init__(self, strategy: ExtractStrategy):
         self.strategy = strategy
 
-    def chooseStrategy(self, strategy: ExtractStrategy):
+    def choose_strategy(self, strategy: ExtractStrategy):
         self.strategy = strategy
 
     def extract(self, path_to_file: str) -> pd.DataFrame:

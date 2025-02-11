@@ -4,3 +4,4 @@ djangorestframework==3.14.*
 drf-spectacular==0.26.*
 pandas==2.2.*
 openpyxl==3.1.*
+pandera==0.22.*
