@@ -1,4 +1,4 @@
-import modules.extract.extract  as ex
+import backend.modules.extract.services.ports.strategies  as ex
 from pathlib import Path
 import logging
 import pandas as pd

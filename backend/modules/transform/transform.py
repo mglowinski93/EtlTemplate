@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 from typing import Self
 
-import modules.extract.extract as extract
+import backend.modules.extract.services.ports.strategies as strategies
 
 
 class EtlHandler(ABC):
