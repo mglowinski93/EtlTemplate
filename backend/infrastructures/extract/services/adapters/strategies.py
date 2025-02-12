@@ -20,3 +20,11 @@ class ExtractExcelStrategy(ex.ExtractStrategy):
 class ExtractPdfStrategy(ex.ExtractStrategy):
     def extract(path_to_file: Path):
         raise NotImplementedError("PDF not implemented yet")
+
+
+supported_extensions = {
+    ".csv": ExtractCsvStrategy(),
+    ".xls": ExtractExcelStrategy(),
+    ".xlsx": ExtractExcelStrategy(),
+    ".pdf": ExtractPdfStrategy()
+}
