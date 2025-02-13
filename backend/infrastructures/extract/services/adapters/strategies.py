@@ -15,7 +15,7 @@ class CsvExtract(ex.AbstractExtract):
     def extract(path_to_file: Path) -> pd.DataFrame:
         logger.info("Extracting CSV...")
         dataset = pd.read_csv(path_to_file)
-        logger.info("CSV Loaded.")
+        logger.info("CSV extracted.")
         return dataset
 
 """
@@ -27,7 +27,7 @@ class ExcelExtract(ex.AbstractExtract):
     def extract(path_to_file: Path) -> pd.DataFrame:
         logger.info("Extracting excel...")
         dataset = pd.read_excel(path_to_file)
-        logger.info("Excel loaded.")
+        logger.info("Excel extracted.")
         return pd.read_excel(path_to_file)
 
 
