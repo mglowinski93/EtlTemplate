@@ -6,6 +6,7 @@ import pandas as pd
 
 logger = logging.getLogger(_name_)
 
+
 """
 See description of parent class to get more details.
 """
@@ -17,6 +18,7 @@ class CsvExtract(ex.AbstractExtract):
         dataset = pd.read_csv(path_to_file)
         logger.info("CSV extracted.")
         return dataset
+
 
 """
 See description of parent class to get more details.
