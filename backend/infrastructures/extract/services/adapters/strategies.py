@@ -13,9 +13,10 @@ See description of parent class to get more details.
 
 class CsvExtract(ex.AbstractExtract):
     def extract(path_to_file: Path) -> pd.DataFrame:
-        logger.info("Extracting csv...")
-        return pd.read_csv(path_to_file)
-
+        logger.info("Extracting CSV...")
+        dataset = pd.read_csv(path_to_file)
+        logger.info("CSV Loaded.")
+        return dataset
 
 """
 See description of parent class to get more details.
@@ -25,6 +26,8 @@ See description of parent class to get more details.
 class ExcelExtract(ex.AbstractExtract):
     def extract(path_to_file: Path) -> pd.DataFrame:
         logger.info("Extracting excel...")
+        dataset = pd.read_excel(path_to_file)
+        logger.info("Excel loaded.")
         return pd.read_excel(path_to_file)
 
 
@@ -35,7 +38,7 @@ See description of parent class to get more details.
 
 class PdfExtract(ex.AbstractExtract):
     def extract(path_to_file: Path) -> pd.DataFrame:
-        raise NotImplementedError("PDF not implemented yet")
+        raise NotImplementedError("PDF not implemented yet.")
 
 
 supported_extensions = {
