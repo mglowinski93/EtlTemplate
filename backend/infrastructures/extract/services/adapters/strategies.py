@@ -3,29 +3,44 @@ from pathlib import Path
 import logging
 import pandas as pd
 
+
 logger = logging.getLogger(_name_)
 
+"""
+See description of parent class to get more details.
+"""
 
-class ExtractCsvStrategy(ex.ExtractStrategy):
-    def extract(path_to_file: Path):
-        logger.info("loading csv...")
+
+class CsvExtract(ex.AbstractExtract):
+    def extract(path_to_file: Path) -> pd.DataFrame:
+        logger.info("Extracting csv...")
         return pd.read_csv(path_to_file)
 
 
-class ExtractExcelStrategy(ex.ExtractStrategy):
-    def extract(path_to_file: Path):
-        logger.info("loading excel...")
+"""
+See description of parent class to get more details.
+"""
+
+
+class ExcelExtract(ex.AbstractExtract):
+    def extract(path_to_file: Path) -> pd.DataFrame:
+        logger.info("Extracting excel...")
         return pd.read_excel(path_to_file)
 
 
-class ExtractPdfStrategy(ex.ExtractStrategy):
-    def extract(path_to_file: Path):
+"""
+See description of parent class to get more details.
+"""
+
+
+class PdfExtract(ex.AbstractExtract):
+    def extract(path_to_file: Path) -> pd.DataFrame:
         raise NotImplementedError("PDF not implemented yet")
 
 
 supported_extensions = {
-    ".csv": ExtractCsvStrategy(),
-    ".xls": ExtractExcelStrategy(),
-    ".xlsx": ExtractExcelStrategy(),
-    ".pdf": ExtractPdfStrategy(),
+    ".csv": CsvExtract(),
+    ".xls": ExcelExtract(),
+    ".xlsx": ExcelExtract(),
+    ".pdf": PdfExtract(),
 }
