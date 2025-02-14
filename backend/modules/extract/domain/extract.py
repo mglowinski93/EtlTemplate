@@ -1,5 +1,5 @@
 import backend.modules.extract.services.ports.strategies as ex
-from backend.modules.data.domain.exceptions import FileTypeNotSupportedErrod
+from backend.modules.common.domain.exceptions import FileTypeNotSupportedErrod
 import pandas as pd
 import services.ports.strategies as strat
 from pathlib import Path
