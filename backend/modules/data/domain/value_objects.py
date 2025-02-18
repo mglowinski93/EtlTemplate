@@ -10,6 +10,6 @@ class InputData(pa.SchemaModel):
 
 
 class OutputData(pa.SchemaModel):
-    name_surname: Series[str]
+    full_name: Series[str]
     age: Series[int] = pa.Field(ge=0)
     is_satisfied: Series[bool]

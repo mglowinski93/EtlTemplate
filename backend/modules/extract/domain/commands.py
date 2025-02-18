@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from ...data.domain import commands as common_commands
+from ...common.domain import commands as common_commands
 
 
 @dataclass(frozen=True)
