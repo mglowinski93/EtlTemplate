@@ -6,4 +6,4 @@ from ...data.domain import value_objects as data_value_objects
 
 @dataclass(frozen=True)
 class TransformData(common_commands.DomainCommand):
-    input_data: data_value_objects.InputData
+    data: data_value_objects.InputData

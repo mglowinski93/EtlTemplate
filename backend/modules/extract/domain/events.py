@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from ...common.domain.events import DomainEvent
+from ...common.domain import events as common_events
 
 
-# TODO: discuss what kind of information we want to pass here.
 @dataclass(frozen=True)
-class DataExtracted(DomainEvent):
+class DataExtracted(common_events.DomainEvent):
     file_path: Path

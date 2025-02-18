@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
-from ...common.domain.events import DomainEvent
+from ...common.domain import events as common_events
+from ...data.domain import value_objects as data_value_objects
 
 
-# TODO: discuss what kind of information we want to pass here. Probably there should be some kind of unique ID of the saved dataset.
 @dataclass(frozen=True)
-class DataSaved(DomainEvent):
-    id: str
+class DataSaved(common_events.DomainEvent):
+    data: data_value_objects.OutputData

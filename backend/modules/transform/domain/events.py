@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 
+from ...common.domain import events as common_events
 from ...data.domain import value_objects as data_value_objects
-from ...common.domain.events import DomainEvent
 
 
-# TODO: discuss what kind of information we want to pass here.  Probably there should be some kind of unique ID of transformed, output dataset. For now data model is used as Event content.
 @dataclass(frozen=True)
-class DataTransformed(DomainEvent):
+class DataTransformed(common_events.DomainEvent):
     output_data: data_value_objects.OutputData
