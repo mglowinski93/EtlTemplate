@@ -2,7 +2,6 @@ import pandera as pa
 from pandera.typing import Series
 
 
-
 class InputData(pa.DataFrameModel):
     name: Series[str]
     surname: Series[str]
