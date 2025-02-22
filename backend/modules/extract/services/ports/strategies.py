@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from ....data.domain import value_objects as data_value_objects
+
 import pandas as pd
+
+from ....data.domain import value_objects as data_value_objects
 
 
 class AbstractExtract(ABC):
