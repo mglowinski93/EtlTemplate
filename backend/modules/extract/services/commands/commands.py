@@ -9,6 +9,7 @@ from ....common.domain.exceptions import (
 )
 from ....data.domain import value_objects as data_value_objects
 from ...domain import commands as domain_commands
+from ..ports import strategies as extract_strategies
 
 
 def extract(command: domain_commands.ExtractData) -> data_value_objects.InputData:
