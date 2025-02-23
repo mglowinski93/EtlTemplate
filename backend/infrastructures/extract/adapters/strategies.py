@@ -1,9 +1,9 @@
-import backend.modules.extract.services.ports.strategies as ex
 from pathlib import Path
-import logging
+
 import pandas as pd
 from modules.data.domain.value_objects import InputData
 
+import backend.modules.extract.services.ports.strategies as ex
 
 
 class CsvExtract(ex.AbstractExtract):
@@ -12,9 +12,7 @@ class CsvExtract(ex.AbstractExtract):
     """
 
     def extract(path_to_file: Path) -> pd.DataFrame:
-        #TODO: change into generic "data extracted" etc
-        dataset = pd.read_csv(path_to_file)
-        return dataset
+        return = pd.read_csv(path_to_file)
 
 
 
@@ -25,7 +23,6 @@ class ExcelExtract(ex.AbstractExtract):
     """
     
     def extract(path_to_file: Path) -> pd.DataFrame:
-        dataset = pd.read_excel(path_to_file)
         return pd.read_excel(path_to_file)
 
 

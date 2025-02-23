@@ -2,5 +2,5 @@ class DataValidationException(Exception):
     pass
 
 
-class DataFormatNotSupportedException(Exception):
+class FileDataFormatNotSupportedException(Exception):
     pass

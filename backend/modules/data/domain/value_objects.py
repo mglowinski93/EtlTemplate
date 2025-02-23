@@ -11,7 +11,8 @@ class InputData(pa.DataFrameModel):
     is_satisfied: bool
 
 
-class OutputData(pa.DataFrameModel):
+@dataclass
+class OutputData:
     full_name: str
-    age: int = pa.Field(ge=0)
+    age: int
     is_satisfied: bool
