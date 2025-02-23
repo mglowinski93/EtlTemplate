@@ -44,3 +44,19 @@ def test_extract_successfully_read_csv_file():
     input_data: pd.DataFrame = service_commands.extract(extract_command)
     assert not input_data.empty
     assert input_data.shape[0] == 10
+
+def test_extract_successfully_read_xlsx_file():
+    extract_command = domain_commands.ExtractData(
+        file_path=Path(__file__).parent / "resources" / "correct_input.xlsx"
+    )
+    input_data: pd.DataFrame = service_commands.extract(extract_command)
+    assert not input_data.empty
+    assert input_data.shape[0] == 10
+
+def test_extract_successfully_read_xls_file():
+    extract_command = domain_commands.ExtractData(
+        file_path=Path(__file__).parent / "resources" / "correct_input.xls"
+    )
+    input_data: pd.DataFrame = service_commands.extract(extract_command)
+    assert not input_data.empty
+    assert input_data.shape[0] == 10
