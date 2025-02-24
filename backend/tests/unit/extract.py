@@ -8,7 +8,7 @@ from modules.common.domain.exceptions import (
     FileDataFormatNotSupportedException,
 )
 from modules.extract.domain import commands as domain_commands
-from modules.extract.services.commands import commands as service_commands
+from modules.extract.services.commands import extract
 
 
 def test_extract_raise_exception_when_file_does_not_exist():
@@ -17,8 +17,11 @@ def test_extract_raise_exception_when_file_does_not_exist():
         file_path=Path(__file__).parent / "resources" / "non_existent_input.csv"
     )
     # When and Then
-    with pytest.raises(FileNotFoundError, match="Input file doesn't exist."):
-        service_commands.extract(extract_command)
+    with pytest.raises(
+        FileNotFoundError,
+        match=f"Input file {str(extract_command.file_path.name)} doesn't exist.",
+    ):
+        extract(extract_command)
 
 
 def test_extract_raise_exception_when_file_type_is_not_supported():
@@ -30,7 +33,7 @@ def test_extract_raise_exception_when_file_type_is_not_supported():
     with pytest.raises(
         FileDataFormatNotSupportedException, match="Data format .png is not supported."
     ):
-        service_commands.extract(extract_command)
+        extract(extract_command)
 
 
 def test_extract_raise_exception_when_any_dataset_row_is_invalid():
@@ -39,8 +42,11 @@ def test_extract_raise_exception_when_any_dataset_row_is_invalid():
         file_path=Path(__file__).parent / "resources" / "incorrect_data_input.csv"
     )
     # When and Then
-    with pytest.raises(DataValidationException, match="Input data is invalid."):
-        service_commands.extract(extract_command)
+    with pytest.raises(
+        DataValidationException,
+        match=f"Invalid input data in file {str(extract_command.file_path.name)}.",
+    ):
+        extract(extract_command)
 
 
 def test_extract_successfully_read_csv_file():
@@ -49,7 +55,7 @@ def test_extract_successfully_read_csv_file():
         file_path=Path(__file__).parent / "resources" / "correct_input.csv"
     )
     # When
-    input_data: pd.DataFrame = service_commands.extract(extract_command)
+    input_data: pd.DataFrame = extract(extract_command)
     # Then
     assert not input_data.empty
     assert input_data.shape[0] == 10
@@ -61,7 +67,7 @@ def test_extract_successfully_read_xlsx_file():
         file_path=Path(__file__).parent / "resources" / "correct_input.xlsx"
     )
     # When
-    input_data: pd.DataFrame = service_commands.extract(extract_command)
+    input_data: pd.DataFrame = extract(extract_command)
     # Then
     assert not input_data.empty
     assert input_data.shape[0] == 10
@@ -73,7 +79,7 @@ def test_extract_successfully_read_xls_file():
         file_path=Path(__file__).parent / "resources" / "correct_input.xls"
     )
     # When
-    input_data: pd.DataFrame = service_commands.extract(extract_command)
+    input_data: pd.DataFrame = extract(extract_command)
     # Then
     assert not input_data.empty
     assert input_data.shape[0] == 10

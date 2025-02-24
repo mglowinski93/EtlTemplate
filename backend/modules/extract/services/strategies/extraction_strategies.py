@@ -6,7 +6,7 @@ import pandas as pd
 from ....common.domain.exceptions import FileDataFormatNotSupportedException
 
 
-class AbstractRead(ABC):
+class AbstractExtraction(ABC):
     @abstractmethod
     def read(self, path_to_file: Path) -> pd.DataFrame:
         """
@@ -18,7 +18,7 @@ class AbstractRead(ABC):
         pass
 
 
-class CsvRead(AbstractRead):
+class CsvExtraction(AbstractExtraction):
     """
     See description of parent class to get more details.
     """
@@ -27,7 +27,7 @@ class CsvRead(AbstractRead):
         return pd.read_csv(path_to_file)
 
 
-class ExcelRead(AbstractRead):
+class ExcelExtraction(AbstractExtraction):
     """
     See description of parent class to get more details.
     """
@@ -36,7 +36,7 @@ class ExcelRead(AbstractRead):
         return pd.read_excel(path_to_file)
 
 
-def choose_strategy(file_extension: str) -> type[AbstractRead]:
+def choose_strategy(file_extension: str) -> type[AbstractExtraction]:
     strat = SUPPORTED_EXTENSIONS.get(file_extension)
     if strat is None:
         raise FileDataFormatNotSupportedException(
@@ -45,4 +45,8 @@ def choose_strategy(file_extension: str) -> type[AbstractRead]:
     return strat
 
 
-SUPPORTED_EXTENSIONS = {".csv": CsvRead, ".xls": ExcelRead, ".xlsx": ExcelRead}
+SUPPORTED_EXTENSIONS = {
+    ".csv": CsvExtraction,
+    ".xls": ExcelExtraction,
+    ".xlsx": ExcelExtraction,
+}
