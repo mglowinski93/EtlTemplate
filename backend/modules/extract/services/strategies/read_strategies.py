@@ -3,10 +3,12 @@ from pathlib import Path
 
 import pandas as pd
 
+from ....common.domain.exceptions import FileDataFormatNotSupportedException
+
 
 class AbstractRead(ABC):
     @abstractmethod
-    def read(path_to_file: Path) -> pd.DataFrame:
+    def read(self, path_to_file: Path) -> pd.DataFrame:
         """
         :param path_to_file: Path to a file containing data.
 
@@ -21,7 +23,7 @@ class CsvRead(AbstractRead):
     See description of parent class to get more details.
     """
 
-    def read(path_to_file: Path) -> pd.DataFrame:
+    def read(self, path_to_file: Path) -> pd.DataFrame:
         return pd.read_csv(path_to_file)
 
 
@@ -30,26 +32,17 @@ class ExcelRead(AbstractRead):
     See description of parent class to get more details.
     """
 
-    def read(path_to_file: Path) -> pd.DataFrame:
+    def read(self, path_to_file: Path) -> pd.DataFrame:
         return pd.read_excel(path_to_file)
 
 
-class PdfRead(AbstractRead):
-    """
-    See description of parent class to get more details.
-    """
-
-    def read(path_to_file: Path) -> pd.DataFrame:
-        raise NotImplementedError("PDF not implemented yet.")
-
-
-def choose_strategy(file_extension: str) -> AbstractRead:
-    return supported_extensions.get(file_extension)
+def choose_strategy(file_extension: str) -> type[AbstractRead]:
+    strat = supported_extensions.get(file_extension)
+    if strat is None:
+        raise FileDataFormatNotSupportedException(
+            f"Data format {file_extension} is not supported."
+        )
+    return strat
 
 
-supported_extensions = {
-    ".csv": CsvRead,
-    ".xls": ExcelRead,
-    ".xlsx": ExcelRead,
-    ".pdf": PdfRead,
-}
+supported_extensions = {".csv": CsvRead, ".xls": ExcelRead, ".xlsx": ExcelRead}
