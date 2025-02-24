@@ -10,7 +10,7 @@ class InputData(pa.DataFrameModel):
     is_satisfied: bool
 
 
-@dataclass
+@dataclass(frozen=True)
 class OutputData:
     full_name: str
     age: int

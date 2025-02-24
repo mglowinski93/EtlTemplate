@@ -45,4 +45,4 @@ def choose_strategy(file_extension: str) -> type[AbstractRead]:
     return strat
 
 
-supported_extensions = {".csv": CsvRead, ".xls": ExcelRead, ".xlsx": ExcelRead}
+SUPPORTED_EXTENSIONS = {".csv": CsvRead, ".xls": ExcelRead, ".xlsx": ExcelRead}

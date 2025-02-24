@@ -9,7 +9,7 @@ from ..strategies import read_strategies
 
 def extract(command: domain_commands.ExtractData) -> data_value_objects.InputData:
     if not command.file_path.exists():
-        raise FileNotFoundError("Input file doesn't exist.")
+        raise FileNotFoundError(f"Input file {command.file_path} doesn't exist.")
 
     read_strategy: read_strategies.AbstractRead = read_strategies.choose_strategy(
         command.file_path.suffix
