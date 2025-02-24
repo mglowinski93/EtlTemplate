@@ -37,7 +37,7 @@ class ExcelRead(AbstractRead):
 
 
 def choose_strategy(file_extension: str) -> type[AbstractRead]:
-    strat = supported_extensions.get(file_extension)
+    strat = SUPPORTED_EXTENSIONS.get(file_extension)
     if strat is None:
         raise FileDataFormatNotSupportedException(
             f"Data format {file_extension} is not supported."
