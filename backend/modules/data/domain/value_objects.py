@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 import pandera as pa
-from pandera.typing import Series
 
 
 class InputData(pa.DataFrameModel):

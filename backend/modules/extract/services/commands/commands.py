@@ -17,7 +17,7 @@ def extract(command: domain_commands.ExtractData) -> data_value_objects.InputDat
     read_strategy: read_strategies.AbstractRead = read_strategies.choose_strategy(
         command.file_path.suffix
     )
-    if read_strategy == None:
+    if read_strategy is None:
         raise FileDataFormatNotSupportedException(
             f"Data format {command.file_path.suffix} is not supported."
         )
@@ -26,7 +26,7 @@ def extract(command: domain_commands.ExtractData) -> data_value_objects.InputDat
 
     try:
         validated_data: pd.DataFrame = data_value_objects.InputData.validate(df)
-    except pa.errors.SchemaError as se:
+    except pa.errors.SchemaError:
         raise DataValidationException("Input data is invalid.")
 
     return validated_data

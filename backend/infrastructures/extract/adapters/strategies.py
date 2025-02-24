@@ -3,7 +3,6 @@ from pathlib import Path
 import pandas as pd
 
 import backend.modules.extract.services.ports.strategies as ex
-from modules.data.domain.value_objects import InputData
 
 
 class CsvExtract(ex.AbstractExtract):

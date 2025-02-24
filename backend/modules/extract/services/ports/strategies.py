@@ -3,8 +3,6 @@ from pathlib import Path
 
 import pandas as pd
 
-from ....data.domain import value_objects as data_value_objects
-
 
 class AbstractExtract(ABC):
     @abstractmethod
