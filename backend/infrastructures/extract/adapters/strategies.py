@@ -12,20 +12,16 @@ class CsvExtract(ex.AbstractExtract):
     """
 
     def extract(path_to_file: Path) -> pd.DataFrame:
-        return = pd.read_csv(path_to_file)
-
-
+        return pd.read_csv(path_to_file)
 
 
 class ExcelExtract(ex.AbstractExtract):
     """
     See description of parent class to get more details.
     """
-    
+
     def extract(path_to_file: Path) -> pd.DataFrame:
         return pd.read_excel(path_to_file)
-
-
 
 
 class PdfExtract(ex.AbstractExtract):
