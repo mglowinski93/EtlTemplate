@@ -1,4 +1,5 @@
 import logging
+from typing import cast
 
 import pandas as pd
 import pandera as pa
@@ -11,7 +12,7 @@ from ..strategies import AbstractExtraction, choose_strategy
 logger = logging.getLogger(__name__)
 
 
-def extract(command: domain_commands.ExtractData) -> data_value_objects.InputData:
+def extract(command: domain_commands.ExtractData) -> pd.DataFrame:
     logger.info(f"Started data extraction from {str(command.file_path.name)}.")
     if not command.file_path.exists():
         raise FileNotFoundError(
@@ -23,8 +24,7 @@ def extract(command: domain_commands.ExtractData) -> data_value_objects.InputDat
     df: pd.DataFrame = read_strategy.read(command.file_path)
 
     try:
-        validated_data = data_value_objects.InputData.validate(df)
-
+        validated_data = cast(pd.DataFrame, data_value_objects.InputData.validate(df))
     except pa.errors.SchemaError:
         logger.info(f"Invalid input data in file {str(command.file_path.name)}.")
         raise DataValidationException(
