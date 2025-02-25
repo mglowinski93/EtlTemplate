@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 
+import pandas as pd
+
 from ...common.domain import commands as common_commands
-from ...data.domain import value_objects as data_value_objects
 
 
 @dataclass(frozen=True)
 class TransformData(common_commands.DomainCommand):
-    data: data_value_objects.InputData
+    data: pd.DataFrame
