@@ -3,6 +3,7 @@ from typing import cast
 
 import pandas as pd
 import pandera as pa
+from pandera.typing.pandas import DataFrame
 
 from ....common.domain.exceptions import DataValidationException
 from ....data.domain import value_objects as data_value_objects
@@ -21,7 +22,7 @@ def extract(command: domain_commands.ExtractData) -> pd.DataFrame:
 
     read_strategy: AbstractExtraction = choose_strategy(command.file_path.suffix)()
 
-    df: pd.DataFrame = read_strategy.read(command.file_path)
+    data: pd.DataFrame = read_strategy.read(command.file_path)
 
     try:
         validated_data = cast(pd.DataFrame, data_value_objects.InputData.validate(df))
@@ -32,4 +33,5 @@ def extract(command: domain_commands.ExtractData) -> pd.DataFrame:
         )
 
     logger.info(f"Successfully extracted dataset from {str(command.file_path.name)}.")
-    return validated_data
+
+    return validated_data  # type: ignore[return-value]
