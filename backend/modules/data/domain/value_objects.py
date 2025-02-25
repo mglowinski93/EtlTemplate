@@ -1,15 +1,17 @@
+from dataclasses import dataclass
+
 import pandera as pa
-from pandera.typing import Series
 
 
 class InputData(pa.DataFrameModel):
-    name: Series[str]
-    surname: Series[str]
-    age: Series[int] = pa.Field(ge=0)
-    is_satisfied: Series[bool]
+    name: str
+    surname: str
+    age: int = pa.Field(ge=0)
+    is_satisfied: bool
 
 
-class OutputData(pa.DataFrameModel):
-    full_name: Series[str]
-    age: Series[int] = pa.Field(ge=0)
-    is_satisfied: Series[bool]
+@dataclass(frozen=True)
+class OutputData:
+    full_name: str
+    age: int
+    is_satisfied: bool
