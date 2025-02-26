@@ -16,8 +16,9 @@ def transform(
     logger.info("Data transformation start.")
 
     df: pd.DataFrame = cast(pd.DataFrame, command.data)
-    df["full_name"] = df["name"] + " " + df["surname"]
-    df = df.drop(columns=["name", "surname"])
+    # df["full_name"] = df["name"].str.cat(df["surname"], sep=" ")  
+    df["full_name"] = pd.concat([df["name"], df["surname"]], axis=1).agg(" ".join, axis=1)
+    df.drop(columns=["name", "surname"], inplace=True)
     transformation_result = []
     for record in df.to_dict(orient="records"):
         transformation_result.append(
@@ -27,5 +28,5 @@ def transform(
         )
 
     logger.info("Data transformation done.")
-    
+
     return transformation_result
