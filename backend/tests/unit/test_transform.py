@@ -4,6 +4,7 @@ import pandas as pd
 
 from modules.transform.domain import commands as domain_commands
 from modules.transform.services.commands import commands as service_commands
+from modules.data.domain import value_objects as data_value_objects 
 
 
 def test_transformed_data_contains_fullname_column():
@@ -12,9 +13,8 @@ def test_transformed_data_contains_fullname_column():
     command = domain_commands.TransformData(input_df)
 
     # When
-    result: pd.DataFrame = service_commands.transform(command)
+    result: list[data_value_objects.OutputData] = service_commands.transform(command)
 
     # Then
-    assert "full_name" in result.columns
-    assert "Jessica Barnes" in result["full_name"].values
-    assert result.shape[0] == 10
+    assert len(result) == 10
+    assert result.count(data_value_objects.OutputData("Jessica Barnes",58,False)) == 1
