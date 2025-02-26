@@ -12,12 +12,12 @@ logger = logging.getLogger(__name__)
 def transform(
     command: domain_commands.TransformData,
 ) -> list[data_value_objects.OutputData]:
-    
     logger.info("Data transformation start.")
 
     df: pd.DataFrame = cast(pd.DataFrame, command.data)
-    # df["full_name"] = df["name"].str.cat(df["surname"], sep=" ")  
-    df["full_name"] = pd.concat([df["name"], df["surname"]], axis=1).agg(" ".join, axis=1)
+    df["full_name"] = pd.concat([df["name"], df["surname"]], axis=1).agg(
+        " ".join, axis=1
+    )
     df.drop(columns=["name", "surname"], inplace=True)
     transformation_result = []
     for record in df.to_dict(orient="records"):

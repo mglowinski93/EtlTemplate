@@ -84,4 +84,5 @@ def test_extract_successfully_read_xls_file():
     assert not input_data.empty
     assert input_data.shape[0] == TEST_DATASET_SIZE
 
+
 TEST_DATASET_SIZE = 10

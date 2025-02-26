@@ -19,4 +19,5 @@ def test_transformed_data_contains_fullname_column():
     assert len(result) == TEST_DATASET_SIZE
     assert result.count(data_value_objects.OutputData("Jessica Barnes", 58, False)) == 1
 
+
 TEST_DATASET_SIZE = 10
