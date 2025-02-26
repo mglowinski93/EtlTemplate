@@ -9,6 +9,7 @@ from modules.transform.services.commands import commands as service_commands
 
 def test_transformed_data_contains_fullname_column():
     # Given
+    test_dataset_size = 10
     input_df = pd.read_csv(Path(__file__).parent / "resources" / "correct_input.csv")
     command = domain_commands.TransformData(input_df)
 
@@ -16,8 +17,5 @@ def test_transformed_data_contains_fullname_column():
     result: list[data_value_objects.OutputData] = service_commands.transform(command)
 
     # Then
-    assert len(result) == TEST_DATASET_SIZE
+    assert len(result) == test_dataset_size
     assert result.count(data_value_objects.OutputData("Jessica Barnes", 58, False)) == 1
-
-
-TEST_DATASET_SIZE = 10
