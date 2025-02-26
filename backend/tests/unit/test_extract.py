@@ -58,7 +58,7 @@ def test_extract_successfully_read_csv_file():
     input_data: pd.DataFrame = extract(extract_command)
     # Then
     assert not input_data.empty
-    assert input_data.shape[0] == 10
+    assert input_data.shape[0] == TEST_DATASET_SIZE
 
 
 def test_extract_successfully_read_xlsx_file():
@@ -70,7 +70,7 @@ def test_extract_successfully_read_xlsx_file():
     input_data: pd.DataFrame = extract(extract_command)
     # Then
     assert not input_data.empty
-    assert input_data.shape[0] == 10
+    assert input_data.shape[0] == TEST_DATASET_SIZE
 
 
 def test_extract_successfully_read_xls_file():
@@ -82,4 +82,6 @@ def test_extract_successfully_read_xls_file():
     input_data: pd.DataFrame = extract(extract_command)
     # Then
     assert not input_data.empty
-    assert input_data.shape[0] == 10
+    assert input_data.shape[0] == TEST_DATASET_SIZE
+
+TEST_DATASET_SIZE = 10

@@ -12,7 +12,9 @@ logger = logging.getLogger(__name__)
 def transform(
     command: domain_commands.TransformData,
 ) -> list[data_value_objects.OutputData]:
+    
     logger.info("Data transformation start.")
+
     df: pd.DataFrame = cast(pd.DataFrame, command.data)
     df["full_name"] = df["name"] + " " + df["surname"]
     df = df.drop(columns=["name", "surname"])
@@ -25,4 +27,5 @@ def transform(
         )
 
     logger.info("Data transformation done.")
+    
     return transformation_result
