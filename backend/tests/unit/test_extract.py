@@ -51,6 +51,7 @@ def test_extract_raise_exception_when_any_dataset_row_is_invalid():
 
 def test_extract_successfully_read_csv_file():
     # Given
+    test_dataset_size = 10
     extract_command = domain_commands.ExtractData(
         file_path=Path(__file__).parent / "resources" / "correct_input.csv"
     )
@@ -58,11 +59,12 @@ def test_extract_successfully_read_csv_file():
     input_data: pd.DataFrame = extract(extract_command)
     # Then
     assert not input_data.empty
-    assert input_data.shape[0] == 10
+    assert input_data.shape[0] == test_dataset_size
 
 
 def test_extract_successfully_read_xlsx_file():
     # Given
+    test_dataset_size = 10
     extract_command = domain_commands.ExtractData(
         file_path=Path(__file__).parent / "resources" / "correct_input.xlsx"
     )
@@ -70,11 +72,12 @@ def test_extract_successfully_read_xlsx_file():
     input_data: pd.DataFrame = extract(extract_command)
     # Then
     assert not input_data.empty
-    assert input_data.shape[0] == 10
+    assert input_data.shape[0] == test_dataset_size
 
 
 def test_extract_successfully_read_xls_file():
     # Given
+    test_dataset_size = 10
     extract_command = domain_commands.ExtractData(
         file_path=Path(__file__).parent / "resources" / "correct_input.xls"
     )
@@ -82,4 +85,4 @@ def test_extract_successfully_read_xls_file():
     input_data: pd.DataFrame = extract(extract_command)
     # Then
     assert not input_data.empty
-    assert input_data.shape[0] == 10
+    assert input_data.shape[0] == test_dataset_size
