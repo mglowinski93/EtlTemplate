@@ -5,5 +5,5 @@ from ...data.domain import value_objects as data_value_objects
 
 
 @dataclass(frozen=True)
-class DataSaved(common_events.DomainEvent):
+class DataLoaded(common_events.DomainEvent):
     data: data_value_objects.OutputData
