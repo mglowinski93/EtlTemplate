@@ -4,3 +4,7 @@ class DataValidationException(Exception):
 
 class FileDataFormatNotSupportedException(Exception):
     pass
+
+
+class DataLoadException(Exception):
+    pass

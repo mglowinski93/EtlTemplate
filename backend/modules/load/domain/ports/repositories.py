@@ -8,5 +8,6 @@ class AbstractLoadRepository(ABC):
     def load(self, data: list[data_value_objects.OutputData]) -> None:
         """
         :param: Data to save.
+        :raises DataLoadException.
         """
         pass
