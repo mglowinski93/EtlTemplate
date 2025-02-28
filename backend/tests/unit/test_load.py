@@ -21,16 +21,16 @@ def test_data_loaded_successfully():
     ]
     domain_command = domain_commands.LoadData(output_data=output_data)
 
-    fake_repo: domain_repositories.AbstractLoadRepository = FakeRepository()
-    fake_uow: domain_uow.AbstractLoadUnitOfWork = FakeUnitOfWork(fake_repo)
+    fake_repository: domain_repositories.AbstractLoadRepository = FakeRepository()
+    fake_unit_of_work: domain_uow.AbstractLoadUnitOfWork = FakeUnitOfWork(fake_repository)
 
     # When
-    service_commands.load(domain_command, fake_uow)
+    service_commands.load(domain_command, fake_unit_of_work)
 
     # Then
-    assert len(fake_repo.in_memory_db) == output_dataset_rows
-    assert fake_repo.in_memory_db[1] == output_data[1]
-    assert fake_uow.committed
+    assert len(fake_repository.in_memory_db) == output_dataset_rows
+    assert fake_repository.in_memory_db[1] == output_data[1]
+    assert fake_unit_of_work.committed
 
 
 class FakeUnitOfWork(domain_uow.AbstractLoadUnitOfWork):
