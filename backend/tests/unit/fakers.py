@@ -3,7 +3,7 @@ from modules.load.domain.ports import repositories as domain_repositories
 from modules.load.domain.ports import units_of_work as domain_uow
 
 
-class TestLoadUnitOfWork(domain_uow.AbstractDataUnitOfWork):
+class TestSaveDataUnitOfWork(domain_uow.AbstractDataUnitOfWork):
     def __init__(self):
         self.data = TestDataDomainRepository()
 

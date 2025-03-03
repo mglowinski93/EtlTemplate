@@ -40,7 +40,7 @@ def test_data_repository() -> YieldFixture[fakers.TestDataDomainRepository]:
 @pytest.fixture
 def test_data_unit_of_work(
     test_data_repository,
-) -> YieldFixture[fakers.TestLoadUnitOfWork]:
-    test_unit_of_work = fakers.TestLoadUnitOfWork()
+) -> YieldFixture[fakers.TestSaveDataUnitOfWork]:
+    test_unit_of_work = fakers.TestSaveDataUnitOfWork()
     test_unit_of_work.data = test_data_repository
     yield test_unit_of_work
