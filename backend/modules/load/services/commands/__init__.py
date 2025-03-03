@@ -1,3 +1,3 @@
-from .commands import load
+from .commands import save
 
-__all__ = ["load"]
+__all__ = ["save"]

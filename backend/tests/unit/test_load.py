@@ -8,7 +8,7 @@ from ..common.annotations import YieldFixture
 from . import fakers
 
 
-def test_data_loaded_successfully(test_data_unit_of_work, test_data_repository):
+def test_data_saved_successfully(test_data_unit_of_work, test_data_repository):
     # Given
     output_dataset_rows = 3
     output_data = [
@@ -22,10 +22,10 @@ def test_data_loaded_successfully(test_data_unit_of_work, test_data_repository):
             full_name="Shannon Gonzales", age=36, is_satisfied=True
         ),
     ]
-    domain_command = domain_commands.LoadData(output_data=output_data)
+    domain_command = domain_commands.SaveData(output_data=output_data)
 
     # When
-    service_commands.load(domain_command, test_data_unit_of_work)
+    service_commands.save(domain_command, test_data_unit_of_work)
 
     # Then
     assert len(test_data_repository.list()) == output_dataset_rows

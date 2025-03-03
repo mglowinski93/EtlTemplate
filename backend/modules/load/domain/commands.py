@@ -5,5 +5,5 @@ from ...data.domain import value_objects as data_value_objects
 
 
 @dataclass(frozen=True)
-class LoadData(common_commands.DomainCommand):
+class SaveData(common_commands.DomainCommand):
     output_data: list[data_value_objects.OutputData]

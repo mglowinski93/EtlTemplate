@@ -6,5 +6,5 @@ class FileDataFormatNotSupportedException(Exception):
     pass
 
 
-class DataLoadException(Exception):
+class DataSaveException(Exception):
     pass
