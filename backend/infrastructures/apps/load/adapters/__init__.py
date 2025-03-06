@@ -1,14 +1,6 @@
-from .repositories import (
-    DjangoCommentsQueryRepository,
-    DjangoPointsQueryRepository,
-    DjangoTodosQueryRepository,
-)
 from .units_of_work import DjangoTodosUnitOfWork
 
-
+#TODO implement real units of work and repositories and add them here
 _all_ = [
-    "DjangoCommentsQueryRepository",
-    "DjangoPointsQueryRepository",
-    "DjangoTodosQueryRepository",
     "DjangoTodosUnitOfWork",
 ]

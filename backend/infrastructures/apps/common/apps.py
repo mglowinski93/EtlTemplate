@@ -3,6 +3,6 @@ import inject
 
 class InjectAppConfigMixin:
     def ready(self):
-        from ...config.settings import injections_configuration
+        from ...config.settings import injections_configurations
 
-        inject.configure(injections_configuration.inject_config, once=True)
+        inject.configure(injections_configurations.inject_config, once=True)
