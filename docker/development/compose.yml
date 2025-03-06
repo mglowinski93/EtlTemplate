@@ -45,7 +45,7 @@ services:
     volumes:
       - "../../backend/:/app/"
       - "./backend/scripts/:/scripts/"
-      - "etc-template-backend-cache:$HOME/.cache/pip"
+      - "etc-template-backend-cache:/c/Users/taral/.cache/pip"
     environment:
       SECRET_KEY: "fd!=^e#_pukzl#+2@apf-i2x7e*-%6@ucwg%fo9@ic-s(*t7jh"
       POSTGRES_DB_HOST: "etc-template-db"
