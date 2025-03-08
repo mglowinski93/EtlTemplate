@@ -1,29 +1,18 @@
-from modules.todos.domain import ports as domain_ports
+from modules.load.domain.ports import units_of_work as domain_units_of_work
 from .repositories import (
-    DjangoCommentsDomainRepository,
-    DjangoPointsDomainRepository,
-    DjangoTodosDomainRepository,
+    DjangoDataDomainRepository
 )
 from ...common.adapters import units_of_work
 
-#TODO 
-class DjangoTodosUnitOfWork(
-    units_of_work.DjangoUnitOfWork, domain_ports.AbstractTodosUnitOfWork
+class DjangoDataUnitOfWork(
+    units_of_work.DjangoUnitOfWork, domain_units_of_work.AbstractDataUnitOfWork 
 ):
     def __init__(self):
         super().__init__(
             [
                 units_of_work.RepositoryData(
-                    "comments",
-                    DjangoCommentsDomainRepository,
-                ),
-                units_of_work.RepositoryData(
-                    "points",
-                    DjangoPointsDomainRepository,
-                ),
-                units_of_work.RepositoryData(
-                    "todos",
-                    DjangoTodosDomainRepository,
+                    "data",
+                    DjangoDataDomainRepository,
                 ),
             ]
         )
