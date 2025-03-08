@@ -7,7 +7,7 @@ from django.db import transaction
 
 from modules.common.domain import ports as common_ports
 
-# REMOVE COMMENT - DO NOT CHANGE IT
+
 @dataclass(frozen=True)
 class RepositoryData:
     name: str
