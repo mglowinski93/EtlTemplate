@@ -19,6 +19,7 @@ class DjangoDataDomainRepository(domain_repositories.AbstractDataDomainRepositor
     See description of parent class to get more details.
     """
     def create(self, data: list[data_value_objects.OutputData]) -> None:
+        #TODO 4: investigate how to connect to postgres database 
         #TODO this is supposed to raise DataCreationException
         logger.info("database load action here")
  

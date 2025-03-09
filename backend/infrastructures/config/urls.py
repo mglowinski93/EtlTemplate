@@ -25,6 +25,7 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from ..apps.api.views import DataViewSet
 
 def health_check(request):
     return JsonResponse({"status": "running"})
@@ -39,7 +40,7 @@ api_swagger_urlpatterns = [
     path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]
 
-
+#TODO 3: how to properly add views here? I guess they should be under api/ endpoint. 
 # API URLs
 api_urlpatterns = []
 
