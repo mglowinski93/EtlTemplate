@@ -25,7 +25,7 @@ def test_data_saved_successfully(test_data_unit_of_work, test_data_repository):
     domain_command = domain_commands.SaveData(output_data=output_data)
 
     # When
-    service_commands.save(domain_command, test_data_unit_of_work)
+    service_commands.save(test_data_unit_of_work, domain_command)
 
     # Then
     assert len(test_data_repository.list()) == output_dataset_rows

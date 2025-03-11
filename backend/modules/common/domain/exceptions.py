@@ -1,10 +1,11 @@
 class DataValidationException(Exception):
     pass
 
-
 class FileDataFormatNotSupportedException(Exception):
     pass
 
+class DataCreationException(Exception):
+    pass
 
-class DataSaveException(Exception):
+class DataAccessException(Exception):
     pass
