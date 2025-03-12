@@ -16,7 +16,7 @@ from modules.load.domain import commands as domain_load_commands
 from modules.load.services import commands as services_load_commands
 from modules.load.services.queries import ports as query_ports
 from modules.data.domain import value_objects as data_value_objects
-from serializers import ExtractDataSerializer, OutputDataListSerializer
+from serializers import ExtractDataSerializer, OutputDataSerializer
 import pandera as pa
 from typing import List
 
@@ -73,7 +73,7 @@ class DataViewSet(
            return Response({"error": "unable to list transformed datasets"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(
-            data=OutputDataListSerializer(output_data).data,
+            data=OutputDataSerializer(output_data, many=True).data,
             status=status.HTTP_200_OK,
         )
 

@@ -13,11 +13,11 @@ class OutputDataSerializer(serializers.Serializer):
     age = serializers.IntegerField()
     is_satisfied = serializers.BooleanField()
 
-class OutputDataListSerializer(serializers.ListSerializer):
-    child = OutputDataSerializer()
+# class OutputDataListSerializer(serializers.ListSerializer):
+#     child = OutputDataSerializer()
 
-    def to_representation(self, data: List[data_value_objects.OutputData]):
-        return [asdict(item) for item in data]
+#     def to_representation(self, data: List[data_value_objects.OutputData]):
+#         return [asdict(item) for item in data]
     
-    def create(self, validated_data):
-        return [data_value_objects.OutputData(**item) for item in validated_data]
+#     def create(self, validated_data):
+#         return [data_value_objects.OutputData(**item) for item in validated_data]
