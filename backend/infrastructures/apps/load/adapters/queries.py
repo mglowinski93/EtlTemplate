@@ -18,4 +18,5 @@ class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
         #TODO 4: investigate how to connect to postgres database 
         #TODO this is supposed to raise DataAccessException
         logger.info("database list action here")
+        return [data_value_objects.OutputData("Bartosz Dżakubczak", 59, False)]
  
