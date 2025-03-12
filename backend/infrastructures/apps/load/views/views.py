@@ -16,7 +16,7 @@ from modules.load.domain import commands as domain_load_commands
 from modules.load.services import commands as services_load_commands
 from modules.load.services.queries import ports as query_ports
 from modules.data.domain import value_objects as data_value_objects
-from serializers import ExtractDataSerializer, OutputDataSerializer
+from .serializers import ExtractDataSerializer, OutputDataSerializer
 import pandera as pa
 from typing import List
 
@@ -36,7 +36,7 @@ class DataViewSet(
 ):
 
     @inject.param(name="save_data_unit_of_work", cls="save_data_unit_of_work")
-    def trigger_transformation(
+    def create(
         self,
         request: Request, 
         save_data_unit_of_work: units_of_work.AbstractUnitOfWork,
