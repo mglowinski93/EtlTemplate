@@ -24,9 +24,10 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from rest_framework.routers import DefaultRouter
 
 from infrastructures.apps.load.views import views
-from rest_framework.routers import DefaultRouter
+
 
 def health_check(request):
     return JsonResponse({"status": "running"})
@@ -42,10 +43,10 @@ api_swagger_urlpatterns = [
 ]
 
 router = DefaultRouter()
-router.register('etl', views.DataViewSet, basename='')
+router.register("etl", views.DataViewSet, basename="")
 
 etl_urlpatterns = [
-    path('', include(router.urls)),  # Include the generated URLs
+    path("", include(router.urls)),  # Include the generated URLs
 ]
 
 api_urlpatterns = []

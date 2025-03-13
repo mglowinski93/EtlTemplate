@@ -1,6 +1,8 @@
 from abc import abstractmethod
-from ....data.domain import value_objects as data_value_objects
+
 from ....common.domain import ports as common_ports
+from ....data.domain import value_objects as data_value_objects
+
 
 class AbstractDataDomainRepository(common_ports.AbstractDomainRepository):
     @abstractmethod

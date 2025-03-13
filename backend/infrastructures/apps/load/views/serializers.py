@@ -1,7 +1,9 @@
-from rest_framework import serializers
 from dataclasses import asdict
-from modules.data.domain import value_objects as data_value_objects
 from typing import List
+
+from rest_framework import serializers
+
+from modules.data.domain import value_objects as data_value_objects
 
 
 class ExtractDataSerializer(serializers.Serializer):
