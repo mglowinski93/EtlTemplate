@@ -7,7 +7,7 @@ from typing import List
 
 class AbstractDataQueryRepository(common_ports.AbstractDomainRepository):
     @abstractmethod
-    def list(self) -> List[data_value_objects.OutputData]:
+    def list(self) -> tuple[List[data_value_objects.OutputData], int]:
         """
         :raises DataAccessException.
         """

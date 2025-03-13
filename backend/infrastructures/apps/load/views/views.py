@@ -66,14 +66,9 @@ class DataViewSet(
     @inject.param(name="query_data_repository", cls="query_data_repository")
     def list(self, request: Request, query_data_repository: query_ports.AbstractDataQueryRepository):
         logger.info("Listing all datasets...")
-        try:
-            output_data: List[data_value_objects.OutputData] = query_data_repository.list()
-
-        except domain_exceptions.DataAccessException as err:
-           return Response({"error": "unable to list transformed datasets"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        output_data, count = query_data_repository.list()
         return Response(
-            data=OutputDataSerializer(output_data, many=True).data,
+            data={"count": count, "data": OutputDataSerializer(output_data, many=True).data},
             status=status.HTTP_200_OK,
         )
 
