@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 
 from modules.load.domain.ports import repositories as domain_repositories 
 from modules.data.domain import value_objects as data_value_objects
+from ..models import OutputData
 
 
 logger = logging.getLogger(__name__)
@@ -15,7 +16,11 @@ class DjangoDataDomainRepository(domain_repositories.AbstractDataDomainRepositor
     See description of parent class to get more details.
     """
     def create(self, data: list[data_value_objects.OutputData]) -> None:
-        #TODO 4: investigate how to connect to postgres database 
-        #TODO this is supposed to raise DataCreationException
-        logger.info("database load action here")
+        OutputData.objects.bulk_create(
+            [
+                OutputData(full_name=output_data.full_name, age=output_data.age, is_satisfied=output_data.is_satisfied
+                )
+                for output_data in data
+            ]
+        )
  

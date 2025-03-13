@@ -22,19 +22,3 @@ class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
         result = [map_outputdata_model_to_output_dto(output_data) for output_data in query.all()]
 
         return result, query.count()
-
-
-    # def list(
-    #     self,
-    # ) -> tuple[list[data_value_objects.OutputData], int]:
-    #     query = (
-    #         Point.objects.prefetch_related("todo", "comments", "author")
-    #         .filter(**_get_django_points_filters(filters))
-    #         .order_by(*_get_django_points_ordering(ordering))
-    #     )
-    #     return [
-    #         map_point_model_to_output_dto(point)
-    #         for point in query.all()[
-    #             pagination.offset : pagination.offset + pagination.records_per_page
-    #         ]
-    #     ], query.count()

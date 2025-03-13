@@ -19,6 +19,7 @@ from modules.data.domain import value_objects as data_value_objects
 from .serializers import ExtractDataSerializer, OutputDataSerializer
 import pandera as pa
 from typing import List
+from pathlib import Path
 
 
 from modules.common.domain.ports import units_of_work
@@ -49,15 +50,17 @@ class DataViewSet(
                 data=serializer.errors,
                 status=status.HTTP_422_UNPROCESSABLE_ENTITY,
             )
-
         try:
-            input_data: data_value_objects.InputData[pd.DataFrame] = service_extract_commands.extract(domain_extract_commands.ExtractData(serializer.validated_data["file_path"]))
+            
+            input_data: data_value_objects.InputData[pd.DataFrame] = service_extract_commands.extract(domain_extract_commands.ExtractData(Path(serializer.validated_data["file_path"])))
             logger.info("Transforming Dataset...")
             output_data : list[data_value_objects.OutputData] = services_transform_commands.transform(domain_transform_commands.TransformData(input_data))
             logger.info("Saving Dataset...")
             services_load_commands.save(save_data_unit_of_work, domain_load_commands.SaveData(output_data))
+        except FileNotFoundError as err:
+            return Response({"error": "file not found", "file_path": serializer.validated_data["file_path"]}, status=status.HTTP_400_BAD_REQUEST)
         except domain_exceptions.DataValidationException as err:
-           return Response({"error": "invalid input"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "invalid input data", "file_path": serializer.validated_data["file_path"]}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(
             status=status.HTTP_200_OK
