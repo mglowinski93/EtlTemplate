@@ -1,23 +1,20 @@
 import logging
-from datetime import datetime
 from pathlib import Path
-from typing import List
+from typing import cast
 
 import inject
-import pandas as pd
-import pandera as pa
-from drf_spectacular import utils as swagger_utils
-from rest_framework import exceptions, status
+from pandera.typing.pandas import DataFrame
+from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from modules.common.domain import exceptions as domain_exceptions
-from modules.common.domain.ports import units_of_work
 from modules.data.domain import value_objects as data_value_objects
 from modules.extract.domain import commands as domain_extract_commands
 from modules.extract.services import commands as service_extract_commands
 from modules.load.domain import commands as domain_load_commands
+from modules.load.domain.ports import units_of_work
 from modules.load.services import commands as services_load_commands
 from modules.load.services.queries import ports as query_ports
 from modules.transform.domain import commands as domain_transform_commands
@@ -35,7 +32,7 @@ class DataViewSet(
     def create(
         self,
         request: Request,
-        save_data_unit_of_work: units_of_work.AbstractUnitOfWork,
+        save_data_unit_of_work: units_of_work.AbstractDataUnitOfWork,
     ) -> Response:
         logger.info("Extracting Dataset...")
 
@@ -46,24 +43,25 @@ class DataViewSet(
                 status=status.HTTP_422_UNPROCESSABLE_ENTITY,
             )
         try:
-            input_data: data_value_objects.InputData[
-                pd.DataFrame
-            ] = service_extract_commands.extract(
-                domain_extract_commands.ExtractData(
-                    Path(serializer.validated_data["file_path"])
-                )
+            input_data: data_value_objects.InputData = cast(
+                data_value_objects.InputData,
+                service_extract_commands.extract(
+                    domain_extract_commands.ExtractData(
+                        Path(serializer.validated_data["file_path"])
+                    )
+                ),
             )
             logger.info("Transforming Dataset...")
             output_data: list[
                 data_value_objects.OutputData
             ] = services_transform_commands.transform(
-                domain_transform_commands.TransformData(input_data)
+                domain_transform_commands.TransformData(cast(DataFrame, input_data))
             )
             logger.info("Saving Dataset...")
             services_load_commands.save(
                 save_data_unit_of_work, domain_load_commands.SaveData(output_data)
             )
-        except FileNotFoundError as err:
+        except FileNotFoundError:
             return Response(
                 {
                     "error": "file not found",
@@ -71,7 +69,7 @@ class DataViewSet(
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        except domain_exceptions.DataValidationException as err:
+        except domain_exceptions.DataValidationException:
             return Response(
                 {
                     "error": "invalid input data",
