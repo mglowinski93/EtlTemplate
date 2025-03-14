@@ -25,7 +25,7 @@ from .serializers import ExtractDataSerializer, OutputDataSerializer
 logger = logging.getLogger(__name__)
 
 
-class DataViewSet(
+class LoadViewSet(
     ViewSet,
 ):
     @inject.param(name="save_data_unit_of_work", cls="save_data_unit_of_work")
