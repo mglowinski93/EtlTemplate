@@ -24,9 +24,8 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from rest_framework.routers import DefaultRouter
 
-from infrastructures.apps.load.views import views
+from infrastructures.apps.load import views as load_views
 
 
 def health_check(request):
@@ -42,13 +41,6 @@ api_swagger_urlpatterns = [
     path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]
 
-router = DefaultRouter()
-router.register("etl", views.LoadViewSet, basename="")
-
-etl_urlpatterns = [
-    path("", include(router.urls)), 
-]
-
 api_urlpatterns = []
 
 
@@ -58,13 +50,10 @@ if settings.DEBUG:
             "",
             include(api_swagger_urlpatterns),
         ),
-        path(
-            "",
-            include(etl_urlpatterns),
-        ),
     ]
 urlpatterns = [
     path("admin-admin/", admin.site.urls),
     path("health-check/", health_check, name="health_check"),
     path("api/", include(api_urlpatterns)),
+    path("api/load/", include(load_views.load_urlpatterns))
 ]
