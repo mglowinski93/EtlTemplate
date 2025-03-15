@@ -1,6 +1,6 @@
 # from modules.common import ordering as ordering_dtos
 
-
+#TODO : will be done in next commits
 # def get_django_ordering(ordering: dict[str, ordering_dtos.Ordering]) -> list[str]:
 #     return [
 #         (
