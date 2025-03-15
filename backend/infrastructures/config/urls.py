@@ -26,6 +26,7 @@ from drf_spectacular.views import (
 )
 
 from infrastructures.apps.load import views as load_views
+from infrastructures.apps.extract import views as extract_views
 
 
 def health_check(request):
@@ -55,5 +56,6 @@ urlpatterns = [
     path("admin-admin/", admin.site.urls),
     path("health-check/", health_check, name="health_check"),
     path("api/", include(api_urlpatterns)),
-    path("api/load/", include(load_views.load_urlpatterns))
+    path("api/load/", include(load_views.load_urlpatterns)),
+    path("api/extract/", include(extract_views.extract_urlpatterns)),
 ]
