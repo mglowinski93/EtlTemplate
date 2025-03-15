@@ -20,7 +20,7 @@ from modules.load.services.queries import ports as query_ports
 from modules.transform.domain import commands as domain_transform_commands
 from modules.transform.services import commands as services_transform_commands
 
-from .serializers import ExtractDataSerializer, OutputDataSerializer
+from .serializers import ExtractDataSerializer, OutputDataReadSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +91,7 @@ class LoadViewSet(
         return Response(
             data={
                 "count": count,
-                "data": OutputDataSerializer(output_data, many=True).data,
+                "data": OutputDataReadSerializer(output_data, many=True).data,
             },
             status=status.HTTP_200_OK,
         )
