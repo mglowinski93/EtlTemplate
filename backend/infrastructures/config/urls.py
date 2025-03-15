@@ -43,7 +43,7 @@ api_swagger_urlpatterns = [
 ]
 
 router = DefaultRouter()
-router.register("etl", views.DataViewSet, basename="")
+router.register("etl", views.LoadViewSet, basename="")
 
 etl_urlpatterns = [
     path("", include(router.urls)),  # Include the generated URLs
