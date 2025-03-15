@@ -34,7 +34,7 @@ class LoadViewSet(
         request: Request,
         save_data_unit_of_work: units_of_work.AbstractDataUnitOfWork,
     ) -> Response:
-        logger.info("Extracting Dataset...")
+        logger.info("Extracting dataset...")
 
         serializer = ExtractDataSerializer(data=request.data)
         if not serializer.is_valid():
@@ -51,13 +51,13 @@ class LoadViewSet(
                     )
                 ),
             )
-            logger.info("Transforming Dataset...")
+            logger.info("Transforming dataset...")
             output_data: list[
                 data_value_objects.OutputData
             ] = services_transform_commands.transform(
                 domain_transform_commands.TransformData(cast(DataFrame, input_data))
             )
-            logger.info("Saving Dataset...")
+            logger.info("Saving dataset...")
             services_load_commands.save(
                 save_data_unit_of_work, domain_load_commands.SaveData(output_data)
             )
@@ -77,7 +77,7 @@ class LoadViewSet(
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
+        logger.info("Dataset extracted.")
         return Response(status=status.HTTP_200_OK)
 
     @inject.param(name="query_data_repository", cls="query_data_repository")

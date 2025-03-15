@@ -46,7 +46,7 @@ router = DefaultRouter()
 router.register("etl", views.LoadViewSet, basename="")
 
 etl_urlpatterns = [
-    path("", include(router.urls)),  # Include the generated URLs
+    path("", include(router.urls)), 
 ]
 
 api_urlpatterns = []

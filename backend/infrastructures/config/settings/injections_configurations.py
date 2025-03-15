@@ -8,10 +8,8 @@ def inject_config(binder: inject.Binder):
     binder.bind_to_constructor(
         "save_data_unit_of_work", load_unit_of_work.DjangoDataUnitOfWork
     )
-
     binder.bind_to_constructor(
         "query_data_repository", query_load_repositories.DjangoDataQueryRepository
     )
-
 
 inject.configure(inject_config, once=True)
