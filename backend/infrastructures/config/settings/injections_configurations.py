@@ -12,4 +12,5 @@ def inject_config(binder: inject.Binder):
         "query_data_repository", query_load_repositories.DjangoDataQueryRepository
     )
 
+
 inject.configure(inject_config, once=True)

@@ -1,5 +1,4 @@
 import logging
-from typing import cast
 
 import inject
 from rest_framework import status

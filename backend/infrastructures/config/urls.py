@@ -25,8 +25,8 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
-from infrastructures.apps.load import views as load_views
 from infrastructures.apps.extract import views as extract_views
+from infrastructures.apps.load import views as load_views
 
 
 def health_check(request):

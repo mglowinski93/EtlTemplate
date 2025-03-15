@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-
 PAGINATION_DEFAULT_OFFSET = 0
 PAGINATION_DEFAULT_LIMIT = 100
 

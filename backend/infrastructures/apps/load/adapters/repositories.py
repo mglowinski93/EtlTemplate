@@ -19,9 +19,10 @@ class DjangoDataDomainRepository(domain_repositories.AbstractDataDomainRepositor
         OutputData.objects.bulk_create(
             [
                 OutputData(
-                    data = {"full_name" : output_data.full_name,
-                    "age" : output_data.age,
-                    "is_satisfied" : output_data.is_satisfied
+                    data={
+                        "full_name": output_data.full_name,
+                        "age": output_data.age,
+                        "is_satisfied": output_data.is_satisfied,
                     }
                 )
                 for output_data in data

@@ -11,5 +11,5 @@ class AbstractDataQueryRepository(common_ports.AbstractDomainRepository):
         """
         :raises DataAccessException.
         """
-        
+
         pass
