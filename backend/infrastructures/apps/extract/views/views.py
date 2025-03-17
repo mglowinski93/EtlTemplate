@@ -50,12 +50,15 @@ class ExtractViewSet(
                     )
                 ),
             )
+            
             logger.info("Transforming dataset...")
             output_data: list[
                 data_value_objects.OutputData
             ] = services_transform_commands.transform(
                 domain_transform_commands.TransformData(cast(DataFrame, input_data))
             )
+            logger.info("Dataset Transformed.")
+
             logger.info("Saving dataset...")
             services_load_commands.save(
                 save_data_unit_of_work, domain_load_commands.SaveData(output_data)
@@ -76,5 +79,6 @@ class ExtractViewSet(
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        logger.info("Dataset extracted.")
+        logger.info("Dataset saved.")
+
         return Response(status=status.HTTP_200_OK)

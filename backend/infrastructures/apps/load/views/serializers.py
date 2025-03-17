@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 
 class OutputDataBaseSerializer(serializers.Serializer):
-    # TODO discuss what to put here
     pass
 
 
