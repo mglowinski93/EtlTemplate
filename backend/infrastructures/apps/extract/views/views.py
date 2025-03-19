@@ -51,6 +51,8 @@ class ExtractViewSet(
                     )
                 ),
             )
+            logger.info("Dataset extracted.")
+
             
             logger.info("Transforming dataset...")
             output_data: list[
@@ -58,7 +60,7 @@ class ExtractViewSet(
             ] = services_transform_commands.transform(
                 domain_transform_commands.TransformData(cast(DataFrame, input_data))
             )
-            logger.info("Dataset Transformed.")
+            logger.info("Dataset transformed.")
 
             logger.info("Saving dataset...")
             services_load_commands.save(

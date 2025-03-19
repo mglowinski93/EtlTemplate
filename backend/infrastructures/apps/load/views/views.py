@@ -26,10 +26,13 @@ class LoadViewSet(
         logger.info("Listing all datasets...")
         
         output_data, count = query_data_repository.list(
-            filters = query_ports.OutputDataFilters(),
             ordering = query_ports.OutputDataOrdering(),
+            filters = query_ports.OutputDataFilters(),
             pagination = pagination_dtos.Pagination(pagination_dtos.PAGINATION_DEFAULT_OFFSET, pagination_dtos.PAGINATION_DEFAULT_LIMIT)
         )
+
+        logger.info("Listed datasets.")
+
         return Response(
             data={
                 "count": count,

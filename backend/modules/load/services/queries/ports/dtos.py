@@ -1,19 +1,17 @@
 from dataclasses import dataclass
-
+from datetime import datetime
 from ..dtos import OutputData
 from .....common.ordering import Ordering
 
 
 @dataclass
 class OutputDataFilters:
-    ids: list[OutputData] | None = None
-    full_name: str | None = None
     age: int | None = None
     is_satisfied: bool | None = None
+    timestamp_from: datetime | None = None
+    timestamp_to: datetime | None = None
 
 
 @dataclass
 class OutputDataOrdering:
-    full_name: Ordering | None = None
-    age: Ordering | None = None
-    is_satisfied: Ordering | None = None
+    timestamp: datetime | None = None
