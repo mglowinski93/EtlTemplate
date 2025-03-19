@@ -1,8 +1,6 @@
-from .repositories import DjangoDataDomainRepository, DjangoDataQueryRepository
-from .units_of_work import DjangoDataUnitOfWork
+from .repositories import DjangoDataQueryRepository
+
 
 __all__ = [
-    "DjangoDataDomainRepository",
     "DjangoDataQueryRepository",
-    "DjangoDataUnitOfWork",
 ]

@@ -14,4 +14,4 @@ class OutputDataFilters:
 
 @dataclass
 class OutputDataOrdering:
-    timestamp: datetime | None = None
+    timestamp: Ordering | None = None

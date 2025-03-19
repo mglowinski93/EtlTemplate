@@ -10,6 +10,8 @@ from modules.common import pagination as pagination_dtos
 from modules.load.services.queries import ports as query_ports
 
 from .serializers import OutputDataReadSerializer
+from modules.common import ordering as common_ordering
+
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +28,7 @@ class LoadViewSet(
         logger.info("Listing all datasets...")
         
         output_data, count = query_data_repository.list(
-            ordering = query_ports.OutputDataOrdering(),
+            ordering = query_ports.OutputDataOrdering(timestamp=common_ordering.Ordering(common_ordering.OrderingOrder.ASCENDING, 0)),
             filters = query_ports.OutputDataFilters(),
             pagination = pagination_dtos.Pagination(pagination_dtos.PAGINATION_DEFAULT_OFFSET, pagination_dtos.PAGINATION_DEFAULT_LIMIT)
         )
