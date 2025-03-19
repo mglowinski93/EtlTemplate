@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
 from ...common.domain import events as common_events
-from ...data.domain import value_objects as data_value_objects
+from ...load.services import queries as load_queries
 
 
 @dataclass(frozen=True)
 class DataTransformed(common_events.DomainEvent):
-    output_data: data_value_objects.OutputData
+    output_data: load_queries.OutputData

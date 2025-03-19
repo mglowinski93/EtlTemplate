@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .....data.domain.value_objects import OutputData
+from ..dtos import OutputData
 from .....common.ordering import Ordering
 
 

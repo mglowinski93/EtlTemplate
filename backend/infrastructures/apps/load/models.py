@@ -1,5 +1,6 @@
 from django.db import models
+from ..common import models as common_models
 
 
-class Data(models.Model):
+class Data(models.Model, common_models.AutomaticallyTimestampedModel):
     data = models.JSONField()

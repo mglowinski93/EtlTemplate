@@ -1,6 +1,6 @@
 import pytest
 
-from modules.data.domain import value_objects as data_value_objects
+from modules.load.services import queries as load_queries
 from modules.load.domain import commands as domain_commands
 from modules.load.services import commands as service_commands
 
@@ -12,13 +12,13 @@ def test_data_saved_successfully(test_data_unit_of_work, test_data_repository):
     # Given
     output_dataset_rows = 3
     output_data = [
-        data_value_objects.OutputData(
+        load_queries.OutputData(
             full_name="Jessica Barnes", age=58, is_satisfied=False
         ),
-        data_value_objects.OutputData(
+        load_queries.OutputData(
             full_name="Jennifer Ferguson", age=62, is_satisfied=False
         ),
-        data_value_objects.OutputData(
+        load_queries.OutputData(
             full_name="Shannon Gonzales", age=36, is_satisfied=True
         ),
     ]
