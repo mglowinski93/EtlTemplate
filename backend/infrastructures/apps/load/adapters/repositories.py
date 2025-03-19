@@ -1,6 +1,7 @@
 import logging
 
 from modules.data.domain import value_objects as data_value_objects
+from modules.load.services import queries as load_queries
 from modules.load.domain.ports import repositories as domain_repositories
 from modules.load.services.queries import ports as query_ports
 from modules.common import pagination as pagination_dtos
@@ -8,7 +9,7 @@ from modules.common import ordering as ordering_dtos
 
 from ...common import ordering as common_ordering
 
-from ..models import OutputData
+from ..models import Data
 from .mappers import map_outputdata_model_to_output_dto
 
 from typing import Any
@@ -22,10 +23,10 @@ class DjangoDataDomainRepository(domain_repositories.AbstractDataDomainRepositor
     See description of parent class to get more details.
     """
 
-    def create(self, data: list[data_value_objects.OutputData]) -> None:
-        OutputData.objects.bulk_create(
+    def create(self, data: list[load_queries.OutputData]) -> None:
+        Data.objects.bulk_create(
             [
-                OutputData(
+                Data(
                     data={
                         "full_name": output_data.full_name,
                         "age": output_data.age,
@@ -46,8 +47,8 @@ class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
         filters: query_ports.OutputDataFilters,
         ordering: query_ports.OutputDataOrdering,
         pagination: pagination_dtos.Pagination,
-        ) -> tuple[list[data_value_objects.OutputData], int]:
-        query = OutputData.objects.filter(
+        ) -> tuple[list[load_queries.OutputData], int]:
+        query = Data.objects.filter(
             **_get_django_output_data_filters(filters)
         ).order_by(*_get_django_output_data_ordering(ordering))
 

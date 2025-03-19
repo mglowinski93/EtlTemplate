@@ -1,5 +1,5 @@
 from django.db import models
 
 
-class OutputData(models.Model):
+class Data(models.Model):
     data = models.JSONField()

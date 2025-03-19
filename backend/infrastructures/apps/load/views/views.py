@@ -24,11 +24,11 @@ class LoadViewSet(
         query_data_repository: query_ports.AbstractDataQueryRepository,
     ):
         logger.info("Listing all datasets...")
-        #TODO: fix load view set by defining filter, pagination and ordering and add them here
+        
         output_data, count = query_data_repository.list(
             filters = query_ports.OutputDataFilters(),
-        ordering = query_ports.OutputDataOrdering(),
-        pagination = pagination_dtos.Pagination(pagination_dtos.PAGINATION_DEFAULT_OFFSET, pagination_dtos.PAGINATION_DEFAULT_LIMIT)
+            ordering = query_ports.OutputDataOrdering(),
+            pagination = pagination_dtos.Pagination(pagination_dtos.PAGINATION_DEFAULT_OFFSET, pagination_dtos.PAGINATION_DEFAULT_LIMIT)
         )
         return Response(
             data={

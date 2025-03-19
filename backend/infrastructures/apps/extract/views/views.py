@@ -11,6 +11,7 @@ from rest_framework.viewsets import ViewSet
 
 from modules.common.domain import exceptions as domain_exceptions
 from modules.data.domain import value_objects as data_value_objects
+from modules.load.services import queries as load_queries
 from modules.extract.domain import commands as domain_extract_commands
 from modules.extract.services import commands as service_extract_commands
 from modules.load.domain import commands as domain_load_commands
@@ -53,7 +54,7 @@ class ExtractViewSet(
             
             logger.info("Transforming dataset...")
             output_data: list[
-                data_value_objects.OutputData
+                load_queries.OutputData
             ] = services_transform_commands.transform(
                 domain_transform_commands.TransformData(cast(DataFrame, input_data))
             )

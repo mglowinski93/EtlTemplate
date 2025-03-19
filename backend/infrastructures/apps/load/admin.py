@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.db import models
 
-from .models import OutputData
+from .models import Data
 
 
-@admin.register(OutputData)
+@admin.register(Data)
 class OutputDataAdmin(admin.ModelAdmin):
     data = models.JSONField()
     
