@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from datetime import datetime
-from ..dtos import OutputData
 from .....common.ordering import Ordering
 
 
