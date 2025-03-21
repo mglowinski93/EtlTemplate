@@ -1,7 +1,6 @@
-import time
-
 from django.db import models
 from django.utils import timezone
+
 
 class AutomaticallyTimestampedModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

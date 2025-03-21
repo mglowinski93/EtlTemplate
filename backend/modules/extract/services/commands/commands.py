@@ -4,6 +4,7 @@ from typing import cast
 import pandas as pd
 import pandera as pa
 
+from ....common import const as common_consts
 from ....common.domain.exceptions import DataValidationException
 from ....data.domain import value_objects as data_value_objects
 from ...domain import commands as domain_commands
@@ -16,7 +17,9 @@ def extract(command: domain_commands.ExtractData) -> pd.DataFrame:
     logger.info(f"Started data extraction from {str(command.file_path.name)}.")
     if not command.file_path.exists():
         raise FileNotFoundError(
-            f"Input file {str(command.file_path.name)} doesn't exist."
+            {
+                common_consts.ERROR_DETAIL_KEY: f"Input file {str(command.file_path.name)} doesn't exist."
+            }
         )
 
     read_strategy: AbstractExtraction = choose_strategy(command.file_path.suffix)()
@@ -25,9 +28,10 @@ def extract(command: domain_commands.ExtractData) -> pd.DataFrame:
     try:
         validated_data = cast(pd.DataFrame, data_value_objects.InputData.validate(df))
     except pa.errors.SchemaError:
-        logger.info(f"Invalid input data in file {str(command.file_path.name)}.")
         raise DataValidationException(
-            f"Invalid input data in file {str(command.file_path.name)}."
+            {
+                common_consts.ERROR_DETAIL_KEY: f"Invalid input data in file {str(command.file_path.name)}."
+            }
         )
 
     logger.info(f"Successfully extracted dataset from {str(command.file_path.name)}.")

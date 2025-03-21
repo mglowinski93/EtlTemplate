@@ -1,6 +1,6 @@
-from modules.load.services import queries as load_queries
 from modules.load.domain.ports import repositories as domain_repositories
 from modules.load.domain.ports import units_of_work as domain_uow
+from modules.load.services import queries as load_queries
 
 
 class TestSaveDataUnitOfWork(domain_uow.AbstractDataUnitOfWork):

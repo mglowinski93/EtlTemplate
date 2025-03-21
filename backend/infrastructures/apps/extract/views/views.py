@@ -3,24 +3,26 @@ from pathlib import Path
 from typing import cast
 
 import inject
+from django.core.files.storage import FileSystemStorage
 from pandera.typing.pandas import DataFrame
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
+from modules.common import const as common_consts
 from modules.common.domain import exceptions as domain_exceptions
 from modules.data.domain import value_objects as data_value_objects
-from modules.load.services import queries as load_queries
 from modules.extract.domain import commands as domain_extract_commands
 from modules.extract.services import commands as service_extract_commands
 from modules.load.domain import commands as domain_load_commands
 from modules.load.domain.ports import units_of_work
 from modules.load.services import commands as services_load_commands
+from modules.load.services import queries as load_queries
 from modules.transform.domain import commands as domain_transform_commands
 from modules.transform.services import commands as services_transform_commands
 
-from .serializers import ExtractDataSerializer
+from ....config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -28,32 +30,33 @@ logger = logging.getLogger(__name__)
 class ExtractViewSet(
     ViewSet,
 ):
-    @inject.param(name="save_data_unit_of_work", cls="save_data_unit_of_work")
+    @inject.param(name="data_unit_of_work", cls="data_unit_of_work")
     def create(
         self,
         request: Request,
-        save_data_unit_of_work: units_of_work.AbstractDataUnitOfWork,
+        data_unit_of_work: units_of_work.AbstractDataUnitOfWork,
     ) -> Response:
-        logger.info("Extracting dataset...")
-
-        serializer = ExtractDataSerializer(data=request.data)
-        if not serializer.is_valid():
+        if "file" not in request.FILES:
             return Response(
-                data=serializer.errors,
+                str({common_consts.ERROR_DETAIL_KEY: "File not attached."}),
                 status=status.HTTP_422_UNPROCESSABLE_ENTITY,
             )
         try:
+            logger.info("Extracting dataset...")
+            uploaded_file = request.FILES["file"]
+            fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+            file_name = fs.save(uploaded_file.name, uploaded_file)
+            file_path = fs.path(file_name)
+            
+            #TODO add a comment if DataFrame from pandera.typing doesn't work and we have to leave cast here
             input_data: data_value_objects.InputData = cast(
                 data_value_objects.InputData,
                 service_extract_commands.extract(
-                    domain_extract_commands.ExtractData(
-                        Path(serializer.validated_data["file_path"])
-                    )
+                    domain_extract_commands.ExtractData(Path(file_path))
                 ),
             )
             logger.info("Dataset extracted.")
 
-            
             logger.info("Transforming dataset...")
             output_data: list[
                 load_queries.OutputData
@@ -64,22 +67,24 @@ class ExtractViewSet(
 
             logger.info("Saving dataset...")
             services_load_commands.save(
-                save_data_unit_of_work, domain_load_commands.SaveData(output_data)
+                data_unit_of_work, domain_load_commands.SaveData(output_data)
             )
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+            logger.info("File not found.")
             return Response(
-                {
-                    "error": "file not found",
-                    "file_path": serializer.validated_data["file_path"],
-                },
+                str(e.args[0]),
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        except domain_exceptions.DataValidationException:
+        except domain_exceptions.FileDataFormatNotSupportedException as e:
+            logger.info("Wrong file format.")
             return Response(
-                {
-                    "error": "invalid input data",
-                    "file_path": serializer.validated_data["file_path"],
-                },
+                str(e.args[0]),
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except domain_exceptions.DataValidationException as e:
+            logger.info("Invalid data format.")
+            return Response(
+                str(e.args[0]),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         logger.info("Dataset saved.")

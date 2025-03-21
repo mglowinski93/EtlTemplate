@@ -146,3 +146,6 @@ SPECTACULAR_SETTINGS = {
         "rest_framework.permissions.AllowAny"
     ],  # Disable authentication for swagger.
 }
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = MEDIA_URL

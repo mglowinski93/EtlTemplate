@@ -1,8 +1,8 @@
 import pytest
 
-from modules.load.services import queries as load_queries
 from modules.load.domain import commands as domain_commands
 from modules.load.services import commands as service_commands
+from modules.load.services import queries as load_queries
 
 from ..common.annotations import YieldFixture
 from . import fakers
@@ -12,9 +12,7 @@ def test_data_saved_successfully(test_data_unit_of_work, test_data_repository):
     # Given
     output_dataset_rows = 3
     output_data = [
-        load_queries.OutputData(
-            full_name="Jessica Barnes", age=58, is_satisfied=False
-        ),
+        load_queries.OutputData(full_name="Jessica Barnes", age=58, is_satisfied=False),
         load_queries.OutputData(
             full_name="Jennifer Ferguson", age=62, is_satisfied=False
         ),
