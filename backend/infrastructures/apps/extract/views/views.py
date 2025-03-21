@@ -59,7 +59,7 @@ class ExtractViewSet(
             output_data: list[
                 load_queries.OutputData
             ] = services_transform_commands.transform(
-                domain_transform_commands.TransformData(cast(DataFrame, input_data))
+                domain_transform_commands.TransformData(input_data)
             )
             logger.info("Dataset transformed.")
 
