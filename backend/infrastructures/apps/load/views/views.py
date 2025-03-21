@@ -1,6 +1,7 @@
 import logging
 
 import inject
+from drf_spectacular import utils as swagger_utils
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -18,6 +19,42 @@ logger = logging.getLogger(__name__)
 class LoadViewSet(
     ViewSet,
 ):
+    @swagger_utils.extend_schema(
+        responses={
+            status.HTTP_200_OK: swagger_utils.OpenApiResponse(
+                description="Issue occurred while processing dataset.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "count": {
+                            "type": "integer",
+                            "example": 10,
+                        },
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "type":"object",
+                                "properties": {
+                                    "full_name": {
+                                        "type": "string",
+                                        "example": "John Snow"
+                                    },
+                                    "age": {
+                                        "type": "integer",
+                                        "example": 20
+                                    },
+                                    "is_satisfied": {
+                                        "type": "boolean",
+                                        "example": True
+                                    }
+                                }
+                            }
+                        }
+                    },
+                },
+            ),
+        },
+    )
     @inject.param(name="query_data_repository", cls="query_data_repository")
     def list(
         self,

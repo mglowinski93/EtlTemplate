@@ -1,10 +1,9 @@
 import logging
 from pathlib import Path
-from typing import cast
 
 import inject
+from drf_spectacular import utils as swagger_utils
 from django.core.files.storage import FileSystemStorage
-from pandera.typing.pandas import DataFrame
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -30,6 +29,26 @@ logger = logging.getLogger(__name__)
 class ExtractViewSet(
     ViewSet,
 ):
+    
+    @swagger_utils.extend_schema(
+        responses={
+            status.HTTP_201_CREATED: swagger_utils.OpenApiResponse(
+                description="Transformed and saved data successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: swagger_utils.OpenApiResponse(
+                description="Issue occurred while processing dataset.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        common_consts.ERROR_DETAIL_KEY: {
+                            "type": "string",
+                            "example": "",
+                        }
+                    },
+                },
+            ),
+        },
+    )
     @inject.param(name="data_unit_of_work", cls="data_unit_of_work")
     def create(
         self,
@@ -55,7 +74,6 @@ class ExtractViewSet(
             logger.info("Dataset extracted.")
 
             logger.info("Transforming dataset...")
-             #TODO experiment here with cast
             output_data: list[
                 load_queries.OutputData
             ] = services_transform_commands.transform(
@@ -68,23 +86,23 @@ class ExtractViewSet(
                 data_unit_of_work, domain_load_commands.SaveData(output_data)
             )
         except FileNotFoundError as e:
-            logger.info("File not found.")
+            logger.info(e.args[0])
             return Response(
-                str(e.args[0]),
+                str({common_consts.ERROR_DETAIL_KEY: "File not found."}),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except domain_exceptions.FileDataFormatNotSupportedException as e:
-            logger.info("Wrong file format.")
+            logger.info(str(e.args[0]))
             return Response(
-                str(e.args[0]),
+                str({common_consts.ERROR_DETAIL_KEY: "Unsupported file extension."}),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except domain_exceptions.DataValidationException as e:
-            logger.info("Invalid data format.")
+            logger.info(str(e.args[0]))
             return Response(
-                str(e.args[0]),
+                str({common_consts.ERROR_DETAIL_KEY: "Invalid data format."}),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         logger.info("Dataset saved.")
 
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_201_CREATED)
