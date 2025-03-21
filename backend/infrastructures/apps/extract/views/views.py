@@ -48,16 +48,14 @@ class ExtractViewSet(
             file_name = fs.save(uploaded_file.name, uploaded_file)
             file_path = fs.path(file_name)
             
-            #TODO add a comment if DataFrame from pandera.typing doesn't work and we have to leave cast here
-            input_data: data_value_objects.InputData = cast(
-                data_value_objects.InputData,
-                service_extract_commands.extract(
+            input_data: data_value_objects.InputData = service_extract_commands.extract(
                     domain_extract_commands.ExtractData(Path(file_path))
-                ),
-            )
+                )
+            
             logger.info("Dataset extracted.")
 
             logger.info("Transforming dataset...")
+             #TODO experiment here with cast
             output_data: list[
                 load_queries.OutputData
             ] = services_transform_commands.transform(
