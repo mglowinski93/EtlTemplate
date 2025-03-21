@@ -1,14 +1,17 @@
 from django.contrib import admin
-from django.db import models
 
 from .models import Data
 
 
 @admin.register(Data)
 class OutputDataAdmin(admin.ModelAdmin):
-    data = models.JSONField()
+    list_display = ("full_name", "age", "is_satisfied")
 
-    list_display = ("id", "data")
-    search_fields = ("id", "data")
-    ordering = ("id", "data")
-    readonly_fields = ("id",)
+    def full_name(self, data: Data):
+        return data.data["full_name"]
+    
+    def is_satisfied(self, data: Data):
+        return data.data["is_satisfied"] 
+
+    def age(self, data: Data):
+        return data.data["age"]
