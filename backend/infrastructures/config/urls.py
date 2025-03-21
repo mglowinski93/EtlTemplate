@@ -42,7 +42,10 @@ api_swagger_urlpatterns = [
     path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]
 
-api_urlpatterns = []
+api_urlpatterns = [
+    path("load/", include(load_views.load_urlpatterns)),
+    path("extract/", include(extract_views.extract_urlpatterns)),
+]
 
 
 if settings.DEBUG:
@@ -56,6 +59,4 @@ urlpatterns = [
     path("admin-admin/", admin.site.urls),
     path("health-check/", health_check, name="health_check"),
     path("api/", include(api_urlpatterns)),
-    path("api/load/", include(load_views.load_urlpatterns)),
-    path("api/extract/", include(extract_views.extract_urlpatterns)),
 ]
