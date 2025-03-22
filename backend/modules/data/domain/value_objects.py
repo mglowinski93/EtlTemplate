@@ -1,5 +1,4 @@
 import pandera as pa
-from pandera.typing import DataFrame 
 
 
 class InputData(pa.DataFrameModel):

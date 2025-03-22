@@ -1,9 +1,8 @@
+import io
 import logging
-from pathlib import Path
 
 import inject
 from drf_spectacular import utils as swagger_utils
-from django.core.files.storage import FileSystemStorage
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -15,13 +14,11 @@ from modules.data.domain import value_objects as data_value_objects
 from modules.extract.domain import commands as domain_extract_commands
 from modules.extract.services import commands as service_extract_commands
 from modules.load.domain import commands as domain_load_commands
-from modules.load.domain.ports import units_of_work
+from modules.load.domain.ports import repositories, units_of_work
 from modules.load.services import commands as services_load_commands
 from modules.load.services import queries as load_queries
 from modules.transform.domain import commands as domain_transform_commands
 from modules.transform.services import commands as services_transform_commands
-
-from ....config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -50,10 +47,12 @@ class ExtractViewSet(
         },
     )
     @inject.param(name="data_unit_of_work", cls="data_unit_of_work")
+    @inject.param(name="save_file_repository", cls="save_file_repository")
     def create(
         self,
         request: Request,
         data_unit_of_work: units_of_work.AbstractDataUnitOfWork,
+        save_file_repository: repositories.AbstractFileSaveRepository
     ) -> Response:
         if "file" not in request.FILES:
             return Response(
@@ -62,15 +61,11 @@ class ExtractViewSet(
             )
         try:
             logger.info("Extracting dataset...")
-            uploaded_file = request.FILES["file"]
-            fs = FileSystemStorage(location=settings.MEDIA_ROOT)
-            file_name = fs.save(uploaded_file.name, uploaded_file)
-            file_path = fs.path(file_name)
-            
             input_data: data_value_objects.InputData = service_extract_commands.extract(
-                    domain_extract_commands.ExtractData(Path(file_path))
+                    domain_extract_commands.ExtractData(
+                        save_file_repository.save(io.BytesIO(request.FILES["file"].read()), request.FILES["file"].name)
+                    )
                 )
-            
             logger.info("Dataset extracted.")
 
             logger.info("Transforming dataset...")

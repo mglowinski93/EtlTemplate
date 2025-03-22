@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 
-from pandera.typing.pandas import DataFrame
-
 from ...common.domain import commands as common_commands
 from ...data.domain import value_objects as data_value_objects
 
