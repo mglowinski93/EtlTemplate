@@ -13,8 +13,9 @@ from modules.common.domain import exceptions as domain_exceptions
 from modules.data.domain import value_objects as data_value_objects
 from modules.extract.domain import commands as domain_extract_commands
 from modules.extract.services import commands as service_extract_commands
+from modules.extract.domain.ports import units_of_work as extract_units_of_work
 from modules.load.domain import commands as domain_load_commands
-from modules.load.domain.ports import repositories, units_of_work
+from modules.load.domain.ports import units_of_work as load_units_of_work
 from modules.load.services import commands as services_load_commands
 from modules.load.services import queries as load_queries
 from modules.transform.domain import commands as domain_transform_commands
@@ -47,12 +48,12 @@ class ExtractViewSet(
         },
     )
     @inject.param(name="data_unit_of_work", cls="data_unit_of_work")
-    @inject.param(name="save_file_repository", cls="save_file_repository")
+    @inject.param(name="file_unit_of_work", cls="file_unit_of_work")
     def create(
         self,
         request: Request,
-        data_unit_of_work: units_of_work.AbstractDataUnitOfWork,
-        save_file_repository: repositories.AbstractFileSaveRepository
+        data_unit_of_work: load_units_of_work.AbstractDataUnitOfWork,
+        file_unit_of_work: extract_units_of_work.AbstractFileUnitOfWork
     ) -> Response:
         if "file" not in request.FILES:
             return Response(
@@ -63,7 +64,7 @@ class ExtractViewSet(
             logger.info("Extracting dataset...")
             input_data: data_value_objects.InputData = service_extract_commands.extract(
                     domain_extract_commands.ExtractData(
-                        save_file_repository.save(io.BytesIO(request.FILES["file"].read()), request.FILES["file"].name)
+                        file_unit_of_work.file.save(io.BytesIO(request.FILES["file"].read()), request.FILES["file"].name)
                     )
                 )
             logger.info("Dataset extracted.")

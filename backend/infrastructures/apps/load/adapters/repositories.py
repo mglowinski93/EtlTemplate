@@ -1,10 +1,5 @@
-import io
 import logging
-from pathlib import Path
 from typing import Any
-
-from django.core.files.base import ContentFile
-from django.core.files.storage import FileSystemStorage
 
 from modules.common import ordering as ordering_dtos
 from modules.common import pagination as pagination_dtos
@@ -12,23 +7,12 @@ from modules.load.domain.ports import repositories as domain_repositories
 from modules.load.services import queries as load_queries
 from modules.load.services.queries import ports as query_ports
 
-from ....config import settings
 from ...common import ordering as common_ordering
 from ..models import Data
 from .mappers import map_data_model_to_output_data_dto
 
 logger = logging.getLogger(__name__)
 
-
-class DjangoFileSaveRepository(domain_repositories.AbstractFileSaveRepository):
-    """
-    See description of parent class to get more details.
-    """
-
-    def save(self, byte_stream: io.BytesIO, file_name: str) -> Path:
-        file_system_storage = FileSystemStorage(location=settings.MEDIA_ROOT)
-        saved_file_name = file_system_storage.save(file_name, ContentFile(byte_stream.getvalue()))
-        return Path(settings.MEDIA_ROOT) / Path(saved_file_name)
     
 class DjangoDataDomainRepository(domain_repositories.AbstractDataDomainRepository):
     """
