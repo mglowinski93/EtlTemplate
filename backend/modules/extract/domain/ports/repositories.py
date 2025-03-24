@@ -9,6 +9,6 @@ class AbstractFileDomainRepository(common_ports.AbstractDomainRepository):
     def save(self, file_bytes: bytes, file_name: str) -> Path:
         """
         :param: File as bytes.
-        :raises Path where file is saved.
+        :raises FileSaveException.
         """
         pass
