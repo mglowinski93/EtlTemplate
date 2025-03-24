@@ -12,3 +12,6 @@ class DataCreationException(Exception):
 
 class DataAccessException(Exception):
     pass
+
+class FileSaveException(Exception):
+    pass

@@ -99,6 +99,11 @@ class ExtractViewSet(
                 str({common_consts.ERROR_DETAIL_KEY: "Invalid data format."}),
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        logger.info("Dataset saved.")
-
+        except domain_exceptions.FileSaveException as e:
+            logger.info(str(e.args[0]))
+            return Response(
+                str({common_consts.ERROR_DETAIL_KEY: "File cannot be saved."}),
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
         return Response(status=status.HTTP_201_CREATED)
