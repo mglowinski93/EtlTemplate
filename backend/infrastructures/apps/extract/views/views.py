@@ -64,7 +64,7 @@ class ExtractViewSet(
             logger.info("Extracting dataset...")
             input_data: data_value_objects.InputData = service_extract_commands.extract(
                     domain_extract_commands.ExtractData(
-                        file_unit_of_work.file.save(io.BytesIO(request.FILES["file"].read()), request.FILES["file"].name)
+                        file_unit_of_work.file.save(bytes(request.FILES["file"].read()), request.FILES["file"].name)
                     )
                 )
             logger.info("Dataset extracted.")

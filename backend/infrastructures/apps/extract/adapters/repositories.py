@@ -12,7 +12,7 @@ class DjangoFileDomainRepository(domain_repositories.AbstractFileDomainRepositor
     See description of parent class to get more details.
     """
 
-    def save(self, byte_stream: io.BytesIO, file_name: str) -> Path:
+    def save(self, file_bytes: bytes, file_name: str) -> Path:
         file_system_storage = FileSystemStorage(location=settings.MEDIA_ROOT)
-        saved_file_name = file_system_storage.save(file_name, ContentFile(byte_stream.getvalue()))
+        saved_file_name = file_system_storage.save(file_name, ContentFile(file_bytes))
         return Path(settings.MEDIA_ROOT) / Path(saved_file_name)
