@@ -1,11 +1,12 @@
-import io
 from pathlib import Path
 
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
 
 from modules.extract.domain.ports import repositories as domain_repositories
+
 from ....config import settings
+
 
 class DjangoFileDomainRepository(domain_repositories.AbstractFileDomainRepository):
     """

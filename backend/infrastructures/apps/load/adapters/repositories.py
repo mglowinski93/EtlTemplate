@@ -13,7 +13,7 @@ from .mappers import map_data_model_to_output_data_dto
 
 logger = logging.getLogger(__name__)
 
-    
+
 class DjangoDataDomainRepository(domain_repositories.AbstractDataDomainRepository):
     """
     See description of parent class to get more details.
@@ -32,6 +32,7 @@ class DjangoDataDomainRepository(domain_repositories.AbstractDataDomainRepositor
                 for output_data in data
             ]
         )
+
 
 class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
     """

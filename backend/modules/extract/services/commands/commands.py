@@ -26,7 +26,9 @@ def extract(command: domain_commands.ExtractData) -> data_value_objects.InputDat
     df: pd.DataFrame = read_strategy.read(command.file_path)
 
     try:
-        validated_data = cast(data_value_objects.InputData, data_value_objects.InputData.validate(df))
+        validated_data = cast(
+            data_value_objects.InputData, data_value_objects.InputData.validate(df)
+        )
     except pa.errors.SchemaError:
         raise DataValidationException(
             {

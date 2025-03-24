@@ -1,4 +1,3 @@
-import io
 import logging
 
 import inject
@@ -12,8 +11,8 @@ from modules.common import const as common_consts
 from modules.common.domain import exceptions as domain_exceptions
 from modules.data.domain import value_objects as data_value_objects
 from modules.extract.domain import commands as domain_extract_commands
-from modules.extract.services import commands as service_extract_commands
 from modules.extract.domain.ports import units_of_work as extract_units_of_work
+from modules.extract.services import commands as service_extract_commands
 from modules.load.domain import commands as domain_load_commands
 from modules.load.domain.ports import units_of_work as load_units_of_work
 from modules.load.services import commands as services_load_commands
@@ -27,7 +26,6 @@ logger = logging.getLogger(__name__)
 class ExtractViewSet(
     ViewSet,
 ):
-    
     @swagger_utils.extend_schema(
         responses={
             status.HTTP_201_CREATED: swagger_utils.OpenApiResponse(
@@ -53,7 +51,7 @@ class ExtractViewSet(
         self,
         request: Request,
         data_unit_of_work: load_units_of_work.AbstractDataUnitOfWork,
-        file_unit_of_work: extract_units_of_work.AbstractFileUnitOfWork
+        file_unit_of_work: extract_units_of_work.AbstractFileUnitOfWork,
     ) -> Response:
         if "file" not in request.FILES:
             return Response(
@@ -63,10 +61,12 @@ class ExtractViewSet(
         try:
             logger.info("Extracting dataset...")
             input_data: data_value_objects.InputData = service_extract_commands.extract(
-                    domain_extract_commands.ExtractData(
-                        file_unit_of_work.file.save(bytes(request.FILES["file"].read()), request.FILES["file"].name)
+                domain_extract_commands.ExtractData(
+                    file_unit_of_work.file.save(
+                        bytes(request.FILES["file"].read()), request.FILES["file"].name
                     )
                 )
+            )
             logger.info("Dataset extracted.")
 
             logger.info("Transforming dataset...")

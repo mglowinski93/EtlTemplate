@@ -1,4 +1,3 @@
-import io
 from abc import abstractmethod
 from pathlib import Path
 

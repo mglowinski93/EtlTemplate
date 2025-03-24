@@ -33,23 +33,20 @@ class LoadViewSet(
                         "data": {
                             "type": "array",
                             "items": {
-                                "type":"object",
+                                "type": "object",
                                 "properties": {
                                     "full_name": {
                                         "type": "string",
-                                        "example": "John Snow"
+                                        "example": "John Snow",
                                     },
-                                    "age": {
-                                        "type": "integer",
-                                        "example": 20
-                                    },
+                                    "age": {"type": "integer", "example": 20},
                                     "is_satisfied": {
                                         "type": "boolean",
-                                        "example": True
-                                    }
-                                }
-                            }
-                        }
+                                        "example": True,
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
             ),

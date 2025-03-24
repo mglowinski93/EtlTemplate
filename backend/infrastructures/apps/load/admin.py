@@ -9,9 +9,9 @@ class OutputDataAdmin(admin.ModelAdmin):
 
     def full_name(self, data: Data):
         return data.data["full_name"]
-    
+
     def is_satisfied(self, data: Data):
-        return data.data["is_satisfied"] 
+        return data.data["is_satisfied"]
 
     def age(self, data: Data):
         return data.data["age"]
