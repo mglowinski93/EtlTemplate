@@ -26,10 +26,10 @@ def extract(command: domain_commands.ExtractData) -> data_value_objects.InputDat
         validated_data = cast(
             data_value_objects.InputData, data_value_objects.InputData.validate(df)
         )
-    except pa.errors.SchemaError:
+    except pa.errors.SchemaError as err:
         raise domain_exceptions.DataValidationError(
             message="Invalid input data in file %s", file_name=command.file_path.name
-        )
+        ) from err
 
     logger.info(f"Successfully extracted dataset from {command.file_path.name}.")
 
