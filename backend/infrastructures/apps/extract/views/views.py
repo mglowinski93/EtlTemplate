@@ -68,19 +68,6 @@ class ExtractViewSet(
                 )
             )
             logger.info("Dataset extracted.")
-
-            logger.info("Transforming dataset...")
-            output_data: list[
-                load_queries.OutputData
-            ] = services_transform_commands.transform(
-                domain_transform_commands.TransformData(input_data)
-            )
-            logger.info("Dataset transformed.")
-
-            logger.info("Saving dataset...")
-            services_load_commands.save(
-                data_unit_of_work, domain_load_commands.SaveData(output_data)
-            )
         except domain_exceptions.FileNotFoundError as err:
             logger.error("File to extract data from not found. File name: %s", err.file_name)
             return Response(
@@ -99,5 +86,18 @@ class ExtractViewSet(
                 {common_consts.ERROR_DETAIL_KEY: "Invalid data format."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        
+        logger.info("Transforming dataset...")
+        output_data: list[
+            load_queries.OutputData
+        ] = services_transform_commands.transform(
+             domain_transform_commands.TransformData(input_data)
+        )
+        logger.info("Dataset transformed.")
+
+        logger.info("Saving dataset...")
+        services_load_commands.save(
+            data_unit_of_work, domain_load_commands.SaveData(output_data)
+        )        
 
         return Response(status=status.HTTP_201_CREATED)
