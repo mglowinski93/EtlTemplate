@@ -2,7 +2,7 @@ import logging
 
 import inject
 from drf_spectacular import utils as swagger_utils
-from rest_framework import exceptions, status
+from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -55,7 +55,7 @@ class ExtractViewSet(
     ) -> Response:
         if "file" not in request.FILES:
             return Response(
-                str({common_consts.ERROR_DETAIL_KEY: "File not attached."}),
+                {common_consts.ERROR_DETAIL_KEY: "File not attached."},
                 status=status.HTTP_422_UNPROCESSABLE_ENTITY,
             )
         try:
@@ -82,7 +82,9 @@ class ExtractViewSet(
                 data_unit_of_work, domain_load_commands.SaveData(output_data)
             )
         except domain_exceptions.FileNotFoundError as err:
-            logger.error("File to extract data from not found. File name: %s", err.file_name)
+            logger.error(
+                "File to extract data from not found. File name: %s", err.file_name
+            )
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "File not found."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -94,10 +96,10 @@ class ExtractViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except domain_exceptions.DataValidationError as err:
-            logger.info(str(err.args[0]))
+            logger.error("Invalid input data in file %s", err.file_name)
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "Invalid data format."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        
+
         return Response(status=status.HTTP_201_CREATED)

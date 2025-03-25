@@ -3,7 +3,6 @@ from pathlib import Path
 
 import pandas as pd
 
-from ....common import const as common_consts
 from ....common.domain.exceptions import FileExtensionNotSupportedError
 
 
