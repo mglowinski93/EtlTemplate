@@ -82,9 +82,7 @@ class ExtractViewSet(
                 data_unit_of_work, domain_load_commands.SaveData(output_data)
             )
         except domain_exceptions.FileNotFoundError as err:
-            logger.error(
-                "File to extract data from not found. File name: %s", err.file_name
-            )
+            logger.error("File to extract data from not found. File name: %s", err.file_name)
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "File not found."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
