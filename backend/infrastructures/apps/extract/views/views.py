@@ -88,7 +88,7 @@ class ExtractViewSet(
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         except domain_exceptions.FileExtensionNotSupportedError as err:
-            logger.error("Data format '%s' is not supported.", err.file_extension)
+            logger.error("Can not extract data from file %s, due to not supported extension", err.file_extension)
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "Unsupported file extension."},
                 status=status.HTTP_400_BAD_REQUEST,
