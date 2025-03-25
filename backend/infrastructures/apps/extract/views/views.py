@@ -2,7 +2,7 @@ import logging
 
 import inject
 from drf_spectacular import utils as swagger_utils
-from rest_framework import status
+from rest_framework import exceptions, status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -81,28 +81,22 @@ class ExtractViewSet(
             services_load_commands.save(
                 data_unit_of_work, domain_load_commands.SaveData(output_data)
             )
-        except FileNotFoundError as e:
-            logger.info(e.args[0])
+        except domain_exceptions.FileNotFoundError as err:
+            logger.error("File to extract data from not found. File name: %s", err.file_name)
             return Response(
-                str({common_consts.ERROR_DETAIL_KEY: "File not found."}),
+                {common_consts.ERROR_DETAIL_KEY: "File not found."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+        except domain_exceptions.FileExtensionNotSupportedError as err:
+            logger.error("Data format '%s' is not supported.", err.file_extension)
+            return Response(
+                {common_consts.ERROR_DETAIL_KEY: "Unsupported file extension."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        except domain_exceptions.FileDataFormatNotSupportedException as e:
-            logger.info(str(e.args[0]))
+        except domain_exceptions.DataValidationError as err:
+            logger.info(str(err.args[0]))
             return Response(
-                str({common_consts.ERROR_DETAIL_KEY: "Unsupported file extension."}),
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except domain_exceptions.DataValidationException as e:
-            logger.info(str(e.args[0]))
-            return Response(
-                str({common_consts.ERROR_DETAIL_KEY: "Invalid data format."}),
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except domain_exceptions.FileSaveException as e:
-            logger.info(str(e.args[0]))
-            return Response(
-                str({common_consts.ERROR_DETAIL_KEY: "File cannot be saved."}),
+                {common_consts.ERROR_DETAIL_KEY: "Invalid data format."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         

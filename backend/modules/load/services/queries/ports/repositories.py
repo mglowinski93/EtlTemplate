@@ -15,6 +15,6 @@ class AbstractDataQueryRepository(common_ports.AbstractDomainRepository):
         pagination: pagination_dtos.Pagination,
     ) -> tuple[list[OutputData], int]:
         """
-        :raises DataAccessException.
+        :raises DataAccessError.
         """
         pass

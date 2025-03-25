@@ -1,17 +1,29 @@
-class DataValidationException(Exception):
+class DataValidationError(Exception):
+    def __init__(self, file_name: str):
+        super().__init__()
+        self.file_name = file_name
+
+
+class FileExtensionNotSupportedError(Exception):
+    def __init__(self, file_extension: str):
+        super().__init__()
+        self.file_extension = file_extension
+
+
+class DataCreationError(Exception):
     pass
 
 
-class FileDataFormatNotSupportedException(Exception):
+class DataAccessError(Exception):
     pass
 
 
-class DataCreationException(Exception):
-    pass
+class FileSaveError(Exception):
+    def __init__(self, file_name: str):
+        super().__init__()
+        self.file_name = file_name
 
-
-class DataAccessException(Exception):
-    pass
-
-class FileSaveException(Exception):
-    pass
+class FileNotFoundError(Exception):
+    def __init__(self, file_name: str):
+        super().__init__()
+        self.file_name = file_name

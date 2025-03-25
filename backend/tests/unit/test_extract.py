@@ -4,8 +4,8 @@ import pandas as pd
 import pytest
 
 from modules.common.domain.exceptions import (
-    DataValidationException,
-    FileDataFormatNotSupportedException,
+    DataValidationError,
+    FileExtensionNotSupportedError,
 )
 from modules.extract.domain import commands as domain_commands
 from modules.extract.services.commands import extract
@@ -31,7 +31,7 @@ def test_extract_raise_exception_when_file_type_is_not_supported():
     )
     # When and Then
     with pytest.raises(
-        FileDataFormatNotSupportedException, match="Data format .png is not supported."
+        FileExtensionNotSupportedError, match="Data format .png is not supported."
     ):
         extract(extract_command)
 
@@ -43,7 +43,7 @@ def test_extract_raise_exception_when_any_dataset_row_is_invalid():
     )
     # When and Then
     with pytest.raises(
-        DataValidationException,
+        DataValidationError,
         match=f"Invalid input data in file {str(extract_command.file_path.name)}.",
     ):
         extract(extract_command)

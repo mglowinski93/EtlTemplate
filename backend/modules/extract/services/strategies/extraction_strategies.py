@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 from ....common import const as common_consts
-from ....common.domain.exceptions import FileDataFormatNotSupportedException
+from ....common.domain.exceptions import FileExtensionNotSupportedError
 
 
 class AbstractExtraction(ABC):
@@ -40,10 +40,8 @@ class ExcelExtraction(AbstractExtraction):
 def choose_strategy(file_extension: str) -> type[AbstractExtraction]:
     strat = SUPPORTED_EXTENSIONS.get(file_extension)
     if strat is None:
-        raise FileDataFormatNotSupportedException(
-            {
-                common_consts.ERROR_DETAIL_KEY: f"Data format {file_extension} is not supported."
-            }
+        raise FileExtensionNotSupportedError(
+            message="Data format '%s' is not supported.", file_extension=file_extension
         )
     return strat
 
