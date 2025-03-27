@@ -4,9 +4,9 @@ from typing import cast
 import pandas as pd
 import pandera as pa
 
-from ....data.domain import value_objects as data_value_objects
 from ...domain import commands as domain_commands
 from ...domain import exceptions as extract_exceptions
+from ...domain import value_objects as data_value_objects
 from ..strategies import AbstractExtraction, choose_strategy
 
 logger = logging.getLogger(__name__)

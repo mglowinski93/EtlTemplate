@@ -1,6 +1,6 @@
 from modules.load.domain.ports import repositories as domain_repositories
 from modules.load.domain.ports import units_of_work as domain_uow
-from modules.load.services import queries as load_queries
+from modules.transform.domain import value_objects as domain_value_objects
 
 
 class TestSaveDataUnitOfWork(domain_uow.AbstractDataUnitOfWork):
@@ -16,10 +16,10 @@ class TestSaveDataUnitOfWork(domain_uow.AbstractDataUnitOfWork):
 
 class TestDataDomainRepository(domain_repositories.AbstractDataDomainRepository):
     def __init__(self):
-        self.data: list[load_queries.OutputData] = []
+        self.data: list[domain_value_objects.OutputData] = []
 
-    def create(self, data: list[load_queries.OutputData]) -> None:
+    def create(self, data: list[domain_value_objects.OutputData]) -> None:
         self.data.extend(data)
 
-    def list(self) -> list[load_queries.OutputData]:
+    def list(self) -> list[domain_value_objects.OutputData]:
         return self.data
