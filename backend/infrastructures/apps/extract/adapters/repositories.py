@@ -23,9 +23,9 @@ class DjangoFileDomainRepository(domain_repositories.AbstractFileDomainRepositor
             )
         except OSError as err:
             raise domain_exceptions.FileSaveError(
-                message="File %s can not be saved.", file_name=file_name
+                message="File '%s' can not be saved.", file_name=file_name
             ) from err
         except django_exceptions.SuspiciousFileOperation as err:
             raise domain_exceptions.FileSaveError(
-                message="File %s can not be saved.", file_name=file_name
+                message="File '%'s can not be saved.", file_name=file_name
             ) from err

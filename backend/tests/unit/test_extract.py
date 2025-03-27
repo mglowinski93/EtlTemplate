@@ -6,23 +6,9 @@ import pytest
 from modules.common.domain.exceptions import (
     DataValidationError,
     FileExtensionNotSupportedError,
-    FileNotFoundError,
 )
 from modules.extract.domain import commands as domain_commands
 from modules.extract.services.commands import extract
-
-
-def test_extract_raise_exception_when_file_does_not_exist():
-    # Given
-    extract_command = domain_commands.ExtractData(
-        file_path=Path(__file__).parent / "resources" / "non_existent_input.csv"
-    )
-    # When
-    with pytest.raises(FileNotFoundError) as file_not_found_error:
-        extract(extract_command)
-
-    # Then
-    assert file_not_found_error.value.file_name == extract_command.file_path.name
 
 
 def test_extract_raise_exception_when_file_type_is_not_supported():

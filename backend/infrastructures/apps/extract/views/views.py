@@ -58,34 +58,29 @@ class ExtractViewSet(
                 {common_consts.ERROR_DETAIL_KEY: "File not attached."},
                 status=status.HTTP_422_UNPROCESSABLE_ENTITY,
             )
+        
+        logger.info("Extracting dataset...")        
         try:
-            logger.info("Extracting dataset...")
             input_data: data_value_objects.InputData = service_extract_commands.extract(
                 domain_extract_commands.ExtractData(
                     file_unit_of_work.file.save(
-                        bytes(request.FILES["file"].read()), request.FILES["file"].name
+                        file=bytes(request.FILES["file"].read()), file_name=request.FILES["file"].name
                     )
                 )
             )
-            logger.info("Dataset extracted.")
-        except domain_exceptions.FileNotFoundError as err:
-            logger.error("File to extract data from not found. File name: %s", err.file_name)
-            return Response(
-                {common_consts.ERROR_DETAIL_KEY: "File not found."},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
         except domain_exceptions.FileExtensionNotSupportedError as err:
-            logger.error("Can not extract data from file %s, due to not supported extension", err.file_extension)
+            logger.error("Can not extract data from file '%s', due to not supported extension.", err.file_extension)
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "Unsupported file extension."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except domain_exceptions.DataValidationError as err:
-            logger.error("Invalid input data in file %s", err.file_name)
+            logger.error("Invalid input data in file '%s'.", err.file_name)
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "Invalid data format."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        logger.info("Dataset extracted.")
         
         logger.info("Transforming dataset...")
         output_data: list[

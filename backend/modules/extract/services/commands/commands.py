@@ -15,9 +15,8 @@ logger = logging.getLogger(__name__)
 def extract(command: domain_commands.ExtractData) -> data_value_objects.InputData:
     logger.info(f"Started data extraction from {command.file_path.name}.")
     if not command.file_path.exists():
-        raise domain_exceptions.FileNotFoundError(
-            message="File %s not found", file_name=command.file_path.name
-        )
+        logger.error("File containing input data '%s' does not exist.", command.file_path.name) 
+        raise Exception("Input Data file not found.")
 
     read_strategy: AbstractExtraction = choose_strategy(command.file_path.suffix)()
     df: pd.DataFrame = read_strategy.read(command.file_path)
