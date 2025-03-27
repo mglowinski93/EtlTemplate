@@ -20,10 +20,9 @@ class DjangoFileDomainRepository(domain_repositories.AbstractFileDomainRepositor
         :return: Path to the saved file.
         """
 
-        file_system_storage = FileSystemStorage(location=settings.MEDIA_ROOT)
         try:
             return Path(settings.MEDIA_ROOT) / Path(
-                file_system_storage.save(file_name, ContentFile(file))
+                FileSystemStorage(location=settings.MEDIA_ROOT).save(file_name, ContentFile(file))
             )
         except OSError as err:
             raise FileSaveError(

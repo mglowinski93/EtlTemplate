@@ -37,12 +37,12 @@ class ExcelExtraction(AbstractExtraction):
 
 
 def choose_strategy(file_extension: str) -> type[AbstractExtraction]:
-    strat = SUPPORTED_EXTENSIONS.get(file_extension)
-    if strat is None:
+    strategy = SUPPORTED_EXTENSIONS.get(file_extension)
+    if strategy is None:
         raise FileExtensionNotSupportedError(
             message="Data format '%s' is not supported.", file_extension=file_extension
         )
-    return strat
+    return strategy
 
 
 SUPPORTED_EXTENSIONS = {
