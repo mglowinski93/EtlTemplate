@@ -9,6 +9,6 @@ class AbstractDataDomainRepository(common_ports.AbstractDomainRepository):
     def create(self, data: list[load_queries.OutputData]) -> None:
         """
         :param: Data to save.
-        :raises DataCreationError.
         """
+
         pass

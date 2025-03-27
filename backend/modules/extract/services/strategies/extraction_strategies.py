@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from ....common.domain.exceptions import FileExtensionNotSupportedError
+from ...domain.exceptions import FileExtensionNotSupportedError
 
 
 class AbstractExtraction(ABC):

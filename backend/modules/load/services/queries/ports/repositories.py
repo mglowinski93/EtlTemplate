@@ -15,6 +15,12 @@ class AbstractDataQueryRepository(common_ports.AbstractDomainRepository):
         pagination: pagination_dtos.Pagination,
     ) -> tuple[list[OutputData], int]:
         """
-        :raises DataAccessError.
+        :param filters: Filters to apply to data.
+        :param ordering: Ordering to apply to data.
+        :param pagination: Pagination to apply to data.
+
+        :return: List of all output data and
+                count of reservations matching given filters.
         """
+
         pass

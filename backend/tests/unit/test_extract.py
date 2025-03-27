@@ -3,11 +3,11 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from modules.common.domain.exceptions import (
+from modules.extract.domain import commands as domain_commands
+from modules.extract.domain.exceptions import (
     DataValidationError,
     FileExtensionNotSupportedError,
 )
-from modules.extract.domain import commands as domain_commands
 from modules.extract.services.commands import extract
 
 

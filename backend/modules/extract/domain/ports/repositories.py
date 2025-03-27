@@ -8,7 +8,10 @@ class AbstractFileDomainRepository(common_ports.AbstractDomainRepository):
     @abstractmethod
     def save(self, file: bytes, file_name: str) -> Path:
         """
-        :param: File as bytes.
-        :raises FileSaveError: Failed to save file from which data must be extracted.
+        :param file: File to extract data.
+        :param file_name: File name to save file with.
+
+        :return: Path to the saved file.
         """
+
         pass
