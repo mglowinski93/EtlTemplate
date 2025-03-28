@@ -65,7 +65,7 @@ class ExtractViewSet(
         self,
         request: Request,
         data_unit_of_work: load_units_of_work.AbstractDataUnitOfWork,
-        file_unit_of_work: extract_units_of_work.AbstractFileUnitOfWork,
+        extract_unit_of_work: extract_units_of_work.AbstractExtractUnitOfWork,
     ) -> Response:
         if "file" not in request.FILES:
             return Response(
@@ -75,12 +75,13 @@ class ExtractViewSet(
 
         logger.info("Extracting dataset...")
         try:
-            input_data: extract_value_objects.InputData = service_extract_commands.extract(
-                domain_extract_commands.ExtractData(
-                    file_unit_of_work.file.save(
+            saved_file_path = extract_unit_of_work.file.save(
                         file=bytes(request.FILES["file"].read()),
                         file_name=request.FILES["file"].name,
                     )
+            input_data: extract_value_objects.InputData = service_extract_commands.extract(
+                domain_extract_commands.ExtractData(
+                    saved_file_path
                 )
             )
         except FileSaveError as err:
@@ -105,6 +106,13 @@ class ExtractViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
         logger.info("Dataset extracted.")
+
+        logger.info("Saving extract history...")
+        service_extract_commands.save_extract_history(extract_unit_of_work, extract_value_objects.ExtractHistory(
+                input_file_name = request.FILES["file"].name, 
+                saved_file_name = saved_file_path.name,
+        ))
+        logger.info("Extract history saved.")
 
         logger.info("Transforming dataset...")
         output_data: list[

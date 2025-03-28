@@ -1,3 +1,3 @@
-from .commands import extract
+from .commands import extract, save_extract_history
 
-__all__ = ["extract"]
+__all__ = ["extract", "save_extract_history"]

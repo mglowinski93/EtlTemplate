@@ -7,7 +7,9 @@ import pandera as pa
 from ...domain import commands as domain_commands
 from ...domain import exceptions as extract_exceptions
 from ...domain import value_objects
+from ...domain.ports import units_of_work
 from ..strategies import AbstractExtraction, choose_strategy
+from modules.extract.domain import value_objects
 
 logger = logging.getLogger(__name__)
 
@@ -36,3 +38,11 @@ def extract(command: domain_commands.ExtractData) -> value_objects.InputData:
     logger.info("Dataset extracted successfully.")
 
     return validated_data
+
+def save_extract_history(
+    unit_of_work: units_of_work.AbstractExtractUnitOfWork,
+    extract_history: value_objects.ExtractHistory,
+):
+    with unit_of_work:
+        unit_of_work.extract.create(extract_history)
+
