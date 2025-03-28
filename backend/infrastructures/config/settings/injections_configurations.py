@@ -13,7 +13,7 @@ def inject_config(binder: inject.Binder):
         "query_data_repository", query_load_repositories.DjangoDataQueryRepository
     )
     binder.bind_to_constructor(
-        "file_unit_of_work", extract_unit_of_work.DjangoExtractUnitOfWork
+        "extract_unit_of_work", extract_unit_of_work.DjangoExtractUnitOfWork
     )
 
 

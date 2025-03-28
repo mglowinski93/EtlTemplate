@@ -60,7 +60,7 @@ class ExtractViewSet(
         },
     )
     @inject.param(name="data_unit_of_work", cls="data_unit_of_work")
-    @inject.param(name="file_unit_of_work", cls="file_unit_of_work")
+    @inject.param(name="extract_unit_of_work", cls="extract_unit_of_work")
     def create(
         self,
         request: Request,
