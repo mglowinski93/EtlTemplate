@@ -2,6 +2,7 @@ from abc import abstractmethod
 from pathlib import Path
 
 from ....common.domain import ports as common_ports
+from ...domain import value_objects 
 
 
 class AbstractFileDomainRepository(common_ports.AbstractDomainRepository):
@@ -15,3 +16,13 @@ class AbstractFileDomainRepository(common_ports.AbstractDomainRepository):
         """
 
         pass
+    
+class AbstractExtractDomainRepository(common_ports.AbstractDomainRepository):
+    @abstractmethod
+    def create(self, extract_history: value_objects.ExtractHistory) -> None:
+        """
+        :param: Data to save.
+        """
+
+        pass
+

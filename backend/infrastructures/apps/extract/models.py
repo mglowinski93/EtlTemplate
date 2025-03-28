@@ -7,6 +7,5 @@ class ExtractHistory(common_models.AutomaticallyTimestampedModel):
     input_file_name = models.CharField(max_length=256)
     saved_file_name = models.CharField(max_length=256)
  
-
     class Meta:
         db_table = "extract_history"
