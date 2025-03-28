@@ -19,10 +19,10 @@ def test_extract_raise_exception_when_file_type_is_not_supported():
     # When
     with pytest.raises(
         FileExtensionNotSupportedError
-    ) as file_extension_not_supported_error:
+    ) as err:
         extract(extract_command)
     # Then
-    assert file_extension_not_supported_error.value.file_extension == ".png"
+    assert err.value.file_extension == ".png"
 
 
 def test_extract_raise_exception_when_any_dataset_row_is_invalid():
@@ -33,9 +33,9 @@ def test_extract_raise_exception_when_any_dataset_row_is_invalid():
     # When and Then
     with pytest.raises(
         DataValidationError,
-    ) as data_validation_error:
+    ) as err:
         extract(extract_command)
-    assert data_validation_error.value.file_name == extract_command.file_path.name
+    assert err.value.file_name == extract_command.file_path.name
 
 
 def test_extract_successfully_read_csv_file():
