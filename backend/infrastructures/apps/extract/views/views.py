@@ -10,14 +10,14 @@ from rest_framework.viewsets import ViewSet
 from modules.common import const as common_consts
 from modules.extract.domain import commands as domain_extract_commands
 from modules.extract.domain import exceptions as extract_exceptions
-from modules.extract.domain import value_objects as data_value_objects
+from modules.extract.domain import value_objects as extract_value_objects
 from modules.extract.domain.ports import units_of_work as extract_units_of_work
 from modules.extract.services import commands as service_extract_commands
 from modules.load.domain import commands as domain_load_commands
 from modules.load.domain.ports import units_of_work as load_units_of_work
 from modules.load.services import commands as services_load_commands
 from modules.transform.domain import commands as domain_transform_commands
-from modules.transform.domain import value_objects as domain_value_objects
+from modules.transform.domain import value_objects as transform_value_objects
 from modules.transform.services import commands as services_transform_commands
 
 from ..exceptions import FileSaveError
@@ -75,7 +75,7 @@ class ExtractViewSet(
 
         logger.info("Extracting dataset...")
         try:
-            input_data: data_value_objects.InputData = service_extract_commands.extract(
+            input_data: extract_value_objects.InputData = service_extract_commands.extract(
                 domain_extract_commands.ExtractData(
                     file_unit_of_work.file.save(
                         file=bytes(request.FILES["file"].read()),
@@ -108,7 +108,7 @@ class ExtractViewSet(
 
         logger.info("Transforming dataset...")
         output_data: list[
-            domain_value_objects.OutputData
+            transform_value_objects.OutputData
         ] = services_transform_commands.transform(
             domain_transform_commands.TransformData(input_data)
         )

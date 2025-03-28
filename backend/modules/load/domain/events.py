@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
 from ...common.domain import events as common_events
-from ...transform.domain import value_objects as domain_value_objects
+from ...transform.domain import value_objects as transform_value_objects
 
 
 @dataclass(frozen=True)
 class DataSaved(common_events.DomainEvent):
-    data: domain_value_objects.OutputData
+    data: transform_value_objects.OutputData

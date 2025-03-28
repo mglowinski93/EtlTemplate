@@ -6,13 +6,13 @@ import pandera as pa
 
 from ...domain import commands as domain_commands
 from ...domain import exceptions as extract_exceptions
-from ...domain import value_objects as data_value_objects
+from ...domain import value_objects
 from ..strategies import AbstractExtraction, choose_strategy
 
 logger = logging.getLogger(__name__)
 
 
-def extract(command: domain_commands.ExtractData) -> data_value_objects.InputData:
+def extract(command: domain_commands.ExtractData) -> value_objects.InputData:
     logger.info("Started data extraction.")
     if not command.file_path.exists():
         logger.error(
@@ -25,7 +25,7 @@ def extract(command: domain_commands.ExtractData) -> data_value_objects.InputDat
 
     try:
         validated_data = cast(
-            data_value_objects.InputData, data_value_objects.InputData.validate(df)
+            value_objects.InputData, value_objects.InputData.validate(df)
         )
     except pa.errors.SchemaError as err:
         raise extract_exceptions.DataValidationError(

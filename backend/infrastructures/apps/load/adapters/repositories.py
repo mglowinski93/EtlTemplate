@@ -6,7 +6,7 @@ from modules.common import pagination as pagination_dtos
 from modules.load.domain.ports import repositories as domain_repositories
 from modules.load.services import queries as load_queries
 from modules.load.services.queries import ports as query_ports
-from modules.transform.domain import value_objects as domain_value_objects
+from modules.transform.domain import value_objects as transform_value_objects
 
 from ...common import ordering as common_ordering
 from ..models import Data
@@ -20,7 +20,7 @@ class DjangoDataDomainRepository(domain_repositories.AbstractDataDomainRepositor
     See description of parent class to get more details.
     """
 
-    def create(self, data: list[domain_value_objects.OutputData]) -> None:
+    def create(self, data: list[transform_value_objects.OutputData]) -> None:
         Data.objects.bulk_create(
             [
                 Data(
