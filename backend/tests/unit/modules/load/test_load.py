@@ -4,8 +4,8 @@ from modules.load.domain import commands as domain_commands
 from modules.load.services import commands as service_commands
 from modules.load.services import queries as load_queries
 
-from ..common.annotations import YieldFixture
-from . import fakers
+from ....common.annotations import YieldFixture
+from ... import fakers
 
 
 def test_data_saved_successfully(test_data_unit_of_work, test_data_repository):

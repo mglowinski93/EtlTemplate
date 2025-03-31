@@ -12,3 +12,4 @@ class InputData(pa.DataFrameModel):
 class ExtractHistory():
     input_file_name: str
     saved_file_name: str
+    timestamp: datetime

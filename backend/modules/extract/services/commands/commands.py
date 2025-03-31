@@ -39,6 +39,7 @@ def extract(command: domain_commands.ExtractData) -> value_objects.InputData:
 
     return validated_data
 
+#todo move this logic and file write action here
 def save_extract_history(
     unit_of_work: units_of_work.AbstractExtractUnitOfWork,
     extract_history: value_objects.ExtractHistory,

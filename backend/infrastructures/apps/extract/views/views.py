@@ -75,6 +75,7 @@ class ExtractViewSet(
 
         logger.info("Extracting dataset...")
         try:
+            #todo move it to extract command and use the same context manager to save file and put row to extracthistory
             saved_file_path = extract_unit_of_work.file.save(
                         file=bytes(request.FILES["file"].read()),
                         file_name=request.FILES["file"].name,
