@@ -5,7 +5,7 @@ import pandas as pd
 import pandera as pa
 
 from ...domain import commands as domain_commands
-from ...domain import exceptions as extract_exceptions
+from ...domain import exceptions as domain_exceptions
 from ...domain import value_objects
 from ...domain.ports import units_of_work
 from ..strategies import AbstractExtraction, choose_strategy
@@ -30,7 +30,7 @@ def extract(command: domain_commands.ExtractData) -> value_objects.InputData:
             value_objects.InputData, value_objects.InputData.validate(df)
         )
     except pa.errors.SchemaError as err:
-        raise extract_exceptions.DataValidationError(
+        raise domain_exceptions.DataValidationError(
             message=f"Invalid input data in file {command.file_path.name}",
             file_name=command.file_path.name,
         ) from err

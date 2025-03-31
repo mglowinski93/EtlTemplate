@@ -8,17 +8,17 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from modules.common import const as common_consts
-from modules.extract.domain import commands as domain_extract_commands
-from modules.extract.domain import exceptions as extract_exceptions
-from modules.extract.domain import value_objects as extract_value_objects
-from modules.extract.domain.ports import units_of_work as extract_units_of_work
-from modules.extract.services import commands as service_extract_commands
-from modules.load.domain import commands as domain_load_commands
+from modules.extract.domain import commands as domain_commands
+from modules.extract.domain import exceptions
+from modules.extract.domain import value_objects
+from modules.extract.domain.ports import units_of_work
+from modules.extract.services import commands
+from modules.load.domain import commands as load_domain_commands
 from modules.load.domain.ports import units_of_work as load_units_of_work
 from modules.load.services import commands as services_load_commands
 from modules.transform.domain import commands as domain_transform_commands
 from modules.transform.domain import value_objects as transform_value_objects
-from modules.transform.services import commands as services_transform_commands
+from modules.transform.services import commands as transform_commands
 
 from ..exceptions import FileSaveError
 
@@ -65,7 +65,7 @@ class ExtractViewSet(
         self,
         request: Request,
         data_unit_of_work: load_units_of_work.AbstractDataUnitOfWork,
-        extract_unit_of_work: extract_units_of_work.AbstractExtractUnitOfWork,
+        extract_unit_of_work: units_of_work.AbstractExtractUnitOfWork,
     ) -> Response:
         if "file" not in request.FILES:
             return Response(
@@ -80,8 +80,8 @@ class ExtractViewSet(
                         file=bytes(request.FILES["file"].read()),
                         file_name=request.FILES["file"].name,
                     )
-            input_data: extract_value_objects.InputData = service_extract_commands.extract(
-                domain_extract_commands.ExtractData(
+            input_data: value_objects.InputData = commands.extract(
+                domain_commands.ExtractData(
                     saved_file_path
                 )
             )
@@ -91,7 +91,7 @@ class ExtractViewSet(
                 {common_consts.ERROR_DETAIL_KEY: "Can not save file."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-        except extract_exceptions.FileExtensionNotSupportedError as err:
+        except exceptions.FileExtensionNotSupportedError as err:
             logger.error(
                 "Can not extract data from file '%s', due to not supported extension.",
                 err.file_extension,
@@ -100,7 +100,7 @@ class ExtractViewSet(
                 {common_consts.ERROR_DETAIL_KEY: "Unsupported file extension."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        except extract_exceptions.DataValidationError as err:
+        except exceptions.DataValidationError as err:
             logger.error("Invalid input data in file '%s'.", err.file_name)
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "Invalid data format."},
@@ -109,7 +109,7 @@ class ExtractViewSet(
         logger.info("Dataset extracted.")
 
         logger.info("Saving extract history...")
-        service_extract_commands.save_extract_history(extract_unit_of_work, extract_value_objects.ExtractHistory(
+        commands.save_extract_history(extract_unit_of_work, value_objects.ExtractHistory(
                 input_file_name = request.FILES["file"].name, 
                 saved_file_name = saved_file_path.name,
         ))
@@ -118,14 +118,14 @@ class ExtractViewSet(
         logger.info("Transforming dataset...")
         output_data: list[
             transform_value_objects.OutputData
-        ] = services_transform_commands.transform(
+        ] = transform_commands.transform(
             domain_transform_commands.TransformData(input_data)
         )
         logger.info("Dataset transformed.")
 
         logger.info("Saving dataset...")
         services_load_commands.save(
-            data_unit_of_work, domain_load_commands.SaveData(output_data)
+            data_unit_of_work, load_domain_commands.SaveData(output_data)
         )
         logger.info("Dataset saved.")
 

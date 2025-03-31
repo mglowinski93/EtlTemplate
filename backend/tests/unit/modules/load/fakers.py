@@ -1,7 +1,8 @@
-from modules.load.domain.ports import repositories as domain_repositories
+from modules.load.domain.ports import repositories as repositories
 from modules.load.domain.ports import units_of_work as domain_uow
 from modules.transform.domain import value_objects as transform_value_objects
 
+#todo use this instead of global faker.py
 
 class TestSaveDataUnitOfWork(domain_uow.AbstractDataUnitOfWork):
     def __init__(self):
@@ -13,8 +14,7 @@ class TestSaveDataUnitOfWork(domain_uow.AbstractDataUnitOfWork):
     def rollback(self) -> None:
         pass
 
-
-class TestDataDomainRepository(domain_repositories.AbstractDataDomainRepository):
+class TestDataDomainRepository(repositories.AbstractDataDomainRepository):
     def __init__(self):
         self.data: list[transform_value_objects.OutputData] = []
 
