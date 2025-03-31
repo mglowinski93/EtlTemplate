@@ -1,4 +1,4 @@
-from modules.load.domain.ports import repositories as repositories
+from modules.load.domain.ports import repositories as load_repositories
 from modules.load.domain.ports import units_of_work as domain_uow
 from modules.transform.domain import value_objects as transform_value_objects
 
@@ -14,7 +14,7 @@ class TestSaveDataUnitOfWork(domain_uow.AbstractDataUnitOfWork):
     def rollback(self) -> None:
         pass
 
-class TestDataDomainRepository(repositories.AbstractDataDomainRepository):
+class TestDataDomainRepository(load_repositories.AbstractDataDomainRepository):
     def __init__(self):
         self.data: list[transform_value_objects.OutputData] = []
 

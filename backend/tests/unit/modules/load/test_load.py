@@ -4,13 +4,13 @@ from modules.load.domain import commands as domain_commands
 from modules.load.services import commands as service_commands
 from modules.transform.domain import value_objects as transform_value_objects
 from modules.load.domain.ports import units_of_work as load_units_of_work
-from modules.load.domain.ports import repositories as domain_repositories
+from modules.load.domain.ports import repositories as load_repositories
 
 from ....common.annotations import YieldFixture
 from . import fakers
 
 
-def test_data_saved_successfully(test_data_unit_of_work: load_units_of_work.AbstractDataUnitOfWork, test_data_repository: domain_repositories.AbstractDataDomainRepository):
+def test_data_saved_successfully(test_data_unit_of_work: load_units_of_work.AbstractDataUnitOfWork, test_data_repository: load_repositories.AbstractDataDomainRepository):
     # Given
     output_data = [
         transform_value_objects.OutputData(full_name="Jessica Barnes", age=58, is_satisfied=False),
