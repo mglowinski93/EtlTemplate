@@ -1,12 +1,21 @@
 import pathlib
 
 
-#TODO use it to refer to resource csv etc.
-SQL_INJECTION_STRING = "SQL ' injection; DROP SCHEMA public CASCADE;"
-
-EXAMPLE_VIDEO_PATH = (
-    pathlib.Path(__file__).parent / "test_files" / "courses" / "example_video.mp4"
+CORRECT_INPUT_CSV = (
+    pathlib.Path(__file__).parent / "test_files" / "extract" / "correct_input.csv"
 )
-EXAMPLE_THUMBNAIL_PATH = (
-    pathlib.Path(__file__).parent / "test_files" / "courses" / "example_thumbnail.png"
+CORRECT_INPUT_XLS = (
+    pathlib.Path(__file__).parent / "test_files" / "extract" / "correct_input.xls"
+)
+
+CORRECT_INPUT_XLSX = (
+    pathlib.Path(__file__).parent / "test_files" / "extract" / "correct_input.xlsx"
+)
+
+INCORRECT_INPUT = (
+    pathlib.Path(__file__).parent / "test_files" / "extract" / "incorrect_data_input.csv"    
+)
+
+NOT_SUPPORTED_INPUT = (
+    pathlib.Path(__file__).parent / "test_files" / "extract" / "not_supported_extension.png"    
 )

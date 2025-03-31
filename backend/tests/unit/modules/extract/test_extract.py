@@ -9,13 +9,14 @@ from modules.extract.domain.exceptions import (
     FileExtensionNotSupportedError,
 )
 from modules.extract.services.commands import extract
+from tests import test_const 
 
 
 def test_extract_successfully_read_csv_file():
     # Given
     test_dataset_size = 10
     extract_command = domain_commands.ExtractData(
-        file_path=Path(__file__).parent / "resources" / "correct_input.csv"
+        file_path=test_const.CORRECT_INPUT_CSV
     )
     # When
     input_data: pd.DataFrame = extract(extract_command)
@@ -28,7 +29,7 @@ def test_extract_successfully_read_xlsx_file():
     # Given
     test_dataset_size = 10
     extract_command = domain_commands.ExtractData(
-        file_path=Path(__file__).parent / "resources" / "correct_input.xlsx"
+        file_path=test_const.CORRECT_INPUT_XLSX
     )
     # When
     input_data: pd.DataFrame = extract(extract_command)
@@ -42,7 +43,7 @@ def test_extract_successfully_read_xls_file():
     # Given
     test_dataset_size = 10
     extract_command = domain_commands.ExtractData(
-        file_path=Path(__file__).parent / "resources" / "correct_input.xls"
+        file_path=test_const.CORRECT_INPUT_XLS
     )
     # When
     input_data: pd.DataFrame = extract(extract_command)
@@ -56,7 +57,7 @@ def test_extract_successfully_read_xls_file():
 def test_extract_raise_exception_when_file_type_is_not_supported():
     # Given
     extract_command = domain_commands.ExtractData(
-        file_path=Path(__file__).parent / "resources" / "not_supported_input.png"
+        file_path=test_const.NOT_SUPPORTED_INPUT
     )
 
     # When and then
@@ -69,7 +70,7 @@ def test_extract_raise_exception_when_file_type_is_not_supported():
 def test_extract_raise_exception_when_any_dataset_row_is_invalid():
     # Given
     extract_command = domain_commands.ExtractData(
-        file_path=Path(__file__).parent / "resources" / "incorrect_data_input.csv"
+        file_path=test_const.INCORRECT_INPUT
     )
     # When and Then
     with pytest.raises(
