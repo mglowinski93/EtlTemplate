@@ -3,14 +3,14 @@ import pytest
 from modules.load.domain import commands as domain_commands
 from modules.load.services import commands as service_commands
 from modules.transform.domain import value_objects as transform_value_objects
-from modules.load.domain.ports import units_of_work
-from modules.load.domain.ports import repositories as domain_repositories
+from modules.load.domain.ports import units_of_work as load_units_of_work
+from modules.load.domain.ports import repositories as load_repositories
 
 from ....common.annotations import YieldFixture
 from . import fakers
 
 
-def test_data_saved_successfully(test_data_unit_of_work: units_of_work.AbstractDataUnitOfWork, test_data_repository: domain_repositories.AbstractDataDomainRepository):
+def test_data_saved_successfully(test_data_unit_of_work: load_units_of_work.AbstractDataUnitOfWork, test_data_repository: load_repositories.AbstractDataDomainRepository):
     # Given
     output_data = [
         transform_value_objects.OutputData(full_name="Jessica Barnes", age=58, is_satisfied=False),
@@ -22,9 +22,10 @@ def test_data_saved_successfully(test_data_unit_of_work: units_of_work.AbstractD
 
     # Then
     assert len(test_data_unit_of_work.data.data) == 1 # type: ignore[attr-defined] 
-    assert output_data[0].full_name ==  test_data_unit_of_work.data.data[0].full_name # type: ignore[attr-defined] 
-    assert output_data[0].age ==  test_data_unit_of_work.data.data[0].age # type: ignore[attr-defined] 
-    assert output_data[0].is_satisfied ==  test_data_unit_of_work.data.data[0].is_satisfied # type: ignore[attr-defined] 
+    assert all([output_data[0].full_name ==  test_data_unit_of_work.data.data[0].full_name,
+                output_data[0].age ==  test_data_unit_of_work.data.data[0].age,
+                output_data[0].is_satisfied ==  test_data_unit_of_work.data.data[0].is_satisfied]
+            )
 
 @pytest.fixture
 def test_data_repository() -> YieldFixture[fakers.TestDataDomainRepository]:
