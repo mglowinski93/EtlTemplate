@@ -22,9 +22,10 @@ def test_data_saved_successfully(test_data_unit_of_work: load_units_of_work.Abst
 
     # Then
     assert len(test_data_unit_of_work.data.data) == 1 # type: ignore[attr-defined] 
-    assert output_data[0].full_name ==  test_data_unit_of_work.data.data[0].full_name # type: ignore[attr-defined] 
-    assert output_data[0].age ==  test_data_unit_of_work.data.data[0].age # type: ignore[attr-defined] 
-    assert output_data[0].is_satisfied ==  test_data_unit_of_work.data.data[0].is_satisfied # type: ignore[attr-defined] 
+    assert all([output_data[0].full_name ==  test_data_unit_of_work.data.data[0].full_name,
+                output_data[0].age ==  test_data_unit_of_work.data.data[0].age,
+                output_data[0].is_satisfied ==  test_data_unit_of_work.data.data[0].is_satisfied]
+            )
 
 @pytest.fixture
 def test_data_repository() -> YieldFixture[fakers.TestDataDomainRepository]:
