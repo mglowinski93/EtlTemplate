@@ -5,7 +5,6 @@ from modules.common import ordering as ordering_dtos
 from modules.common import pagination as pagination_dtos
 from modules.load.domain.ports import repositories
 from modules.load.services import queries
-#todo verify all queries again
 from modules.load.services.queries import ports
 from modules.transform.domain import value_objects as transform_value_objects
 

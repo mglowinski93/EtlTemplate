@@ -6,7 +6,7 @@ from modules.transform.domain import value_objects as transform_value_objects
 from modules.load.domain.ports import units_of_work
 from modules.load.domain.ports import repositories as domain_repositories
 
-from ..common.annotations import YieldFixture
+from ....common.annotations import YieldFixture
 from . import fakers
 
 
