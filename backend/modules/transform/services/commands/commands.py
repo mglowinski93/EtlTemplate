@@ -3,15 +3,15 @@ from typing import cast
 
 import pandas as pd
 
-from ....data.domain import value_objects as data_value_objects
 from ...domain import commands as domain_commands
+from ...domain import value_objects as transform_value_objects
 
 logger = logging.getLogger(__name__)
 
 
 def transform(
     command: domain_commands.TransformData,
-) -> list[data_value_objects.OutputData]:
+) -> list[transform_value_objects.OutputData]:
     logger.info("Data transformation start.")
 
     df: pd.DataFrame = cast(pd.DataFrame, command.data)
@@ -20,7 +20,7 @@ def transform(
     )
     df.drop(columns=["name", "surname"], inplace=True)
     transformation_result = [
-        data_value_objects.OutputData(
+        transform_value_objects.OutputData(
             record["full_name"], record["age"], record["is_satisfied"]
         )
         for record in df.to_dict(orient="records")
