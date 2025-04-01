@@ -1,3 +1,3 @@
-from .units_of_work import DjangoFileUnitOfWork
+from .units_of_work import DjangoExtractUnitOfWork
 
-__all__ = ["DjangoFileUnitOfWork"]
+__all__ = ["DjangoExtractUnitOfWork"]
