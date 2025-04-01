@@ -1,7 +1,7 @@
 from django.db import models
 
+from ..common import models as common_models
 
-class OutputData(models.Model):
-    full_name = models.CharField(max_length=255)
-    age = models.IntegerField()
-    is_satisfied = models.BooleanField()
+
+class Data(common_models.AutomaticallyTimestampedModel):
+    data = models.JSONField()

@@ -1,11 +1,13 @@
-from modules.data.domain import value_objects as data_value_objects
+from modules.load.services import queries as load_queries
 
-from ..models import OutputData
+from ..models import Data
 
 
-def map_outputdata_model_to_output_dto(output_data: OutputData) -> data_value_objects.OutputData:
-    return data_value_objects.OutputData(
-        full_name=output_data.full_name,
-        age=output_data.age,
-        is_satisfied=output_data.is_satisfied,
+def map_data_model_to_output_data_dto(
+    data: Data,
+) -> load_queries.OutputData:
+    return load_queries.OutputData(
+        full_name=data.data["full_name"],
+        age=data.data["age"],
+        is_satisfied=data.data["is_satisfied"],
     )
