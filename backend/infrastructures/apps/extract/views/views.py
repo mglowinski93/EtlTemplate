@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from datetime import datetime
 
 from modules.common import const as common_consts
 from modules.extract.domain import commands as domain_commands
@@ -112,6 +113,7 @@ class ExtractViewSet(
         commands.save_extract_history(extract_unit_of_work, value_objects.ExtractHistory(
                 input_file_name = request.FILES["file"].name, 
                 saved_file_name = saved_file_path.name,
+                timestamp= datetime.now()
         ))
         logger.info("Extract history saved.")
 
