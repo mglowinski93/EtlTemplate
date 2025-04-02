@@ -44,8 +44,7 @@ class DjangoExtractDomainRepository(domain_repositories.AbstractExtractDomainRep
         """
 
         ExtractHistory.objects.create(
-            ExtractHistory(
                 input_file_name = extract_history.input_file_name,
                 saved_file_name = extract_history.saved_file_name,
-            ) 
+                created_at = extract_history.timestamp
         )
