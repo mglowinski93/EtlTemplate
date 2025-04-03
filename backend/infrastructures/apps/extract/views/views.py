@@ -10,10 +10,10 @@ from rest_framework.viewsets import ViewSet
 from modules.common import const as common_consts
 from modules.extract.domain import commands as domain_commands
 from modules.extract.domain import exceptions, value_objects
-from modules.extract.domain.ports import units_of_work
+from modules.extract.domain import ports
 from modules.extract.services import commands as service_commands
 from modules.load.domain import commands as load_domain_commands
-from modules.load.domain.ports import units_of_work as load_units_of_work
+from modules.load.domain import ports as load_ports
 from modules.load.services import commands as load_service_commands
 from modules.transform.domain import commands as transform_domain_commands
 from modules.transform.domain import value_objects as transform_value_objects
@@ -63,8 +63,8 @@ class ExtractViewSet(
     def create(
         self,
         request: Request,
-        data_unit_of_work: load_units_of_work.AbstractDataUnitOfWork,
-        extract_unit_of_work: units_of_work.AbstractExtractUnitOfWork,
+        data_unit_of_work: load_ports.AbstractDataUnitOfWork,
+        extract_unit_of_work: ports.AbstractExtractUnitOfWork,
     ) -> Response:
         if "file" not in request.FILES:
             return Response(

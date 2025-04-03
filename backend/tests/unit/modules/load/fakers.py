@@ -1,9 +1,8 @@
-from modules.load.domain.ports import repositories as load_repositories
-from modules.load.domain.ports import units_of_work as domain_uow
+from modules.load.domain import ports
 from modules.transform.domain import value_objects as transform_value_objects
 
 
-class TestSaveDataUnitOfWork(domain_uow.AbstractDataUnitOfWork):
+class TestSaveDataUnitOfWork(ports.AbstractDataUnitOfWork):
     def __init__(self):
         self.data = TestDataDomainRepository()
 
@@ -14,7 +13,7 @@ class TestSaveDataUnitOfWork(domain_uow.AbstractDataUnitOfWork):
         pass
 
 
-class TestDataDomainRepository(load_repositories.AbstractDataDomainRepository):
+class TestDataDomainRepository(ports.AbstractDataDomainRepository):
     def __init__(self):
         self.data: list[transform_value_objects.OutputData] = []
 

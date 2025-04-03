@@ -5,7 +5,7 @@ from modules.extract.domain.exceptions import (
     DataValidationError,
     FileExtensionNotSupportedError,
 )
-from modules.extract.domain.ports import repositories, units_of_work
+from modules.extract.domain import ports
 from modules.extract.services.commands import extract
 from tests import test_const
 
@@ -18,9 +18,9 @@ from .fakers import (
 
 
 def test_extract_successfully_read_csv_file(
-    test_data_unit_of_work: units_of_work.AbstractExtractUnitOfWork,
-    test_extract_repository: repositories.AbstractExtractDomainRepository,
-    test_file_repository: repositories.AbstractFileDomainRepository,
+    test_data_unit_of_work: ports.AbstractExtractUnitOfWork,
+    test_extract_repository: ports.AbstractExtractDomainRepository,
+    test_file_repository: ports.AbstractFileDomainRepository,
 ):
     # Given
     test_dataset_size = 10
@@ -50,9 +50,9 @@ def test_extract_successfully_read_csv_file(
 
 
 def test_extract_successfully_read_xlsx_file(
-    test_data_unit_of_work: units_of_work.AbstractExtractUnitOfWork,
-    test_extract_repository: repositories.AbstractExtractDomainRepository,
-    test_file_repository: repositories.AbstractFileDomainRepository,
+    test_data_unit_of_work: ports.AbstractExtractUnitOfWork,
+    test_extract_repository: ports.AbstractExtractDomainRepository,
+    test_file_repository: ports.AbstractFileDomainRepository,
 ):
     # Given
     test_dataset_size = 10
@@ -81,9 +81,9 @@ def test_extract_successfully_read_xlsx_file(
 
 
 def test_extract_successfully_read_xls_file(
-    test_data_unit_of_work: units_of_work.AbstractExtractUnitOfWork,
-    test_extract_repository: repositories.AbstractExtractDomainRepository,
-    test_file_repository: repositories.AbstractFileDomainRepository,
+    test_data_unit_of_work: ports.AbstractExtractUnitOfWork,
+    test_extract_repository: ports.AbstractExtractDomainRepository,
+    test_file_repository: ports.AbstractFileDomainRepository,
 ):
     # Given
     test_dataset_size = 10
@@ -112,7 +112,7 @@ def test_extract_successfully_read_xls_file(
 
 
 def test_extract_raise_exception_when_file_type_is_not_supported(
-    test_data_unit_of_work: units_of_work.AbstractExtractUnitOfWork,
+    test_data_unit_of_work: ports.AbstractExtractUnitOfWork
 ):
     # Given
     extract_command = commands.ExtractData(
@@ -126,7 +126,7 @@ def test_extract_raise_exception_when_file_type_is_not_supported(
 
 
 def test_extract_raise_exception_when_any_dataset_row_is_invalid(
-    test_data_unit_of_work: units_of_work.AbstractExtractUnitOfWork,
+    test_data_unit_of_work: ports.AbstractExtractUnitOfWork
 ):
     # Given
     extract_command = commands.ExtractData(

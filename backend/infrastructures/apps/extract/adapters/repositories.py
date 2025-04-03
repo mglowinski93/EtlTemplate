@@ -6,13 +6,13 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
 
 from modules.extract.domain import value_objects
-from modules.extract.domain.ports import repositories
+from modules.extract.domain import ports
 
 from ..exceptions import FileSaveError
 from ..models import ExtractHistory
 
 
-class DjangoFileDomainRepository(repositories.AbstractFileDomainRepository):
+class DjangoFileDomainRepository(ports.AbstractFileDomainRepository):
     def save(self, file: bytes, file_name: str) -> Path:
         """
         :param file: File to extract data.
@@ -40,7 +40,7 @@ class DjangoFileDomainRepository(repositories.AbstractFileDomainRepository):
         return file_path.exists()
 
 
-class DjangoExtractDomainRepository(repositories.AbstractExtractDomainRepository):
+class DjangoExtractDomainRepository(ports.AbstractExtractDomainRepository):
     def create(self, extract_history: value_objects.ExtractHistory) -> None:
         """
         See description of parent class to get more details.

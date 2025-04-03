@@ -1,11 +1,11 @@
 from pathlib import Path
 
 from modules.extract.domain import value_objects
-from modules.extract.domain.ports import repositories, units_of_work
+from modules.extract.domain import ports 
 from tests import test_const
 
 
-class TestExtractUnitOfWork(units_of_work.AbstractExtractUnitOfWork):
+class TestExtractUnitOfWork(ports.AbstractExtractUnitOfWork):
     def __init__(self):
         self.file: TestFileDomainRepository
         self.extract: TestExtractDomainRepository
@@ -17,7 +17,7 @@ class TestExtractUnitOfWork(units_of_work.AbstractExtractUnitOfWork):
         pass
 
 
-class TestFileDomainRepository(repositories.AbstractFileDomainRepository):
+class TestFileDomainRepository(ports.AbstractFileDomainRepository):
     def __init__(self):
         self.saved_files: dict[Path, bytes] = {}
 
@@ -29,7 +29,7 @@ class TestFileDomainRepository(repositories.AbstractFileDomainRepository):
         return file_path in self.saved_files
 
 
-class TestExtractDomainRepository(repositories.AbstractExtractDomainRepository):
+class TestExtractDomainRepository(ports.AbstractExtractDomainRepository):
     def __init__(self):
         self.extract_histories: list[value_objects.ExtractHistory] = []
 

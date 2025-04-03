@@ -1,7 +1,7 @@
 import pytest
 
 from modules.load.domain import commands as domain_commands
-from modules.load.domain.ports import units_of_work
+from modules.load.domain import ports
 from modules.load.services import commands as service_commands
 from modules.transform.domain import value_objects as transform_value_objects
 
@@ -10,7 +10,7 @@ from .fakers import TestDataDomainRepository, TestSaveDataUnitOfWork
 
 
 def test_data_saved_successfully(
-    test_data_unit_of_work: units_of_work.AbstractDataUnitOfWork,
+    test_data_unit_of_work: ports.AbstractDataUnitOfWork,
 ):
     # Given
     output_data = [
