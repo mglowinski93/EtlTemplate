@@ -9,7 +9,7 @@ from rest_framework.viewsets import ViewSet
 
 from modules.common import ordering as common_ordering
 from modules.common import pagination as pagination_dtos
-from modules.load.services.queries import ports as ports
+from modules.load.services.queries import ports
 
 from .serializers import OutputDataReadSerializer
 

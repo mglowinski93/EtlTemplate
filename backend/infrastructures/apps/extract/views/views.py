@@ -6,20 +6,18 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from datetime import datetime
 
 from modules.common import const as common_consts
 from modules.extract.domain import commands as domain_commands
-from modules.extract.domain import exceptions
-from modules.extract.domain import value_objects
+from modules.extract.domain import exceptions, value_objects
 from modules.extract.domain.ports import units_of_work
-from modules.extract.services import commands
+from modules.extract.services import commands as service_commands
 from modules.load.domain import commands as load_domain_commands
 from modules.load.domain.ports import units_of_work as load_units_of_work
-from modules.load.services import commands as services_load_commands
-from modules.transform.domain import commands as domain_transform_commands
+from modules.load.services import commands as load_service_commands
+from modules.transform.domain import commands as transform_domain_commands
 from modules.transform.domain import value_objects as transform_value_objects
-from modules.transform.services import commands as transform_commands
+from modules.transform.services import commands as transform_service_commands
 
 from ..exceptions import FileSaveError
 
@@ -76,12 +74,12 @@ class ExtractViewSet(
 
         logger.info("Extracting dataset...")
         try:
-            input_data: value_objects.InputData = commands.extract(
+            input_data: value_objects.InputData = service_commands.extract(
                 extract_unit_of_work=extract_unit_of_work,
                 command=domain_commands.ExtractData(
                     file=bytes(request.FILES["file"].read()),
-                    file_name=request.FILES["file"].name
-                    )
+                    file_name=request.FILES["file"].name,
+                ),
             )
         except FileSaveError as err:
             logger.error("Can not save file '%s'.", err.file_name)
@@ -109,14 +107,15 @@ class ExtractViewSet(
         logger.info("Transforming dataset...")
         output_data: list[
             transform_value_objects.OutputData
-        ] = transform_commands.transform(
-            domain_transform_commands.TransformData(input_data)
+        ] = transform_service_commands.transform(
+            transform_domain_commands.TransformData(input_data)
         )
         logger.info("Dataset transformed.")
 
         logger.info("Saving dataset...")
-        services_load_commands.save(
-            data_unit_of_work, load_domain_commands.SaveData(output_data)
+        load_service_commands.save(
+            unit_of_work=data_unit_of_work,
+            command=load_domain_commands.SaveData(output_data),
         )
         logger.info("Dataset saved.")
 

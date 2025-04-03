@@ -1,7 +1,8 @@
+from dataclasses import dataclass
+from datetime import datetime
+
 import pandera as pa
 
-from datetime import datetime
-from dataclasses import dataclass
 
 class InputData(pa.DataFrameModel):
     name: str
@@ -9,8 +10,9 @@ class InputData(pa.DataFrameModel):
     age: int = pa.Field(ge=0)
     is_satisfied: bool
 
+
 @dataclass
-class ExtractHistory():
+class ExtractHistory:
     input_file_name: str
     saved_file_name: str
     timestamp: datetime

@@ -1,10 +1,10 @@
-from ...domain import commands as domain_commands
-from ...domain.ports import units_of_work
+from ...domain.commands import SaveData
+from ...domain.ports.units_of_work import AbstractDataUnitOfWork
 
 
 def save(
-    unit_of_work: units_of_work.AbstractDataUnitOfWork,
-    command: domain_commands.SaveData,
+    unit_of_work: AbstractDataUnitOfWork,
+    command: SaveData,
 ):
     with unit_of_work:
         unit_of_work.data.create(command.output_data)
