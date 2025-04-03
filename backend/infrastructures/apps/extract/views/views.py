@@ -76,15 +76,12 @@ class ExtractViewSet(
 
         logger.info("Extracting dataset...")
         try:
-            #todo move it to extract command and use the same context manager to save file and put row to extracthistory
-            saved_file_path = extract_unit_of_work.file.save(
-                        file=bytes(request.FILES["file"].read()),
-                        file_name=request.FILES["file"].name,
-                    )
             input_data: value_objects.InputData = commands.extract(
-                domain_commands.ExtractData(
-                    saved_file_path
-                )
+                extract_unit_of_work=extract_unit_of_work,
+                command=domain_commands.ExtractData(
+                    file=bytes(request.FILES["file"].read()),
+                    file_name=request.FILES["file"].name
+                    )
             )
         except FileSaveError as err:
             logger.error("Can not save file '%s'.", err.file_name)
@@ -108,14 +105,6 @@ class ExtractViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
         logger.info("Dataset extracted.")
-
-        logger.info("Saving extract history...")
-        commands.save_extract_history(extract_unit_of_work, value_objects.ExtractHistory(
-                input_file_name = request.FILES["file"].name, 
-                saved_file_name = saved_file_path.name,
-                timestamp= datetime.now()
-        ))
-        logger.info("Extract history saved.")
 
         logger.info("Transforming dataset...")
         output_data: list[

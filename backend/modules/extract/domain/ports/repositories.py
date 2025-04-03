@@ -16,6 +16,9 @@ class AbstractFileDomainRepository(common_ports.AbstractDomainRepository):
 
         pass
 
+    def file_exists(self, file_path: Path):
+        pass
+
 class AbstractExtractDomainRepository(common_ports.AbstractDomainRepository):
     @abstractmethod
     def create(self, extract_history: value_objects.ExtractHistory) -> None:

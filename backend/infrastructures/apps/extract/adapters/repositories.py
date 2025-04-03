@@ -36,6 +36,9 @@ class DjangoFileDomainRepository(domain_repositories.AbstractFileDomainRepositor
             raise FileSaveError(
                 message=f"File {file_name} can not be saved.", file_name=file_name
             ) from err
+    
+    def file_exists(self, file_path: Path):
+        return file_path.exists()
 
 class DjangoExtractDomainRepository(domain_repositories.AbstractExtractDomainRepository):
     def create(self, extract_history: value_objects.ExtractHistory) -> None:
