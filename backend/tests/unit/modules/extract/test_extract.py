@@ -1,10 +1,7 @@
 import pytest
 
 from modules.extract.domain import commands, value_objects
-from modules.extract.domain.exceptions import (
-    DataValidationError,
-    FileExtensionNotSupportedError,
-)
+from modules.extract.domain import exceptions as domain_exceptions
 from modules.extract.domain import ports
 from modules.extract.services.commands import extract
 from tests import test_const
@@ -108,7 +105,7 @@ def test_extract_raise_exception_when_file_type_is_not_supported(
     )
 
     # When and then
-    with pytest.raises(FileExtensionNotSupportedError):
+    with pytest.raises(domain_exceptions.FileExtensionNotSupportedError):
         extract(extract_unit_of_work=test_extract_unit_of_work, command=extract_command)
 
 
@@ -122,6 +119,6 @@ def test_extract_raise_exception_when_any_dataset_row_is_invalid(
     )
 
     # When and Then
-    with pytest.raises(DataValidationError):
+    with pytest.raises(domain_exceptions.DataValidationError):
         extract(extract_unit_of_work=test_extract_unit_of_work, command=extract_command)
 
