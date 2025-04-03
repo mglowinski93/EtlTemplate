@@ -5,14 +5,7 @@ from .fakers import TestDataDomainRepository, TestSaveDataUnitOfWork
 
 
 @pytest.fixture
-def test_data_repository() -> YieldFixture[TestDataDomainRepository]:
-    yield TestDataDomainRepository()
-
-
-@pytest.fixture
-def test_data_unit_of_work(
-    test_data_repository,
-) -> YieldFixture[TestSaveDataUnitOfWork]:
+def test_data_unit_of_work() -> YieldFixture[TestSaveDataUnitOfWork]:
     test_unit_of_work = TestSaveDataUnitOfWork()
-    test_unit_of_work.data = test_data_repository
+    test_unit_of_work.data = TestDataDomainRepository()
     yield test_unit_of_work
