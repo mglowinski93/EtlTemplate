@@ -5,7 +5,7 @@ from modules.common import ordering as ordering_dtos
 from modules.common import pagination as pagination_dtos
 from modules.load.domain import ports
 from modules.load.services import queries
-from modules.load.services.queries import ports as queries_ports
+from modules.load.services.queries import ports as query_ports
 from modules.transform.domain import value_objects as transform_value_objects
 
 from ...common import ordering as common_ordering
@@ -35,15 +35,15 @@ class DjangoDataDomainRepository(ports.AbstractDataDomainRepository):
         )
 
 
-class DjangoDataQueryRepository(queries_ports.AbstractDataQueryRepository):
+class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
     """
     See description of parent class to get more details.
     """
 
     def list(
         self,
-        filters: queries_ports.DataFilters,
-        ordering: queries_ports.DataOrdering,
+        filters: query_ports.DataFilters,
+        ordering: query_ports.DataOrdering,
         pagination: pagination_dtos.Pagination,
     ) -> tuple[list[queries.OutputData], int]:
         query = Data.objects.filter(
@@ -58,7 +58,7 @@ class DjangoDataQueryRepository(queries_ports.AbstractDataQueryRepository):
         ], query.count()
 
 
-def _get_django_output_data_filters(filters: queries_ports.DataFilters) -> dict:
+def _get_django_output_data_filters(filters: query_ports.DataFilters) -> dict:
     django_filters: dict[str, Any] = {}
 
     if filters.age is not None:
@@ -77,7 +77,7 @@ def _get_django_output_data_filters(filters: queries_ports.DataFilters) -> dict:
 
 
 def _get_django_output_data_ordering(
-    ordering: queries_ports.DataOrdering,
+    ordering: query_ports.DataOrdering,
 ) -> list[str]:
     django_ordering: dict[str, ordering_dtos.Ordering] = {}
 

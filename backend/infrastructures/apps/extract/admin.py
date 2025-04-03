@@ -1,4 +1,5 @@
 from django.contrib import admin
+from datetime import datetime
 
 from .models import ExtractHistory
 
@@ -7,11 +8,11 @@ from .models import ExtractHistory
 class OutputDataAdmin(admin.ModelAdmin):
     list_display = ("input_file_name", "saved_file_name", "timestamp")
 
-    def input_file_name(self, extract_history: ExtractHistory):
+    def input_file_name(self, extract_history: ExtractHistory) -> str:
         return extract_history.input_file_name
 
-    def saved_file_name(self, extract_history: ExtractHistory):
+    def saved_file_name(self, extract_history: ExtractHistory) -> str:
         return extract_history.saved_file_name
 
-    def timestamp(self, extract_history: ExtractHistory):
+    def timestamp(self, extract_history: ExtractHistory) -> datetime:
         return extract_history.created_at

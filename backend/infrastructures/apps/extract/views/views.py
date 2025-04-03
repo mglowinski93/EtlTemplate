@@ -11,13 +11,13 @@ from modules.common import const as common_consts
 from modules.extract.domain import commands as domain_commands
 from modules.extract.domain import exceptions, value_objects
 from modules.extract.domain import ports
-from modules.extract.services import commands as service_commands
+from modules.extract.services import commands
 from modules.load.domain import commands as load_domain_commands
 from modules.load.domain import ports as load_ports
-from modules.load.services import commands as load_service_commands
+from modules.load.services import commands as load_commands
 from modules.transform.domain import commands as transform_domain_commands
 from modules.transform.domain import value_objects as transform_value_objects
-from modules.transform.services import commands as transform_service_commands
+from modules.transform.services import commands as transform_commands
 
 from ..exceptions import FileSaveError
 
@@ -74,7 +74,7 @@ class ExtractViewSet(
 
         logger.info("Extracting dataset...")
         try:
-            input_data: value_objects.InputData = service_commands.extract(
+            input_data: value_objects.InputData = commands.extract(
                 extract_unit_of_work=extract_unit_of_work,
                 command=domain_commands.ExtractData(
                     file=bytes(request.FILES["file"].read()),
@@ -107,13 +107,13 @@ class ExtractViewSet(
         logger.info("Transforming dataset...")
         output_data: list[
             transform_value_objects.OutputData
-        ] = transform_service_commands.transform(
+        ] = transform_commands.transform(
             transform_domain_commands.TransformData(input_data)
         )
         logger.info("Dataset transformed.")
 
         logger.info("Saving dataset...")
-        load_service_commands.save(
+        load_commands.save(
             unit_of_work=data_unit_of_work,
             command=load_domain_commands.SaveData(output_data),
         )

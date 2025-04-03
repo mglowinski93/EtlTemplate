@@ -1,12 +1,7 @@
-import pytest
-
 from modules.load.domain import commands as domain_commands
 from modules.load.domain import ports
-from modules.load.services import commands as service_commands
+from modules.load.services import commands
 from modules.transform.domain import value_objects as transform_value_objects
-
-from ....common.annotations import YieldFixture
-from .fakers import TestDataDomainRepository, TestSaveDataUnitOfWork
 
 
 def test_data_saved_successfully(
@@ -18,10 +13,9 @@ def test_data_saved_successfully(
             full_name="Jessica Barnes", age=58, is_satisfied=False
         ),
     ]
-    domain_command = domain_commands.SaveData(output_data=output_data)
 
     # When
-    service_commands.save(unit_of_work=test_data_unit_of_work, command=domain_command)
+    commands.save(unit_of_work=test_data_unit_of_work, command=domain_commands.SaveData(output_data=output_data))
 
     # Then
     assert len(test_data_unit_of_work.data.data) == 1  # type: ignore[attr-defined]
@@ -33,17 +27,3 @@ def test_data_saved_successfully(
             == test_data_unit_of_work.data.data[0].is_satisfied,  # type: ignore[attr-defined]
         ]
     )
-
-
-@pytest.fixture
-def test_data_repository() -> YieldFixture[TestDataDomainRepository]:
-    yield TestDataDomainRepository()
-
-
-@pytest.fixture
-def test_data_unit_of_work(
-    test_data_repository,
-) -> YieldFixture[TestSaveDataUnitOfWork]:
-    test_unit_of_work = TestSaveDataUnitOfWork()
-    test_unit_of_work.data = test_data_repository
-    yield test_unit_of_work

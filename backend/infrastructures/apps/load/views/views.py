@@ -9,7 +9,7 @@ from rest_framework.viewsets import ViewSet
 
 from modules.common import ordering as common_ordering
 from modules.common import pagination as pagination_dtos
-from modules.load.services.queries import ports
+from modules.load.services.queries import ports as query_ports
 
 from .serializers import OutputDataReadSerializer
 
@@ -56,17 +56,17 @@ class LoadViewSet(
     def list(
         self,
         request: Request,
-        query_data_repository: ports.AbstractDataQueryRepository,
+        query_data_repository: query_ports.AbstractDataQueryRepository,
     ):
         logger.info("Listing all datasets...")
 
         output_data, count = query_data_repository.list(
-            ordering=ports.DataOrdering(
+            ordering=query_ports.DataOrdering(
                 timestamp=common_ordering.Ordering(
                     common_ordering.OrderingOrder.ASCENDING, 0
                 )
             ),
-            filters=ports.DataFilters(),
+            filters=query_ports.DataFilters(),
             pagination=pagination_dtos.Pagination(
                 pagination_dtos.PAGINATION_DEFAULT_OFFSET,
                 pagination_dtos.PAGINATION_DEFAULT_LIMIT,
