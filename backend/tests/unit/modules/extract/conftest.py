@@ -1,16 +1,12 @@
 import pytest
 
 from ....common.annotations import YieldFixture
-from .fakers import (
-    TestExtractDomainRepository,
-    TestExtractUnitOfWork,
-    TestFileDomainRepository,
-)
+from . import fakers
 
 
 @pytest.fixture
-def test_data_unit_of_work() -> YieldFixture[TestExtractUnitOfWork]:
-    test_unit_of_work = TestExtractUnitOfWork()
-    test_unit_of_work.file = TestFileDomainRepository()
-    test_unit_of_work.extract = TestExtractDomainRepository()
+def test_extract_unit_of_work() -> YieldFixture[fakers.TestExtractUnitOfWork]:
+    test_unit_of_work = fakers.TestExtractUnitOfWork()
+    test_unit_of_work.file = fakers.TestFileDomainRepository()
+    test_unit_of_work.extract = fakers.TestExtractDomainRepository()
     yield test_unit_of_work

@@ -1,11 +1,11 @@
 import pytest
 
 from ....common.annotations import YieldFixture
-from .fakers import TestDataDomainRepository, TestSaveDataUnitOfWork
+from . import fakers
 
 
 @pytest.fixture
-def test_data_unit_of_work() -> YieldFixture[TestSaveDataUnitOfWork]:
-    test_unit_of_work = TestSaveDataUnitOfWork()
-    test_unit_of_work.data = TestDataDomainRepository()
+def test_data_unit_of_work() -> YieldFixture[fakers.TestSaveDataUnitOfWork]:
+    test_unit_of_work = fakers.TestSaveDataUnitOfWork()
+    test_unit_of_work.data = fakers.TestDataDomainRepository()
     yield test_unit_of_work
