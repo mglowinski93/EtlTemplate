@@ -18,12 +18,13 @@ def test_data_saved_successfully(
     commands.save(unit_of_work=test_data_unit_of_work, command=domain_commands.SaveData(output_data=output_data))
 
     # Then
+
+    #TODO verify tests with mateusz test and fix this one with all()
     assert len(test_data_unit_of_work.data.data) == 1  # type: ignore[attr-defined]
-    assert all(
-        [
-            output_data[0].full_name == test_data_unit_of_work.data.data[0].full_name,  # type: ignore[attr-defined]
-            output_data[0].age == test_data_unit_of_work.data.data[0].age,  # type: ignore[attr-defined]
-            output_data[0].is_satisfied
-            == test_data_unit_of_work.data.data[0].is_satisfied,  # type: ignore[attr-defined]
-        ]
+    assert all(data.full_name == test_data_unit_of_work.data.data[index].full_name and   # type: ignore[attr-defined]
+                data.age == test_data_unit_of_work.data.data[index].age and  # type: ignore[attr-defined]
+                data.is_satisfied == test_data_unit_of_work.data.data[index].is_satisfied  # type: ignore[attr-defined]
+            for index, data in output_data
     )
+
+

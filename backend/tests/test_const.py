@@ -5,6 +5,9 @@ EXTRACT_TEST_FILES_LOCATION = pathlib.Path(__file__).parent / "test_files" / "ex
 CORRECT_INPUT_CSV = (
     pathlib.Path(__file__).parent / "test_files" / "extract" / "correct_input.csv"
 )
+DATASET_INPUT_SIZE = (
+    10
+)
 CORRECT_INPUT_XLS = (
     pathlib.Path(__file__).parent / "test_files" / "extract" / "correct_input.xls"
 )
