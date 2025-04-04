@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from django.conf import settings
 from django.core import exceptions as django_exceptions
 from django.core.files.base import ContentFile
@@ -34,13 +32,6 @@ class DjangoFileDomainRepository(ports.AbstractFileDomainRepository):
             raise FileSaveError(
                 message=f"File {file_name} can not be saved.", file_name=file_name
             ) from err
-
-    def file_exists(self, file_name: str) -> bool:
-        """
-        See description of parent class to get more details.
-        """
-
-        return (Path(settings.MEDIA_ROOT) / file_name).exists()
 
 
 class DjangoExtractDomainRepository(ports.AbstractExtractDomainRepository):

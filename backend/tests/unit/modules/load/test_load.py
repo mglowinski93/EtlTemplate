@@ -22,7 +22,6 @@ def test_data_saved_successfully(
 
     # Then
     assert len(test_data_unit_of_work.data.data) == 1  # type: ignore[attr-defined]
-
     assert all(
         given_data.full_name == result.full_name
         and given_data.age == result.age

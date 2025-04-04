@@ -26,7 +26,7 @@ def test_extract_successfully_read_csv_file(
     assert not input_data.empty  # type: ignore[attr-defined]
     assert len(cast(pd.DataFrame, input_data)) == test_const.DATASET_INPUT_SIZE
 
-    assert test_extract_unit_of_work.file.file_exists(test_const.CORRECT_INPUT_CSV.name)
+    assert test_extract_unit_of_work.file.file_exists(test_const.CORRECT_INPUT_CSV.name)  # type: ignore[attr-defined]
 
     assert len(test_extract_unit_of_work.extract.list()) == 1  # type: ignore[attr-defined]
     assert all(
@@ -51,9 +51,7 @@ def test_extract_successfully_read_xlsx_file(
     assert not input_data.empty  # type: ignore[attr-defined]
     assert len(cast(pd.DataFrame, input_data)) == test_const.DATASET_INPUT_SIZE
 
-    assert test_extract_unit_of_work.file.file_exists(
-        test_const.CORRECT_INPUT_XLSX.name
-    )
+    assert test_extract_unit_of_work.file.file_exists(test_const.CORRECT_INPUT_XLSX.name)  # type: ignore[attr-defined]
 
     extract_history_results = test_extract_unit_of_work.extract.list()  # type: ignore[attr-defined]
     assert len(extract_history_results) == 1
@@ -79,7 +77,7 @@ def test_extract_successfully_read_xls_file(
     assert not input_data.empty  # type: ignore[attr-defined]
     assert len(cast(pd.DataFrame, input_data)) == test_const.DATASET_INPUT_SIZE
 
-    assert test_extract_unit_of_work.file.file_exists(test_const.CORRECT_INPUT_XLS.name)
+    assert test_extract_unit_of_work.file.file_exists(test_const.CORRECT_INPUT_XLS.name)  # type: ignore[attr-defined]
 
     extract_history_results = test_extract_unit_of_work.extract.list()  # type: ignore[attr-defined]
     assert len(extract_history_results) == 1
