@@ -19,13 +19,13 @@ class TestExtractUnitOfWork(ports.AbstractExtractUnitOfWork):
 
 class TestFileDomainRepository(ports.AbstractFileDomainRepository):
     def __init__(self):
-        self.saved_files: dict[Path, bytes] = {}
+        self.saved_files: dict[str, bytes] = {}
 
-    def save(self, file: bytes, file_name: str) -> Path:
+    def save(self, file: bytes, file_name: str) -> str:
         self.saved_files[test_const.EXTRACT_TEST_FILES_LOCATION / file_name] = file
-        return test_const.EXTRACT_TEST_FILES_LOCATION / file_name
+        return file_name
 
-    def file_exists(self, file_path: Path) -> bool:
+    def file_exists(self, file_path: str) -> bool:
         return file_path in self.saved_files
 
 

@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 from typing import cast
+from pathlib import Path
 
 import pandas as pd
 import pandera as pa
@@ -19,38 +20,37 @@ def extract(
 ) -> InputData:
     with extract_unit_of_work:
         logger.info("Saving file...")
-        saved_file_path = extract_unit_of_work.file.save(
+        saved_file_name: str = extract_unit_of_work.file.save(
             file=command.file, file_name=command.file_name
         )
         logger.info("File saved.")
-        logger.info(saved_file_path)
 
         logger.info("Saving extract history...")
         extract_unit_of_work.extract.create(
             ExtractHistory(
                 input_file_name=command.file_name,
-                saved_file_name=saved_file_path.name,
+                saved_file_name=saved_file_name,
                 timestamp=datetime.now(),
             )
         )
         logger.info("Extract history saved.")
 
         logger.info("Started data extraction.")
-        if not extract_unit_of_work.file.file_exists(saved_file_path):
+        if not extract_unit_of_work.file.file_exists(saved_file_name):
             logger.error(
-                "File containing input data '%s' does not exist.", saved_file_path.name
+                "File containing input data '%s' does not exist.", saved_file_name
             )
             raise FileNotFoundError(
-                f"Input Data file {saved_file_path.name} not found."
+                f"Input Data file {saved_file_name} not found."
             )
-    read_strategy: AbstractExtraction = choose_strategy(saved_file_path.suffix)()
-    df: pd.DataFrame = read_strategy.read(saved_file_path)
+    read_strategy: AbstractExtraction = choose_strategy(Path(saved_file_name).suffix)()
+    df: pd.DataFrame = read_strategy.read(saved_file_name)
     try:
         validated_data = cast(InputData, InputData.validate(df))
     except pa.errors.SchemaError as err:
         raise DataValidationError(
-            message=f"Invalid input data in file {saved_file_path.name}",
-            file_name=saved_file_path.name,
+            message=f"Invalid input data in file {saved_file_name}",
+            file_name=saved_file_name,
         ) from err
 
     logger.info("Dataset extracted successfully.")

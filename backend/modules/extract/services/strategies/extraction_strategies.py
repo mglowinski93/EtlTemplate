@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from django.conf import settings
 from pathlib import Path
 
 import pandas as pd
@@ -8,9 +9,9 @@ from ...domain.exceptions import FileExtensionNotSupportedError
 
 class AbstractExtraction(ABC):
     @abstractmethod
-    def read(self, path_to_file: Path) -> pd.DataFrame:
+    def read(self, file_name: str) -> pd.DataFrame:
         """
-        :param path_to_file: Path to a file containing data.
+        :param file_name: File name containing data.
 
         :return: Extracted data in DataFrame format.
         """
@@ -23,8 +24,8 @@ class CsvExtraction(AbstractExtraction):
     See description of parent class to get more details.
     """
 
-    def read(self, path_to_file: Path) -> pd.DataFrame:
-        return pd.read_csv(path_to_file)
+    def read(self, file_name: str) -> pd.DataFrame:
+        return pd.read_csv(Path(settings.MEDIA_ROOT) / file_name)
 
 
 class ExcelExtraction(AbstractExtraction):
@@ -32,8 +33,8 @@ class ExcelExtraction(AbstractExtraction):
     See description of parent class to get more details.
     """
 
-    def read(self, path_to_file: Path) -> pd.DataFrame:
-        return pd.read_excel(path_to_file)
+    def read(self, file_name: str) -> pd.DataFrame:
+        return pd.read_excel(Path(settings.MEDIA_ROOT) / file_name)
 
 
 def choose_strategy(file_extension: str) -> type[AbstractExtraction]:

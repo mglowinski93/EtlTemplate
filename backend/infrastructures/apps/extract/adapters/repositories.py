@@ -18,15 +18,15 @@ class DjangoFileDomainRepository(ports.AbstractFileDomainRepository):
         :param file: File to extract data.
         :param file_name: File name to save file with.
         :raises FileSaveError: Failed to save file from which data must be extracted.
-        :return: Path to the saved file.
+
+        :return: Name of the saved file.
         """
 
         try:
-            return Path(settings.MEDIA_ROOT) / Path(
-                FileSystemStorage(location=settings.MEDIA_ROOT).save(
+            return FileSystemStorage(location=settings.MEDIA_ROOT).save(
                     name=file_name, content=ContentFile(file)
                 )
-            )
+            
         except OSError as err:
             raise FileSaveError(
                 message=f"File {file_name} can not be saved.", file_name=file_name
@@ -36,8 +36,12 @@ class DjangoFileDomainRepository(ports.AbstractFileDomainRepository):
                 message=f"File {file_name} can not be saved.", file_name=file_name
             ) from err
 
-    def file_exists(self, file_path: Path):
-        return file_path.exists()
+    def file_exists(self, file_name: str) -> bool:
+        """
+        See description of parent class to get more details.
+        """
+
+        return (Path(settings.MEDIA_ROOT) / file_name).exists
 
 
 class DjangoExtractDomainRepository(ports.AbstractExtractDomainRepository):
