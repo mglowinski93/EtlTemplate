@@ -9,8 +9,7 @@ from rest_framework.viewsets import ViewSet
 
 from modules.common import const as common_consts
 from modules.extract.domain import commands as domain_commands
-from modules.extract.domain import exceptions, value_objects
-from modules.extract.domain import ports
+from modules.extract.domain import exceptions, ports, value_objects
 from modules.extract.services import commands
 from modules.load.domain import commands as load_domain_commands
 from modules.load.domain import ports as load_ports

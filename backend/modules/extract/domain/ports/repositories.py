@@ -16,10 +16,11 @@ class AbstractFileDomainRepository(common_ports.AbstractDomainRepository):
 
         pass
 
+    @abstractmethod
     def file_exists(self, file_name: str) -> bool:
         """
         :param file_name: File checked.
-        
+
         :return: True if file exists, otherwise False.
         """
 

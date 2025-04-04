@@ -5,15 +5,14 @@ from django.core import exceptions as django_exceptions
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
 
-from modules.extract.domain import value_objects
-from modules.extract.domain import ports
+from modules.extract.domain import ports, value_objects
 
 from ..exceptions import FileSaveError
 from ..models import ExtractHistory
 
 
 class DjangoFileDomainRepository(ports.AbstractFileDomainRepository):
-    def save(self, file: bytes, file_name: str) -> Path:
+    def save(self, file: bytes, file_name: str) -> str:
         """
         :param file: File to extract data.
         :param file_name: File name to save file with.
@@ -24,9 +23,9 @@ class DjangoFileDomainRepository(ports.AbstractFileDomainRepository):
 
         try:
             return FileSystemStorage(location=settings.MEDIA_ROOT).save(
-                    name=file_name, content=ContentFile(file)
-                )
-            
+                name=file_name, content=ContentFile(file)
+            )
+
         except OSError as err:
             raise FileSaveError(
                 message=f"File {file_name} can not be saved.", file_name=file_name
@@ -41,7 +40,7 @@ class DjangoFileDomainRepository(ports.AbstractFileDomainRepository):
         See description of parent class to get more details.
         """
 
-        return (Path(settings.MEDIA_ROOT) / file_name).exists
+        return (Path(settings.MEDIA_ROOT) / file_name).exists()
 
 
 class DjangoExtractDomainRepository(ports.AbstractExtractDomainRepository):

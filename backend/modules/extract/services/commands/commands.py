@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
-from typing import cast
 from pathlib import Path
+from typing import cast
 
 import pandas as pd
 import pandera as pa
@@ -35,15 +35,10 @@ def extract(
         )
         logger.info("Extract history saved.")
 
-        logger.info("Started data extraction.")
-        if not extract_unit_of_work.file.file_exists(saved_file_name):
-            logger.error(
-                "File containing input data '%s' does not exist.", saved_file_name
-            )
-            raise FileNotFoundError(
-                f"Input Data file {saved_file_name} not found."
-            )
-    read_strategy: AbstractExtraction = choose_strategy(Path(command.file_name).suffix)()
+    logger.info("Started data extraction.")
+    read_strategy: AbstractExtraction = choose_strategy(
+        Path(command.file_name).suffix
+    )()
     df: pd.DataFrame = read_strategy.read(command.file)
     try:
         validated_data = cast(InputData, InputData.validate(df))

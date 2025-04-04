@@ -1,8 +1,4 @@
-from pathlib import Path
-
-from modules.extract.domain import value_objects
-from modules.extract.domain import ports 
-from tests import test_const
+from modules.extract.domain import ports, value_objects
 
 
 class TestExtractUnitOfWork(ports.AbstractExtractUnitOfWork):

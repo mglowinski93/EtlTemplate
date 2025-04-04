@@ -33,7 +33,9 @@ class ExcelExtraction(AbstractExtraction):
     """
 
     def read(self, file: bytes) -> pd.DataFrame:
-        return pd.ExcelFile(file)
+        return pd.concat(
+            pd.ExcelFile(BytesIO(file)).parse(None).values(), ignore_index=True
+        )
 
 
 def choose_strategy(file_extension: str) -> type[AbstractExtraction]:

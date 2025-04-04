@@ -1,13 +1,10 @@
 import pathlib
 
-
 EXTRACT_TEST_FILES_LOCATION = pathlib.Path(__file__).parent / "test_files" / "extract"
 CORRECT_INPUT_CSV = (
     pathlib.Path(__file__).parent / "test_files" / "extract" / "correct_input.csv"
 )
-DATASET_INPUT_SIZE = (
-    10
-)
+DATASET_INPUT_SIZE = 10
 CORRECT_INPUT_XLS = (
     pathlib.Path(__file__).parent / "test_files" / "extract" / "correct_input.xls"
 )

@@ -15,16 +15,17 @@ def test_data_saved_successfully(
     ]
 
     # When
-    commands.save(unit_of_work=test_data_unit_of_work, command=domain_commands.SaveData(output_data=output_data))
-
-    # Then
-
-    #TODO verify tests with mateusz test and fix this one with all()
-    assert len(test_data_unit_of_work.data.data) == 1  # type: ignore[attr-defined]
-    assert all(data.full_name == test_data_unit_of_work.data.data[index].full_name and   # type: ignore[attr-defined]
-                data.age == test_data_unit_of_work.data.data[index].age and  # type: ignore[attr-defined]
-                data.is_satisfied == test_data_unit_of_work.data.data[index].is_satisfied  # type: ignore[attr-defined]
-            for index, data in output_data
+    commands.save(
+        unit_of_work=test_data_unit_of_work,
+        command=domain_commands.SaveData(output_data=output_data),
     )
 
+    # Then
+    assert len(test_data_unit_of_work.data.data) == 1  # type: ignore[attr-defined]
 
+    assert all(
+        given_data.full_name == result.full_name
+        and given_data.age == result.age
+        and given_data.is_satisfied == result.is_satisfied
+        for given_data, result in zip(output_data, test_data_unit_of_work.data.list())  # type: ignore[attr-defined]
+    )

@@ -1,5 +1,6 @@
-from django.contrib import admin
 from datetime import datetime
+
+from django.contrib import admin
 
 from .models import ExtractHistory
 
