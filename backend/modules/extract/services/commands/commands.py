@@ -43,8 +43,8 @@ def extract(
             raise FileNotFoundError(
                 f"Input Data file {saved_file_name} not found."
             )
-    read_strategy: AbstractExtraction = choose_strategy(Path(saved_file_name).suffix)()
-    df: pd.DataFrame = read_strategy.read(saved_file_name)
+    read_strategy: AbstractExtraction = choose_strategy(Path(command.file_name).suffix)()
+    df: pd.DataFrame = read_strategy.read(command.file)
     try:
         validated_data = cast(InputData, InputData.validate(df))
     except pa.errors.SchemaError as err:

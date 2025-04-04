@@ -22,11 +22,11 @@ class TestFileDomainRepository(ports.AbstractFileDomainRepository):
         self.saved_files: dict[str, bytes] = {}
 
     def save(self, file: bytes, file_name: str) -> str:
-        self.saved_files[test_const.EXTRACT_TEST_FILES_LOCATION / file_name] = file
+        self.saved_files[file_name] = file
         return file_name
 
-    def file_exists(self, file_path: str) -> bool:
-        return file_path in self.saved_files
+    def file_exists(self, file_name: str) -> bool:
+        return file_name in self.saved_files
 
 
 class TestExtractDomainRepository(ports.AbstractExtractDomainRepository):

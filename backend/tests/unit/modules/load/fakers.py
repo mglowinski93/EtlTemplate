@@ -12,7 +12,6 @@ class TestSaveDataUnitOfWork(ports.AbstractDataUnitOfWork):
     def rollback(self) -> None:
         pass
 
-
 class TestDataDomainRepository(ports.AbstractDataDomainRepository):
     def __init__(self):
         self.data: list[transform_value_objects.OutputData] = []
