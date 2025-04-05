@@ -1,4 +1,5 @@
 from django.db import models
+
 from modules.common import time
 
 
@@ -11,7 +12,9 @@ class AutomaticallyTimestampedModel(models.Model):
 
 
 class ManuallyTimestampedModel(models.Model):
-    created_at = models.DateTimeField(default=time.get_currect_timestamp, editable=False)
+    created_at = models.DateTimeField(
+        default=time.get_currect_timestamp, editable=False
+    )
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
