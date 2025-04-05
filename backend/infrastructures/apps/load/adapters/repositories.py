@@ -6,9 +6,10 @@ from modules.common import pagination as pagination_dtos
 from modules.load.domain import ports
 from modules.load.services import queries
 from django.db import DatabaseError
-from ...common import exceptions
+from ...common import exceptions as common_exceptions
 from modules.load.services.queries import ports as query_ports
 from modules.transform.domain import value_objects as transform_value_objects
+from modules.load.domain import value_objects
 
 from ...common import ordering as common_ordering
 from ..models import Data
@@ -38,13 +39,18 @@ class DjangoDataDomainRepository(ports.AbstractDataDomainRepository):
                 ]
             )
         except DatabaseError as err:
-            raise exceptions.DatabaseError() from err        
+            raise common_exceptions.DatabaseError() from err        
 
 
 class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
     """
     See description of parent class to get more details.
     """
+
+
+    def get(self, data_id: value_objects.DataId)-> queries.DetailedOutputData:
+        #todo implement it
+        pass
 
     def list(
         self,
@@ -57,7 +63,7 @@ class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
                 **_get_django_output_data_filters(filters)
             ).order_by(*_get_django_output_data_ordering(ordering))
         except DatabaseError as err:
-            raise exceptions.DatabaseError() from err
+            raise common_exceptions.DatabaseError() from err
         
         return [
             map_data_model_to_output_data_dto(output_data)

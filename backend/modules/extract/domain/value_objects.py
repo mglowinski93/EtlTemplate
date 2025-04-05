@@ -1,7 +1,12 @@
 from dataclasses import dataclass
 from datetime import datetime
+from ...common import ids as common_ids
 
 import pandera as pa
+
+
+class FileId(common_ids.Uuid):
+    pass
 
 
 class InputData(pa.DataFrameModel):

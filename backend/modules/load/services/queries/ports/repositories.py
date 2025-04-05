@@ -8,6 +8,14 @@ from .dtos import DataFilters, DataOrdering
 
 class AbstractDataQueryRepository(common_ports.AbstractDomainRepository):
     @abstractmethod
+    #todo fix
+    #todo add description
+    def get(self, data_id: value_objects.DataId)-> queries.DetailedOutputData:
+        #todo raise DataDoesNotExist
+        #todo raise DatabaseError
+        pass
+
+    @abstractmethod
     def list(
         self,
         filters: DataFilters,
