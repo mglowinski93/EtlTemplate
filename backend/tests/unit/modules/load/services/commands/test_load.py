@@ -1,6 +1,6 @@
 from modules.load.domain import commands as domain_commands
 from modules.load.domain import ports
-from modules.load.services import commands
+from modules.load.services.commands import commands
 from modules.transform.domain import value_objects as transform_value_objects
 
 

@@ -23,6 +23,7 @@ class DjangoDataDomainRepository(ports.AbstractDataDomainRepository):
     """
 
     def create(self, data: list[transform_value_objects.OutputData]) -> None:
+
         try: 
             Data.objects.bulk_create(
                 [
