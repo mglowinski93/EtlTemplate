@@ -2,7 +2,8 @@ from django.conf import settings
 from django.core import exceptions as django_exceptions
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
-
+from django.db import DatabaseError
+from ...common import exceptions
 from modules.extract.domain import ports, value_objects
 
 from ..exceptions import FileSaveError
@@ -39,9 +40,11 @@ class DjangoExtractDomainRepository(ports.AbstractExtractDomainRepository):
         """
         See description of parent class to get more details.
         """
-
-        ExtractHistory.objects.create(
-            input_file_name=extract_history.input_file_name,
-            saved_file_name=extract_history.saved_file_name,
-            created_at=extract_history.timestamp,
-        )
+        try:
+            ExtractHistory.objects.create(
+                input_file_name=extract_history.input_file_name,
+                saved_file_name=extract_history.saved_file_name,
+                created_at=extract_history.timestamp,
+            )
+        except DatabaseError as err:
+            raise exceptions.DatabaseError() from err

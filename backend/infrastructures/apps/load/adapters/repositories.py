@@ -5,6 +5,8 @@ from modules.common import ordering as ordering_dtos
 from modules.common import pagination as pagination_dtos
 from modules.load.domain import ports
 from modules.load.services import queries
+from django.db import DatabaseError
+from ...common import exceptions
 from modules.load.services.queries import ports as query_ports
 from modules.transform.domain import value_objects as transform_value_objects
 
@@ -21,18 +23,21 @@ class DjangoDataDomainRepository(ports.AbstractDataDomainRepository):
     """
 
     def create(self, data: list[transform_value_objects.OutputData]) -> None:
-        Data.objects.bulk_create(
-            [
-                Data(
-                    data={
-                        "full_name": output_data.full_name,
-                        "age": output_data.age,
-                        "is_satisfied": output_data.is_satisfied,
-                    }
-                )
-                for output_data in data
-            ]
-        )
+        try: 
+            Data.objects.bulk_create(
+                [
+                    Data(
+                        data={
+                            "full_name": output_data.full_name,
+                            "age": output_data.age,
+                            "is_satisfied": output_data.is_satisfied,
+                        }
+                    )
+                    for output_data in data
+                ]
+            )
+        except DatabaseError as err:
+            raise exceptions.DatabaseError() from err        
 
 
 class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
@@ -46,10 +51,13 @@ class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
         ordering: query_ports.DataOrdering,
         pagination: pagination_dtos.Pagination,
     ) -> tuple[list[queries.OutputData], int]:
-        query = Data.objects.filter(
-            **_get_django_output_data_filters(filters)
-        ).order_by(*_get_django_output_data_ordering(ordering))
-
+        try: 
+            query = Data.objects.filter(
+                **_get_django_output_data_filters(filters)
+            ).order_by(*_get_django_output_data_ordering(ordering))
+        except DatabaseError as err:
+            raise exceptions.DatabaseError() from err
+        
         return [
             map_data_model_to_output_data_dto(output_data)
             for output_data in query.all()[

@@ -9,6 +9,7 @@ class AbstractDataDomainRepository(common_ports.AbstractDomainRepository):
     def create(self, data: list[transform_value_objects.OutputData]) -> None:
         """
         :param: Data to save.
+        :raises: DatabaseError: Failed to save output data.
         """
 
         pass

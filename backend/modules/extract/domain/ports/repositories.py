@@ -22,6 +22,7 @@ class AbstractExtractDomainRepository(common_ports.AbstractDomainRepository):
     def create(self, extract_history: value_objects.ExtractHistory) -> None:
         """
         :param: Data to save.
+        :raises: DatabaseError: Failed to save extract history.
         """
 
         pass
