@@ -1,8 +1,8 @@
-#testy adaptera
-#todo example of all domain and non-domain integration  test 
+# testy adaptera
+# todo example of all domain and non-domain integration  test
 # it contains all test cases possible , it contains load query repository and load save operation
 
-#TODO add another test case here, which will test that common test will be raised.
+# TODO add another test case here, which will test that common test will be raised.
 
 # from datetime import timedelta
 # from typing import Any, Callable

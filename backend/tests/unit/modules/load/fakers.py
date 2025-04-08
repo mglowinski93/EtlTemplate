@@ -1,4 +1,9 @@
-from modules.load.domain import ports
+from datetime import datetime
+
+from modules.common import pagination as pagination_dtos
+from modules.load.domain import ports, value_objects
+from modules.load.services import queries
+from modules.load.services.queries import ports as query_ports
 from modules.transform.domain import value_objects as transform_value_objects
 
 
@@ -22,3 +27,29 @@ class TestDataDomainRepository(ports.AbstractDataDomainRepository):
 
     def list(self) -> list[transform_value_objects.OutputData]:
         return self.data
+
+
+class TestDataQueryRepository(query_ports.AbstractDataQueryRepository):
+    def get(self, data_id: value_objects.DataId) -> queries.DetailedOutputData:
+        return queries.DetailedOutputData(
+            id=data_id,
+            full_name="Johnny Bravo",
+            age=1,
+            is_satisfied=True,
+            timestamp=datetime.now(),
+        )
+
+    def list(
+        self,
+        filters: query_ports.DataFilters,
+        ordering: query_ports.DataOrdering,
+        pagination: pagination_dtos.Pagination,
+    ) -> tuple[list[queries.OutputData], int]:
+        return [
+            queries.OutputData(
+                id=value_objects.DataId.new(),
+                full_name="Johnny Bravo",
+                age=10,
+                is_satisfied=True,
+            )
+        ], 1

@@ -18,8 +18,8 @@ from modules.transform.domain import commands as transform_domain_commands
 from modules.transform.domain import value_objects as transform_value_objects
 from modules.transform.services import commands as transform_commands
 
-from ..exceptions import FileSaveError
 from ...common import exceptions as common_exceptions
+from ..exceptions import FileSaveError
 
 logger = logging.getLogger(__name__)
 
@@ -118,10 +118,8 @@ class ExtractViewSet(
                 unit_of_work=data_unit_of_work,
                 command=load_domain_commands.SaveData(output_data),
             )
-        except common_exceptions.DatabaseError as err:
-            logger.error(
-                "Database connection issue, can not save output data."
-            )
+        except common_exceptions.DatabaseError:
+            logger.error("Database connection issue, can not save output data.")
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "Internal server error."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,

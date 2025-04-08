@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime
-from ...common import ids as common_ids
 
 import pandera as pa
+
+from ...common import ids as common_ids
 
 
 class FileId(common_ids.Uuid):

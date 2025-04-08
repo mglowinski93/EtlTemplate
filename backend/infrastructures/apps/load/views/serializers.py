@@ -11,6 +11,7 @@ class OutputDataReadSerializer(serializers.Serializer):
     age = serializers.IntegerField()
     is_satisfied = serializers.BooleanField()
 
+
 class DetailedOutputDataReadSerializer(serializers.Serializer):
     id = serializers.UUIDField()
     full_name = serializers.CharField()

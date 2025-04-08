@@ -3,9 +3,10 @@ from django.core import exceptions as django_exceptions
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
 from django.db import DatabaseError
-from ...common import exceptions
+
 from modules.extract.domain import ports, value_objects
 
+from ...common import exceptions
 from ..exceptions import FileSaveError
 from ..models import ExtractHistory
 
@@ -47,4 +48,4 @@ class DjangoExtractDomainRepository(ports.AbstractExtractDomainRepository):
                 created_at=extract_history.timestamp,
             )
         except DatabaseError as err:
-            raise exceptions.DatabaseError() from err
+            raise exceptions.DatabaseError("Database connection issue.") from err

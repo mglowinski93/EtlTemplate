@@ -1,8 +1,10 @@
 from django.db import models
+from django.utils.translation import gettext as _
+
+from modules.extract.domain import value_objects
 
 from ..common import models as common_models
-from modules.extract.domain import value_objects
-from django.utils.translation import gettext as _
+
 
 class ExtractHistory(common_models.ManuallyTimestampedModel):
     id = models.UUIDField(

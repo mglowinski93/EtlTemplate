@@ -1,9 +1,10 @@
 from django.db import models
-
-from ..common import models as common_models
 from django.utils.translation import gettext as _
 
 from modules.load.domain import value_objects
+
+from ..common import models as common_models
+
 
 class Data(common_models.AutomaticallyTimestampedModel):
     id = models.UUIDField(

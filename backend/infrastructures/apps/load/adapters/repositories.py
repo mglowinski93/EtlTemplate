@@ -1,19 +1,22 @@
 import logging
 from typing import Any
 
+from django.db import DatabaseError
+
 from modules.common import ordering as ordering_dtos
 from modules.common import pagination as pagination_dtos
-from modules.load.domain import ports
+from modules.load.domain import ports, value_objects
 from modules.load.services import queries
-from django.db import DatabaseError
-from ...common import exceptions as common_exceptions
 from modules.load.services.queries import ports as query_ports
 from modules.transform.domain import value_objects as transform_value_objects
-from modules.load.domain import value_objects
 
+from ...common import exceptions as common_exceptions
 from ...common import ordering as common_ordering
 from ..models import Data
-from .mappers import map_data_model_to_output_data_dto, map_data_model_to_detailed_output_data_dto
+from .mappers import (
+    map_data_model_to_detailed_output_data_dto,
+    map_data_model_to_output_data_dto,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +27,7 @@ class DjangoDataDomainRepository(ports.AbstractDataDomainRepository):
     """
 
     def create(self, data: list[transform_value_objects.OutputData]) -> None:
-
-        try: 
+        try:
             Data.objects.bulk_create(
                 [
                     Data(
@@ -39,7 +41,7 @@ class DjangoDataDomainRepository(ports.AbstractDataDomainRepository):
                 ]
             )
         except DatabaseError as err:
-            raise common_exceptions.DatabaseError() from err        
+            raise common_exceptions.DatabaseError("Database connection issue.") from err
 
 
 class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
@@ -47,14 +49,15 @@ class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
     See description of parent class to get more details.
     """
 
-    def get(self, data_id: value_objects.DataId)-> queries.DetailedOutputData:
-        try: 
-            #todo this will probably need extract repository too
-            return map_data_model_to_detailed_output_data_dto(Data.objects.get(id=data_id)) 
-        except Data.DoesNotExist:
-            raise common_exceptions.DataDoesNotExist() from err
+    def get(self, data_id: value_objects.DataId) -> queries.DetailedOutputData:
+        try:
+            return map_data_model_to_detailed_output_data_dto(
+                Data.objects.get(id=data_id)
+            )
+        except Data.DoesNotExist as err:
+            raise common_exceptions.DataDoesNotExist("Data not found.") from err
         except DatabaseError as err:
-            raise common_exceptions.DatabaseError() from err
+            raise common_exceptions.DatabaseError("Database connection issue.") from err
 
     def list(
         self,
@@ -62,13 +65,13 @@ class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
         ordering: query_ports.DataOrdering,
         pagination: pagination_dtos.Pagination,
     ) -> tuple[list[queries.OutputData], int]:
-        try: 
+        try:
             query = Data.objects.filter(
                 **_get_django_output_data_filters(filters)
             ).order_by(*_get_django_output_data_ordering(ordering))
         except DatabaseError as err:
-            raise common_exceptions.DatabaseError() from err
-        
+            raise common_exceptions.DatabaseError("Database connection issue.") from err
+
         return [
             map_data_model_to_output_data_dto(output_data)
             for output_data in query.all()[

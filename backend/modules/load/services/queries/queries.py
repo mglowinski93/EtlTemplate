@@ -1,8 +1,8 @@
-from .dtos import DetailedOutputData, OutputData
-from . import ports
-from ...domain import value_objects
-from ....common import pagination as pagination_dtos
 from ....common import ordering as common_ordering
+from ....common import pagination as pagination_dtos
+from ...domain import value_objects
+from . import ports
+from .dtos import DetailedOutputData, OutputData
 
 
 def get_data(
@@ -23,7 +23,9 @@ def list_data(
 
     if ordering is None:
         ordering = ports.DataOrdering(
-            timestamp=common_ordering.Ordering(order=common_ordering.OrderingOrder.DESCENDING, priority=1),
+            timestamp=common_ordering.Ordering(
+                order=common_ordering.OrderingOrder.DESCENDING, priority=1
+            ),
         )
 
     if pagination is None:

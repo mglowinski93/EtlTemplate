@@ -1,4 +1,5 @@
 import uuid
+
 from typing_extensions import Self
 
 

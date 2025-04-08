@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
+
 from ...domain.value_objects import DataId
+
 
 @dataclass(frozen=True)
 class OutputData:
@@ -12,4 +14,4 @@ class OutputData:
 
 @dataclass(frozen=True)
 class DetailedOutputData(OutputData):
-    timestamp: datetime #todo think about where to take it from ? extract history too I believe
+    timestamp: datetime
