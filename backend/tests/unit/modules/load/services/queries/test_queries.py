@@ -24,7 +24,10 @@ def test_returned_data_list_is_of_correct_type(
         repository=test_data_query_repository,
         filters=ports.DataFilters(),
         ordering=ports.DataOrdering(),
-        pagination=pagination_dtos.Pagination(offset=pagination_dtos.PAGINATION_DEFAULT_OFFSET, records_per_page=pagination_dtos.PAGINATION_DEFAULT_LIMIT),
+        pagination=pagination_dtos.Pagination(
+            offset=pagination_dtos.PAGINATION_DEFAULT_OFFSET,
+            records_per_page=pagination_dtos.PAGINATION_DEFAULT_LIMIT,
+        ),
     )
     # When and then
     isinstance(results, list) and all(
