@@ -26,89 +26,6 @@ class LoadViewSet(
     @swagger_utils.extend_schema(
         responses={
             status.HTTP_200_OK: swagger_utils.OpenApiResponse(
-                description="Load all Output Data.",
-                response={
-                    "type": "object",
-                    "properties": {
-                        "count": {
-                            "type": "integer",
-                            "example": 10,
-                        },
-                        "data": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "full_name": {
-                                        "type": "string",
-                                        "example": "John Snow",
-                                    },
-                                    "age": {"type": "integer", "example": 20},
-                                    "is_satisfied": {
-                                        "type": "boolean",
-                                        "example": True,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            ),
-            status.HTTP_500_INTERNAL_SERVER_ERROR: swagger_utils.OpenApiResponse(
-                description="Internal application issue.",
-                response={
-                    "type": "object",
-                    "properties": {
-                        common_consts.ERROR_DETAIL_KEY: {
-                            "type": "string",
-                            "example": "",
-                        }
-                    },
-                },
-            ),
-        },
-    )
-    @inject.param(name="query_data_repository", cls="query_data_repository")
-    def list(
-        self,
-        request: Request,
-        query_data_repository: query_ports.AbstractDataQueryRepository,
-    ):
-        logger.info("Listing all datasets...")
-        try:
-            output_data, count = queries.list_data(
-                repository=query_data_repository,
-                filters=query_ports.DataFilters(),
-                ordering=query_ports.DataOrdering(
-                    timestamp=common_ordering.Ordering(
-                        common_ordering.OrderingOrder.ASCENDING, 0
-                    )
-                ),
-                pagination=pagination_dtos.Pagination(
-                    pagination_dtos.PAGINATION_DEFAULT_OFFSET,
-                    pagination_dtos.PAGINATION_DEFAULT_LIMIT,
-                ),
-            )
-        except common_exceptions.DatabaseError:
-            logger.error("Database connection issue, can not query output data.")
-            return Response(
-                {common_consts.ERROR_DETAIL_KEY: "Internal server error."},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
-        logger.info("Listed datasets.")
-
-        return Response(
-            data={
-                "count": count,
-                "data": OutputDataReadSerializer(output_data, many=True).data,
-            },
-            status=status.HTTP_200_OK,
-        )
-
-    @swagger_utils.extend_schema(
-        responses={
-            status.HTTP_200_OK: swagger_utils.OpenApiResponse(
                 description="Issue occurred while processing dataset.",
                 response={
                     "type": "object",
@@ -147,18 +64,6 @@ class LoadViewSet(
                     },
                 },
             ),
-            status.HTTP_500_INTERNAL_SERVER_ERROR: swagger_utils.OpenApiResponse(
-                description="Internal application issue.",
-                response={
-                    "type": "object",
-                    "properties": {
-                        common_consts.ERROR_DETAIL_KEY: {
-                            "type": "string",
-                            "example": "",
-                        }
-                    },
-                },
-            ),
         },
     )
     @inject.param(name="query_data_repository", cls="query_data_repository")
@@ -178,16 +83,73 @@ class LoadViewSet(
                 {common_consts.ERROR_DETAIL_KEY: "Data not found."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        except common_exceptions.DatabaseError:
-            logger.error("Database connection issue, can not query output data.")
-            return Response(
-                {common_consts.ERROR_DETAIL_KEY: "Internal server error."},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
 
         return Response(
             data={
                 "data": DetailedOutputDataReadSerializer(detailed_output_data).data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    @swagger_utils.extend_schema(
+        responses={
+            status.HTTP_200_OK: swagger_utils.OpenApiResponse(
+                description="Load all Output Data.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "count": {
+                            "type": "integer",
+                            "example": 10,
+                        },
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "full_name": {
+                                        "type": "string",
+                                        "example": "John Snow",
+                                    },
+                                    "age": {"type": "integer", "example": 20},
+                                    "is_satisfied": {
+                                        "type": "boolean",
+                                        "example": True,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            ),
+        },
+    )
+    @inject.param(name="query_data_repository", cls="query_data_repository")
+    def list(
+        self,
+        request: Request,
+        query_data_repository: query_ports.AbstractDataQueryRepository,
+    ):
+        logger.info("Listing all datasets...")
+        output_data, count = queries.list_data(
+            repository=query_data_repository,
+            filters=query_ports.DataFilters(),
+            ordering=query_ports.DataOrdering(
+                timestamp=common_ordering.Ordering(
+                    common_ordering.OrderingOrder.ASCENDING, 0
+                )
+            ),
+            pagination=pagination_dtos.Pagination(
+                pagination_dtos.PAGINATION_DEFAULT_OFFSET,
+                pagination_dtos.PAGINATION_DEFAULT_LIMIT,
+            ),
+        )
+        logger.info("Listed datasets.")
+
+        return Response(
+            data={
+                "count": count,
+                "data": OutputDataReadSerializer(output_data, many=True).data,
             },
             status=status.HTTP_200_OK,
         )

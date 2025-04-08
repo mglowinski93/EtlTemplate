@@ -41,6 +41,7 @@ class DjangoExtractDomainRepository(ports.AbstractExtractDomainRepository):
         """
         See description of parent class to get more details.
         """
+        
         try:
             ExtractHistory.objects.create(
                 input_file_name=extract_history.input_file_name,

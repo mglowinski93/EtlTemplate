@@ -1,6 +1,6 @@
 import uuid
 
-from typing_extensions import Self
+from typing import Self
 
 
 class Uuid(uuid.UUID):

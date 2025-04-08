@@ -41,6 +41,7 @@ class DjangoDataDomainRepository(ports.AbstractDataDomainRepository):
                 ]
             )
         except DatabaseError as err:
+            logger.exception(err)
             raise common_exceptions.DatabaseError("Database connection issue.") from err
 
 
@@ -55,8 +56,10 @@ class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
                 Data.objects.get(id=data_id)
             )
         except Data.DoesNotExist as err:
+            logger.exception(err)            
             raise common_exceptions.DataDoesNotExist("Data not found.") from err
         except DatabaseError as err:
+            logger.exception(err)            
             raise common_exceptions.DatabaseError("Database connection issue.") from err
 
     def list(
@@ -70,6 +73,7 @@ class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
                 **_get_django_output_data_filters(filters)
             ).order_by(*_get_django_output_data_ordering(ordering))
         except DatabaseError as err:
+            logger.exception(err)
             raise common_exceptions.DatabaseError("Database connection issue.") from err
 
         return [

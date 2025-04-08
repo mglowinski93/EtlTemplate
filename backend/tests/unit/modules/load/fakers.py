@@ -30,14 +30,11 @@ class TestDataDomainRepository(ports.AbstractDataDomainRepository):
 
 
 class TestDataQueryRepository(query_ports.AbstractDataQueryRepository):
+    def __init__(self):
+        self.data = {}
+
     def get(self, data_id: value_objects.DataId) -> queries.DetailedOutputData:
-        return queries.DetailedOutputData(
-            id=data_id,
-            full_name="Johnny Bravo",
-            age=1,
-            is_satisfied=True,
-            timestamp=datetime.now(),
-        )
+        return self.data[data_id]
 
     def list(
         self,
@@ -45,11 +42,7 @@ class TestDataQueryRepository(query_ports.AbstractDataQueryRepository):
         ordering: query_ports.DataOrdering,
         pagination: pagination_dtos.Pagination,
     ) -> tuple[list[queries.OutputData], int]:
-        return [
-            queries.OutputData(
-                id=value_objects.DataId.new(),
-                full_name="Johnny Bravo",
-                age=10,
-                is_satisfied=True,
-            )
-        ], 1
+        return list(self.data.values()), len(self.data)
+
+    def create(self, data: queries.OutputData) -> None:
+        self.data[data.id] = data
