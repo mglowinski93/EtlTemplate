@@ -56,10 +56,10 @@ class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
                 Data.objects.get(id=data_id)
             )
         except Data.DoesNotExist as err:
-            logger.exception(err)            
+            logger.exception(err)
             raise common_exceptions.DataDoesNotExist("Data not found.") from err
         except DatabaseError as err:
-            logger.exception(err)            
+            logger.exception(err)
             raise common_exceptions.DatabaseError("Database connection issue.") from err
 
     def list(
