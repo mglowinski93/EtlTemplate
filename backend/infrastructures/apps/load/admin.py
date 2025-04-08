@@ -5,7 +5,10 @@ from .models import Data
 
 @admin.register(Data)
 class OutputDataAdmin(admin.ModelAdmin):
-    list_display = ("full_name", "age", "is_satisfied")
+    list_display = ("id", "full_name", "age", "is_satisfied")
+
+    def id(self, data: Data):
+        return data.data["id"]
 
     def full_name(self, data: Data):
         return data.data["full_name"]

@@ -12,5 +12,4 @@ class OutputData:
 
 @dataclass(frozen=True)
 class DetailedOutputData(OutputData):
-    timestamp: datetime
-    file_name: str
+    timestamp: datetime #todo think about where to take it from ? extract history too I believe

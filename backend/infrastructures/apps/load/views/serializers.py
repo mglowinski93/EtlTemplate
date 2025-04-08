@@ -6,6 +6,14 @@ class OutputDataBaseSerializer(serializers.Serializer):
 
 
 class OutputDataReadSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
     full_name = serializers.CharField()
     age = serializers.IntegerField()
     is_satisfied = serializers.BooleanField()
+
+class DetailedOutputDataReadSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    full_name = serializers.CharField()
+    age = serializers.IntegerField()
+    is_satisfied = serializers.BooleanField()
+    timestamp = serializers.DateTimeField()

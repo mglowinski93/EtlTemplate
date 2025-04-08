@@ -2,17 +2,23 @@ from abc import abstractmethod
 
 from .....common import pagination as pagination_dtos
 from .....common.domain import ports as common_ports
-from ..dtos import OutputData
+from ..dtos import OutputData, DetailedOutputData
 from .dtos import DataFilters, DataOrdering
+from ....domain import value_objects
 
 
 class AbstractDataQueryRepository(common_ports.AbstractDomainRepository):
     @abstractmethod
-    #todo fix
-    #todo add description
-    def get(self, data_id: value_objects.DataId)-> queries.DetailedOutputData:
-        #todo raise DataDoesNotExist
-        #todo raise DatabaseError
+
+    def get(self, data_id: value_objects.DataId)-> DetailedOutputData:
+        """
+        :param data_id: Id of data to be queried.
+        :raises: DataDoesNotExist: Id does not exist.
+        :raises: DatabaseError: Failed to query output data.
+
+        :return: Detailed information about output data.
+        """
+
         pass
 
     @abstractmethod

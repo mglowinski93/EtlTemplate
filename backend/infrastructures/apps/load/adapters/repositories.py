@@ -13,7 +13,7 @@ from modules.load.domain import value_objects
 
 from ...common import ordering as common_ordering
 from ..models import Data
-from .mappers import map_data_model_to_output_data_dto
+from .mappers import map_data_model_to_output_data_dto, map_data_model_to_detailed_output_data_dto
 
 logger = logging.getLogger(__name__)
 
@@ -47,10 +47,14 @@ class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
     See description of parent class to get more details.
     """
 
-
     def get(self, data_id: value_objects.DataId)-> queries.DetailedOutputData:
-        #todo implement it
-        pass
+        try: 
+            #todo this will probably need extract repository too
+            return map_data_model_to_detailed_output_data_dto(Data.objects.get(id=data_id)) 
+        except Data.DoesNotExist:
+            raise common_exceptions.DataDoesNotExist() from err
+        except DatabaseError as err:
+            raise common_exceptions.DatabaseError() from err
 
     def list(
         self,
