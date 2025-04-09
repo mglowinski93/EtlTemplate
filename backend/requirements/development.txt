@@ -12,3 +12,4 @@ Faker==19.3.*
 factory-boy==3.3.*
 isort==6.0.*
 types-python-dateutil==2.9.0.*
+pytest-mock==3.14.*

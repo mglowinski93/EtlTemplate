@@ -12,7 +12,9 @@ from ..models import ExtractHistory
 
 
 class DjangoFileDomainRepository(ports.AbstractFileDomainRepository):
-    def save(self, file: bytes, file_name: str, location: str = settings.MEDIA_ROOT) -> str:
+    def save(
+        self, file: bytes, file_name: str, location: str = settings.MEDIA_ROOT
+    ) -> str:
         """
         :param file: File to extract data.
         :param file_name: File name to save file with.
