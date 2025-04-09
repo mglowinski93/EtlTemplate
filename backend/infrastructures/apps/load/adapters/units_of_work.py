@@ -1,11 +1,11 @@
-from modules.load.domain.ports import units_of_work as domain_units_of_work
+from modules.load.domain import ports
 
 from ...common.adapters import units_of_work
 from .repositories import DjangoDataDomainRepository
 
 
 class DjangoDataUnitOfWork(
-    units_of_work.DjangoUnitOfWork, domain_units_of_work.AbstractDataUnitOfWork
+    units_of_work.DjangoUnitOfWork, ports.AbstractDataUnitOfWork
 ):
     def __init__(self):
         super().__init__(

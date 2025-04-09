@@ -8,18 +8,17 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from modules.common import const as common_consts
-from modules.extract.domain import commands as domain_extract_commands
-from modules.extract.domain import exceptions as extract_exceptions
-from modules.extract.domain import value_objects as extract_value_objects
-from modules.extract.domain.ports import units_of_work as extract_units_of_work
-from modules.extract.services import commands as service_extract_commands
-from modules.load.domain import commands as domain_load_commands
-from modules.load.domain.ports import units_of_work as load_units_of_work
-from modules.load.services import commands as services_load_commands
-from modules.transform.domain import commands as domain_transform_commands
+from modules.extract.domain import commands as domain_commands
+from modules.extract.domain import exceptions, ports, value_objects
+from modules.extract.services import commands
+from modules.load.domain import commands as load_domain_commands
+from modules.load.domain import ports as load_ports
+from modules.load.services import commands as load_commands
+from modules.transform.domain import commands as transform_domain_commands
 from modules.transform.domain import value_objects as transform_value_objects
-from modules.transform.services import commands as services_transform_commands
+from modules.transform.services import commands as transform_commands
 
+from ...common import exceptions as common_exceptions
 from ..exceptions import FileSaveError
 
 logger = logging.getLogger(__name__)
@@ -60,12 +59,12 @@ class ExtractViewSet(
         },
     )
     @inject.param(name="data_unit_of_work", cls="data_unit_of_work")
-    @inject.param(name="file_unit_of_work", cls="file_unit_of_work")
+    @inject.param(name="extract_unit_of_work", cls="extract_unit_of_work")
     def create(
         self,
         request: Request,
-        data_unit_of_work: load_units_of_work.AbstractDataUnitOfWork,
-        file_unit_of_work: extract_units_of_work.AbstractFileUnitOfWork,
+        data_unit_of_work: load_ports.AbstractDataUnitOfWork,
+        extract_unit_of_work: ports.AbstractExtractUnitOfWork,
     ) -> Response:
         if "file" not in request.FILES:
             return Response(
@@ -75,13 +74,12 @@ class ExtractViewSet(
 
         logger.info("Extracting dataset...")
         try:
-            input_data: extract_value_objects.InputData = service_extract_commands.extract(
-                domain_extract_commands.ExtractData(
-                    file_unit_of_work.file.save(
-                        file=bytes(request.FILES["file"].read()),
-                        file_name=request.FILES["file"].name,
-                    )
-                )
+            input_data: value_objects.InputData = commands.extract(
+                extract_unit_of_work=extract_unit_of_work,
+                command=domain_commands.ExtractData(
+                    file=bytes(request.FILES["file"].read()),
+                    file_name=request.FILES["file"].name,
+                ),
             )
         except FileSaveError as err:
             logger.error("Can not save file '%s'.", err.file_name)
@@ -89,7 +87,7 @@ class ExtractViewSet(
                 {common_consts.ERROR_DETAIL_KEY: "Can not save file."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-        except extract_exceptions.FileExtensionNotSupportedError as err:
+        except exceptions.FileExtensionNotSupportedError as err:
             logger.error(
                 "Can not extract data from file '%s', due to not supported extension.",
                 err.file_extension,
@@ -98,7 +96,7 @@ class ExtractViewSet(
                 {common_consts.ERROR_DETAIL_KEY: "Unsupported file extension."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        except extract_exceptions.DataValidationError as err:
+        except exceptions.DataValidationError as err:
             logger.error("Invalid input data in file '%s'.", err.file_name)
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "Invalid data format."},
@@ -109,15 +107,23 @@ class ExtractViewSet(
         logger.info("Transforming dataset...")
         output_data: list[
             transform_value_objects.OutputData
-        ] = services_transform_commands.transform(
-            domain_transform_commands.TransformData(input_data)
+        ] = transform_commands.transform(
+            transform_domain_commands.TransformData(input_data)
         )
         logger.info("Dataset transformed.")
 
         logger.info("Saving dataset...")
-        services_load_commands.save(
-            data_unit_of_work, domain_load_commands.SaveData(output_data)
-        )
+        try:
+            load_commands.save(
+                unit_of_work=data_unit_of_work,
+                command=load_domain_commands.SaveData(output_data),
+            )
+        except common_exceptions.DatabaseError:
+            logger.error("Database connection issue, can not save output data.")
+            return Response(
+                {common_consts.ERROR_DETAIL_KEY: "Internal server error."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
         logger.info("Dataset saved.")
 
         return Response(status=status.HTTP_201_CREATED)

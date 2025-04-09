@@ -5,16 +5,16 @@ from typing import Type
 
 from django.db import transaction
 
-from modules.common.domain import ports as common_ports
+from modules.common.domain import ports
 
 
 @dataclass(frozen=True)
 class RepositoryData:
     name: str
-    repository: Type[common_ports.AbstractDomainRepository]
+    repository: Type[ports.AbstractDomainRepository]
 
 
-class DjangoUnitOfWork(common_ports.AbstractUnitOfWork):
+class DjangoUnitOfWork(ports.AbstractUnitOfWork):
     def __init__(self, repositories: list[RepositoryData]):
         for repository in repositories:
             setattr(self, repository.name, repository.repository())

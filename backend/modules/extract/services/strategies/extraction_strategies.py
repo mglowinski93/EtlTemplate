@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from pathlib import Path
+from io import BytesIO
 
 import pandas as pd
 
@@ -8,9 +8,9 @@ from ...domain.exceptions import FileExtensionNotSupportedError
 
 class AbstractExtraction(ABC):
     @abstractmethod
-    def read(self, path_to_file: Path) -> pd.DataFrame:
+    def read(self, file: bytes) -> pd.DataFrame:
         """
-        :param path_to_file: Path to a file containing data.
+        :param file: File containing data.
 
         :return: Extracted data in DataFrame format.
         """
@@ -23,8 +23,8 @@ class CsvExtraction(AbstractExtraction):
     See description of parent class to get more details.
     """
 
-    def read(self, path_to_file: Path) -> pd.DataFrame:
-        return pd.read_csv(path_to_file)
+    def read(self, file: bytes) -> pd.DataFrame:
+        return pd.read_csv(BytesIO(file))
 
 
 class ExcelExtraction(AbstractExtraction):
@@ -32,17 +32,18 @@ class ExcelExtraction(AbstractExtraction):
     See description of parent class to get more details.
     """
 
-    def read(self, path_to_file: Path) -> pd.DataFrame:
-        return pd.read_excel(path_to_file)
+    def read(self, file: bytes) -> pd.DataFrame:
+        return pd.concat(
+            pd.ExcelFile(BytesIO(file)).parse(None).values(), ignore_index=True
+        )
 
 
 def choose_strategy(file_extension: str) -> type[AbstractExtraction]:
-    strategy = SUPPORTED_EXTENSIONS.get(file_extension)
-    if strategy is None:
+    if file_extension not in SUPPORTED_EXTENSIONS:
         raise FileExtensionNotSupportedError(
             message="Data format '%s' is not supported.", file_extension=file_extension
         )
-    return strategy
+    return SUPPORTED_EXTENSIONS[file_extension]
 
 
 SUPPORTED_EXTENSIONS = {
