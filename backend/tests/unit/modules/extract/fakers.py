@@ -17,7 +17,7 @@ class TestFileDomainRepository(ports.AbstractFileDomainRepository):
     def __init__(self):
         self.saved_files: dict[str, bytes] = {}
 
-    def save(self, file: bytes, file_name: str) -> str:
+    def save(self, file: bytes, file_name: str, location: str = "") -> str:
         self.saved_files[file_name] = file
         return file_name
 
