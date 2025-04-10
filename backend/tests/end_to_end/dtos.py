@@ -6,6 +6,7 @@ from rest_framework.test import APIClient
 
 User = get_user_model()
 
+
 @dataclass
 class APIClientData:
     client: APIClient
