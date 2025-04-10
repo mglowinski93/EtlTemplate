@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "drf_spectacular",
+    "infrastructures.apps.load",
+    "infrastructures.apps.extract",
 ]
 
 MIDDLEWARE = [
@@ -144,3 +146,6 @@ SPECTACULAR_SETTINGS = {
         "rest_framework.permissions.AllowAny"
     ],  # Disable authentication for swagger.
 }
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = "/media/"

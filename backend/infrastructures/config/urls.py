@@ -25,6 +25,9 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from infrastructures.apps.extract import views as extract_views
+from infrastructures.apps.load import views as load_views
+
 
 def health_check(request):
     return JsonResponse({"status": "running"})
@@ -39,9 +42,10 @@ api_swagger_urlpatterns = [
     path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]
 
-
-# API URLs
-api_urlpatterns = []
+api_urlpatterns = [
+    path("load/", include(load_views.load_urlpatterns)),
+    path("extract/", include(extract_views.extract_urlpatterns)),
+]
 
 
 if settings.DEBUG:

@@ -2,3 +2,8 @@ django==4.2.*
 psycopg2-binary==2.9.*
 djangorestframework==3.14.*
 drf-spectacular==0.26.*
+inject==5.2.*
+pandas==2.2.*
+openpyxl==3.1.*
+pandera==0.22.*
+pandas-stubs==2.2.3.*
