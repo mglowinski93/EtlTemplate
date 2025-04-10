@@ -1,12 +1,10 @@
 import pytest
 
-from infrastructures.apps.extract.adapters import (
+from infrastructures.apps.extract.adapters.repositories import (
     DjangoExtractDomainRepository,
     DjangoFileDomainRepository,
 )
 from tests.common.annotations import YieldFixture
-
-# from . import fakers
 
 
 @pytest.fixture

@@ -10,20 +10,20 @@ from pytest_mock import MockFixture
 from infrastructures.apps.common import exceptions as common_exceptions
 from infrastructures.apps.extract import exceptions, models
 from modules.extract.domain import ports, value_objects
-from tests import test_const
+from tests import const
 
 
-def test_django_file_domain_repository_save_method_saves_file_from_bytes(
+def test_django_file_domain_repository_save_method_saves_file(
     tmp_path,
     test_django_file_domain_repository: ports.AbstractFileDomainRepository,
 ):
     # Given
-    with open(test_const.CORRECT_INPUT_CSV, "rb") as file:
+    with open(const.CORRECT_INPUT_CSV, "rb") as file:
         file_bytes = file.read()
 
     # When
     result = test_django_file_domain_repository.save(
-        file_name=os.path.basename(test_const.CORRECT_INPUT_CSV),
+        file_name=os.path.basename(const.CORRECT_INPUT_CSV),
         file=file_bytes,
         location=str(tmp_path),
     )
@@ -33,13 +33,13 @@ def test_django_file_domain_repository_save_method_saves_file_from_bytes(
     assert (tmp_path / result).exists()
 
 
-def test_django_file_domain_repository_save_method_raises_file_save_error_on_os_error(
+def test_django_file_domain_repository_save_method_raises_custom_exception_on_django_exception(
     tmp_path,
     mocker: MockFixture,
     test_django_file_domain_repository: ports.AbstractFileDomainRepository,
 ):
     # Given
-    with open(test_const.INCORRECT_INPUT, "rb") as file:
+    with open(const.INCORRECT_INPUT, "rb") as file:
         file_bytes = file.read()
 
     side_effect = OSError
@@ -48,7 +48,7 @@ def test_django_file_domain_repository_save_method_raises_file_save_error_on_os_
     # When and Then
     with pytest.raises(exceptions.FileSaveError):
         test_django_file_domain_repository.save(
-            file_name=os.path.basename(test_const.INCORRECT_INPUT),
+            file_name=os.path.basename(const.INCORRECT_INPUT),
             file=file_bytes,
             location=str(tmp_path),
         )
@@ -60,7 +60,7 @@ def test_django_file_domain_repository_save_method_raises_file_save_error_on_sus
     test_django_file_domain_repository: ports.AbstractFileDomainRepository,
 ):
     # Given
-    with open(test_const.INCORRECT_INPUT, "rb") as file:
+    with open(const.INCORRECT_INPUT, "rb") as file:
         file_bytes = file.read()
 
     side_effect = django_exceptions.SuspiciousFileOperation
@@ -69,13 +69,12 @@ def test_django_file_domain_repository_save_method_raises_file_save_error_on_sus
     # When and Then
     with pytest.raises(exceptions.FileSaveError):
         test_django_file_domain_repository.save(
-            file_name=os.path.basename(test_const.INCORRECT_INPUT),
+            file_name=os.path.basename(const.INCORRECT_INPUT),
             file=file_bytes,
             location=str(tmp_path),
         )
 
 
-@pytest.mark.django_db
 def test_django_extract_domain_repository_create_method_creates_record(
     test_django_extract_domain_repository: ports.AbstractExtractDomainRepository,
 ):
@@ -83,6 +82,7 @@ def test_django_extract_domain_repository_create_method_creates_record(
     extract_history_entity = value_objects.ExtractHistory(
         "test_file.csv", "saved_file.csv", timestamp=datetime.now()
     )
+
     # When
     test_django_extract_domain_repository.create(extract_history_entity)
 
@@ -90,13 +90,11 @@ def test_django_extract_domain_repository_create_method_creates_record(
     assert (
         models.ExtractHistory.objects.filter(
             input_file_name=extract_history_entity.input_file_name
-        ).count()
-        == 1
+        ).exists()
     )
 
 
-@pytest.mark.django_db
-def test_django_extract_domain_repository_create_method_raises_database_error(
+def test_django_extract_domain_repository_create_method_raises_custom_exception_on_django_exception(
     mocker: MockFixture,
     test_django_extract_domain_repository: ports.AbstractExtractDomainRepository,
 ):

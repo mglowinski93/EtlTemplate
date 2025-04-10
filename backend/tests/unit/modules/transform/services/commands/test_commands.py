@@ -3,13 +3,13 @@ import pandas as pd
 from modules.transform.domain import commands as transform_commands
 from modules.transform.domain import value_objects as transform_value_objects
 from modules.transform.services.commands import commands as service_commands
-from tests import test_const
+from tests import const
 
 
 def test_transformed_data_contains_fullname_column():
     # Given
     test_dataset_size = 10
-    input_df = pd.read_csv(test_const.TRANSFORM_CORRECT_INPUT_CSV)
+    input_df = pd.read_csv(const.TRANSFORM_CORRECT_INPUT_CSV)
     command = transform_commands.TransformData(input_df)
 
     # When

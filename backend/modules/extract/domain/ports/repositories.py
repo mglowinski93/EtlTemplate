@@ -6,7 +6,7 @@ from ...domain import value_objects
 
 class AbstractFileDomainRepository(common_ports.AbstractDomainRepository):
     @abstractmethod
-    def save(self, file: bytes, file_name: str, location) -> str:
+    def save(self, file: bytes, file_name: str, location: str) -> str:
         """
         :param file: File to extract data.
         :param file_name: File name to save file with.
