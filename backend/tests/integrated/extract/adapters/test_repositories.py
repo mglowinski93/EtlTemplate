@@ -10,7 +10,7 @@ from pytest_mock import MockFixture
 from infrastructures.apps.common import exceptions as common_exceptions
 from infrastructures.apps.extract import exceptions, models
 from modules.extract.domain import ports, value_objects
-from tests import const
+from tests import consts
 
 
 def test_django_file_domain_repository_save_method_saves_file(
@@ -18,12 +18,12 @@ def test_django_file_domain_repository_save_method_saves_file(
     test_django_file_domain_repository: ports.AbstractFileDomainRepository,
 ):
     # Given
-    with open(const.CORRECT_INPUT_CSV, "rb") as file:
+    with open(consts.CORRECT_INPUT_CSV, "rb") as file:
         file_bytes = file.read()
 
     # When
     result = test_django_file_domain_repository.save(
-        file_name=os.path.basename(const.CORRECT_INPUT_CSV),
+        file_name=os.path.basename(consts.CORRECT_INPUT_CSV),
         file=file_bytes,
         location=str(tmp_path),
     )
@@ -33,9 +33,7 @@ def test_django_file_domain_repository_save_method_saves_file(
     assert (tmp_path / result).exists()
 
 
-@pytest.mark.parametrize(
-    "side_effect", [OSError, django_exceptions.SuspiciousFileOperation]
-)
+@pytest.mark.parametrize("side_effect", (OSError, django_exceptions.SuspiciousFileOperation))
 def test_django_file_domain_repository_save_method_raises_custom_exception_on_django_exception(
     tmp_path,
     mocker: MockFixture,
@@ -43,7 +41,7 @@ def test_django_file_domain_repository_save_method_raises_custom_exception_on_dj
     side_effect,
 ):
     # Given
-    with open(const.INCORRECT_INPUT, "rb") as file:
+    with open(consts.INCORRECT_INPUT, "rb") as file:
         file_bytes = file.read()
 
     mocker.patch.object(FileSystemStorage, "save", side_effect=side_effect)
@@ -51,7 +49,7 @@ def test_django_file_domain_repository_save_method_raises_custom_exception_on_dj
     # When and Then
     with pytest.raises(exceptions.FileSaveError):
         test_django_file_domain_repository.save(
-            file_name=os.path.basename(const.INCORRECT_INPUT),
+            file_name=os.path.basename(consts.INCORRECT_INPUT),
             file=file_bytes,
             location=str(tmp_path),
         )
@@ -84,7 +82,6 @@ def test_django_extract_domain_repository_create_method_raises_custom_exception_
     )
 
     side_effect = DatabaseError
-
     mocker.patch(
         "infrastructures.apps.extract.models.ExtractHistory.objects.create",
         side_effect=side_effect,
