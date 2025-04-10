@@ -9,7 +9,7 @@ def test_health_check_endpoint(unauthenticated_client: APIClientData):
     client = unauthenticated_client.client
 
     # When
-    response = client.get(get_url(path_name="health-check"))
+    response = client.get(get_url(path_name="health_check"))
 
     # Then
     assert response.status_code == HTTPStatus.OK
