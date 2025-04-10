@@ -25,15 +25,17 @@ def test_django_file_domain_repository_save_method_saves_file(
     result = test_django_file_domain_repository.save(
         file_name=os.path.basename(consts.CORRECT_INPUT_CSV),
         file=file_bytes,
-        location=str(tmp_path),
     )
 
     # Then
     assert isinstance(result, str)
+    # breakpoint()
     assert (tmp_path / result).exists()
 
 
-@pytest.mark.parametrize("side_effect", (OSError, django_exceptions.SuspiciousFileOperation))
+@pytest.mark.parametrize(
+    "side_effect", (OSError, django_exceptions.SuspiciousFileOperation)
+)
 def test_django_file_domain_repository_save_method_raises_custom_exception_on_django_exception(
     tmp_path,
     mocker: MockFixture,
@@ -51,7 +53,6 @@ def test_django_file_domain_repository_save_method_raises_custom_exception_on_dj
         test_django_file_domain_repository.save(
             file_name=os.path.basename(consts.INCORRECT_INPUT),
             file=file_bytes,
-            location=str(tmp_path),
         )
 
 

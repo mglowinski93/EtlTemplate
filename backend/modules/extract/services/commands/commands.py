@@ -20,7 +20,7 @@ def extract(
 ) -> InputData:
     with extract_unit_of_work:
         logger.info("Saving file...")
-        saved_file_name: str = extract_unit_of_work.file.save( 
+        saved_file_name: str = extract_unit_of_work.file.save(
             file=command.file, file_name=command.file_name
         )
         logger.info("File saved.")
