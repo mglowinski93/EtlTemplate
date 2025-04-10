@@ -11,7 +11,7 @@ def enable_db_access(transactional_db) -> YieldFixture:
 
 
 @pytest.fixture(autouse=True)
-def set_test_media_directory(
+def set_test_media_root_directory(
     tmp_path,
 ):
     settings.MEDIA_ROOT = str(tmp_path)
