@@ -13,7 +13,7 @@ def test_django_data_domain_repository() -> YieldFixture[DjangoDataDomainReposit
 
 
 @pytest.fixture
-def test_django_query_repository() -> (
+def test_django_data_query_repository() -> (
     YieldFixture[DjangoDataQueryRepository]
 ):
     yield DjangoDataQueryRepository()
