@@ -33,37 +33,19 @@ def test_django_file_domain_repository_save_method_saves_file(
     assert (tmp_path / result).exists()
 
 
+@pytest.mark.parametrize(
+    "side_effect", [OSError, django_exceptions.SuspiciousFileOperation]
+)
 def test_django_file_domain_repository_save_method_raises_custom_exception_on_django_exception(
     tmp_path,
     mocker: MockFixture,
     test_django_file_domain_repository: ports.AbstractFileDomainRepository,
+    side_effect,
 ):
     # Given
     with open(const.INCORRECT_INPUT, "rb") as file:
         file_bytes = file.read()
 
-    side_effect = OSError
-    mocker.patch.object(FileSystemStorage, "save", side_effect=side_effect)
-
-    # When and Then
-    with pytest.raises(exceptions.FileSaveError):
-        test_django_file_domain_repository.save(
-            file_name=os.path.basename(const.INCORRECT_INPUT),
-            file=file_bytes,
-            location=str(tmp_path),
-        )
-
-
-def test_django_file_domain_repository_save_method_raises_file_save_error_on_suspicious_file_error(
-    tmp_path,
-    mocker: MockFixture,
-    test_django_file_domain_repository: ports.AbstractFileDomainRepository,
-):
-    # Given
-    with open(const.INCORRECT_INPUT, "rb") as file:
-        file_bytes = file.read()
-
-    side_effect = django_exceptions.SuspiciousFileOperation
     mocker.patch.object(FileSystemStorage, "save", side_effect=side_effect)
 
     # When and Then
@@ -87,11 +69,9 @@ def test_django_extract_domain_repository_create_method_creates_record(
     test_django_extract_domain_repository.create(extract_history_entity)
 
     # Then
-    assert (
-        models.ExtractHistory.objects.filter(
-            input_file_name=extract_history_entity.input_file_name
-        ).exists()
-    )
+    assert models.ExtractHistory.objects.filter(
+        input_file_name=extract_history_entity.input_file_name
+    ).exists()
 
 
 def test_django_extract_domain_repository_create_method_raises_custom_exception_on_django_exception(
