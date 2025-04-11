@@ -54,12 +54,10 @@ class GenerateDataMixin:
 
         return partial(dict_factory, cls)()
 
-# todo name like database model
 class DataFactory(GenerateDataMixin, factory.django.DjangoModelFactory):
     class Meta:
         model = load_models.Data
 
-# todo this must be a mapper
     data = factory.LazyFunction(fakers.fake_transformed_data)
 
 

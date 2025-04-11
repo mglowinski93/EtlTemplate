@@ -86,10 +86,6 @@ def test_django_data_query_repository_list_method_raises_custom_exception_on_dja
         pagination=pagination_dtos.Pagination(offset=pagination_dtos.PAGINATION_DEFAULT_OFFSET, records_per_page=pagination_dtos.PAGINATION_DEFAULT_LIMIT)
     )
 
-
-
-
-#todo fix it
 def test_django_data_query_repository_get_method_returns_detailed_record_when_record_exists(
 
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
@@ -102,31 +98,6 @@ def test_django_data_query_repository_get_method_returns_detailed_record_when_re
     #Then
     assert result.id == data.id
     assert isinstance(result, queries.DetailedOutputData)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 def test_django_data_query_repository_get_method_raises_custom_exception_when_data_not_found(
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
