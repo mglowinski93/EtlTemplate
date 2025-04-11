@@ -1,6 +1,6 @@
-from datetime import timedelta
-
 from modules.extract.domain import value_objects
+from modules.transform.domain import value_objects as transform_value_objects
+
 from . import fakers
 
 
@@ -21,3 +21,15 @@ class ExtractHistoryFactory(BatchMixin):
             saved_file_name=kwargs.get("saved_file_name", fakers.fake_file_name()),
             timestamp=kwargs.get("saved_file_name", fakers.fake_timestamp()),
         )
+
+
+class TransformedDataFactory(BatchMixin):
+    @staticmethod
+    def create(**kwargs) -> list[transform_value_objects.TransformedData]:
+        return [
+            transform_value_objects.TransformedData(
+                full_name=kwargs.get("full_name", fakers.fake_name()),
+                age=kwargs.get("age", fakers.fake_age()),
+                is_satisfied=kwargs.get("is_satisfied", fakers.fake_is_satisfied()),
+            )
+        ]

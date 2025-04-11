@@ -16,7 +16,7 @@ from ..models import Data
 from .mappers import (
     map_data_model_to_detailed_output_data_dto,
     map_data_model_to_output_data_dto,
-    map_transformed_data_to_data_field
+    map_transformed_data_to_data_field,
 )
 
 logger = logging.getLogger(__name__)
@@ -30,12 +30,7 @@ class DjangoDataDomainRepository(ports.AbstractDataDomainRepository):
     def create(self, data: list[transform_value_objects.TransformedData]) -> None:
         try:
             Data.objects.bulk_create(
-                [
-                    Data(
-                        data=map_transformed_data_to_data_field(_data)
-                    )
-                    for _data in data
-                ]
+                [Data(data=map_transformed_data_to_data_field(_data)) for _data in data]
             )
         except DatabaseError as err:
             logger.exception(err)

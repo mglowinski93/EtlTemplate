@@ -44,4 +44,3 @@ class TestDataQueryRepository(query_ports.AbstractDataQueryRepository):
 
     def create(self, data: queries.OutputData) -> None:
         self.data[data.id] = data
-

@@ -4,9 +4,9 @@ from typing import Any
 import factory
 from django.contrib.auth import get_user_model
 
+from infrastructures.apps.extract import models as exctract_models
 from infrastructures.apps.load import models as load_models
 
-from modules.common import time
 from . import fakers
 
 User = get_user_model()
@@ -38,10 +38,10 @@ class GenerateDataMixin:
                     stub_dict[key] = next(
                         (
                             _value
-                            for key, _value in factory._meta.model._meta.get_field(
+                            for key, _value in factory._meta.model._meta.get_field( # type: ignore[attr-defined]
                                 key
                             ).choices
-                            if value == _key
+                            if value == key
                         ),
                         value,
                     )
@@ -54,6 +54,7 @@ class GenerateDataMixin:
 
         return partial(dict_factory, cls)()
 
+
 class DataFactory(GenerateDataMixin, factory.django.DjangoModelFactory):
     class Meta:
         model = load_models.Data
@@ -61,5 +62,10 @@ class DataFactory(GenerateDataMixin, factory.django.DjangoModelFactory):
     data = factory.LazyFunction(fakers.fake_transformed_data)
 
 
+# todo check
+class ExtractHistoryFactory(GenerateDataMixin, factory.django.DjangoModelFactory):
+    class Meta:
+        model = exctract_models.ExtractHistory
 
-
+    input_file_name = factory.LazyFunction(fakers.fake_file_name)
+    saved_file_name = factory.LazyFunction(fakers.fake_file_name)

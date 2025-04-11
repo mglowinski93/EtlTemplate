@@ -1,5 +1,4 @@
 import os
-from datetime import datetime
 
 import pytest
 from django.core import exceptions as django_exceptions
@@ -9,9 +8,9 @@ from pytest_mock import MockFixture
 
 from infrastructures.apps.common import exceptions as common_exceptions
 from infrastructures.apps.extract import exceptions, models
-from modules.extract.domain import ports, value_objects
-from tests import consts
-from tests import entity_factories
+from modules.extract.domain import ports
+from tests import consts, entity_factories
+
 
 def test_django_file_domain_repository_save_method_saves_file(
     tmp_path,
