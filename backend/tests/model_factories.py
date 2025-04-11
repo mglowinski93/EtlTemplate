@@ -38,7 +38,7 @@ class GenerateDataMixin:
                     stub_dict[key] = next(
                         (
                             _value
-                            for key, _value in factory._meta.model._meta.get_field( # type: ignore[attr-defined]
+                            for key, _value in factory._meta.model._meta.get_field(  # type: ignore[attr-defined]
                                 key
                             ).choices
                             if value == key
