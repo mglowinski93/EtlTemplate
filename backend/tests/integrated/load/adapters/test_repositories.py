@@ -14,7 +14,8 @@ def test_django_data_domain_repository_create_method_creates_record(
     test_django_data_domain_repository: ports.AbstractDataDomainRepository,
 ):
     # Given
-    data_entity = [transform_value_objects.OutputData(full_name="full name", age=10, is_satisfied= True)]
+    #replace with factory
+    data_entity = [transform_value_objects.TransformedData(full_name="full name", age=10, is_satisfied= True)]
 
     # When
     test_django_data_domain_repository.create(data_entity)
@@ -29,7 +30,8 @@ def test_django_data_domain_repository_create_method_raises_custom_exception_on_
     test_django_data_domain_repository: ports.AbstractDataDomainRepository,
 ):
     # Given
-    data_entity = [transform_value_objects.OutputData(full_name="John Snow", age=10, is_satisfied= True)]
+    #replace with factory
+    data_entity = [transform_value_objects.TransformedData(full_name="John Snow", age=10, is_satisfied= True)]
     side_effect = DatabaseError
     mocker.patch(
         "infrastructures.apps.load.models.Data.objects.bulk_create",
@@ -46,7 +48,8 @@ def test_django_data_query_repository_list_method_queries_all_records(
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
 ):
     # Given
-    data_entity = [transform_value_objects.OutputData(full_name="John Snow", age=10, is_satisfied= True)]    
+    #replace with factory
+    data_entity = [transform_value_objects.TransformedData(full_name="John Snow", age=10, is_satisfied= True)]
     test_django_data_domain_repository.create(data_entity)
 
     # When
@@ -80,20 +83,69 @@ def test_django_data_query_repository_list_method_raises_custom_exception_on_dja
         pagination=pagination_dtos.Pagination(offset=pagination_dtos.PAGINATION_DEFAULT_OFFSET, records_per_page=pagination_dtos.PAGINATION_DEFAULT_LIMIT)
     )
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #todo fix it
 # def test_django_data_query_repository_get_method_returns_detailed_record(
 #     test_django_data_domain_repository: ports.AbstractDataDomainRepository,
 #     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
 # ):
 #     # Given
-#     data_entity = [transform_value_objects.OutputData(full_name="John Snow", age=10, is_satisfied= True)]    
+#     #replace with factory
+#     data_entity = [transform_value_objects.TransformedData(full_name="John Snow", age=10, is_satisfied= True)]    
 #     test_django_data_domain_repository.create(data_entity)
-
+#     data: naszModelData = MODel_factory.DataFactory.create()
 #     # When
-#     result = test_django_data_query_repository.get() #todo add param id
+#     result = test_django_data_query_repository.get(naszModelData.DataId) #todo add param id
 
 #     #Then
 #     assert all(data.full_name == result.full_name for data in data_entity)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def test_django_data_query_repository_get_method_raises_custom_exception_when_data_not_found(

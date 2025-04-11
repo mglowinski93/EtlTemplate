@@ -18,12 +18,12 @@ class TestSaveDataUnitOfWork(ports.AbstractDataUnitOfWork):
 
 class TestDataDomainRepository(ports.AbstractDataDomainRepository):
     def __init__(self):
-        self.data: list[transform_value_objects.OutputData] = []
+        self.data: list[transform_value_objects.TransformedData] = []
 
-    def create(self, data: list[transform_value_objects.OutputData]) -> None:
+    def create(self, data: list[transform_value_objects.TransformedData]) -> None:
         self.data.extend(data)
 
-    def list(self) -> list[transform_value_objects.OutputData]:
+    def list(self) -> list[transform_value_objects.TransformedData]:
         return self.data
 
 
@@ -44,3 +44,4 @@ class TestDataQueryRepository(query_ports.AbstractDataQueryRepository):
 
     def create(self, data: queries.OutputData) -> None:
         self.data[data.id] = data
+

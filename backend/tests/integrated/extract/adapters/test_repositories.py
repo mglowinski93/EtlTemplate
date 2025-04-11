@@ -29,7 +29,6 @@ def test_django_file_domain_repository_save_method_saves_file(
 
     # Then
     assert isinstance(result, str)
-    # breakpoint()
     assert (tmp_path / result).exists()
 
 
@@ -60,6 +59,7 @@ def test_django_extract_domain_repository_create_method_creates_record(
     test_django_extract_domain_repository: ports.AbstractExtractDomainRepository,
 ):
     # Given
+    # todo create factory
     extract_history_entity = value_objects.ExtractHistory(
         "test_file.csv", "saved_file.csv", timestamp=datetime.now()
     )
@@ -78,6 +78,7 @@ def test_django_extract_domain_repository_create_method_raises_custom_exception_
     test_django_extract_domain_repository: ports.AbstractExtractDomainRepository,
 ):
     # Given
+    # todo use factory
     extract_history_entity = value_objects.ExtractHistory(
         "test_file.csv", "saved_file.csv", timestamp=datetime.now()
     )

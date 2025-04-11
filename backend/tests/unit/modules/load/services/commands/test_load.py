@@ -8,8 +8,8 @@ def test_data_saved_successfully(
     test_data_unit_of_work: ports.AbstractDataUnitOfWork,
 ):
     # Given
-    output_data = [
-        transform_value_objects.OutputData(
+    transform_data = [
+        transform_value_objects.TransformedData(
             full_name="Jessica Barnes", age=58, is_satisfied=False
         ),
     ]
@@ -17,7 +17,7 @@ def test_data_saved_successfully(
     # When
     commands.save(
         unit_of_work=test_data_unit_of_work,
-        command=domain_commands.SaveData(output_data=output_data),
+        command=domain_commands.SaveData(transformed_data=transform_data),
     )
 
     # Then
@@ -26,5 +26,5 @@ def test_data_saved_successfully(
         given_data.full_name == result.full_name
         and given_data.age == result.age
         and given_data.is_satisfied == result.is_satisfied
-        for given_data, result in zip(output_data, test_data_unit_of_work.data.list())  # type: ignore[attr-defined]
+        for given_data, result in zip(transform_data, test_data_unit_of_work.data.list())  # type: ignore[attr-defined]
     )
