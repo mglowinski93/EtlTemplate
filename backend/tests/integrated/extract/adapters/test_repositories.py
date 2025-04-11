@@ -1,5 +1,4 @@
 import os
-from datetime import datetime
 
 import pytest
 from django.core import exceptions as django_exceptions
@@ -9,8 +8,8 @@ from pytest_mock import MockFixture
 
 from infrastructures.apps.common import exceptions as common_exceptions
 from infrastructures.apps.extract import exceptions, models
-from modules.extract.domain import ports, value_objects
-from tests import consts
+from modules.extract.domain import ports
+from tests import consts, entity_factories
 
 
 def test_django_file_domain_repository_save_method_saves_file(
@@ -29,7 +28,6 @@ def test_django_file_domain_repository_save_method_saves_file(
 
     # Then
     assert isinstance(result, str)
-    # breakpoint()
     assert (tmp_path / result).exists()
 
 
@@ -37,7 +35,6 @@ def test_django_file_domain_repository_save_method_saves_file(
     "side_effect", (OSError, django_exceptions.SuspiciousFileOperation)
 )
 def test_django_file_domain_repository_save_method_raises_custom_exception_on_django_exception(
-    tmp_path,
     mocker: MockFixture,
     test_django_file_domain_repository: ports.AbstractFileDomainRepository,
     side_effect,
@@ -60,9 +57,7 @@ def test_django_extract_domain_repository_create_method_creates_record(
     test_django_extract_domain_repository: ports.AbstractExtractDomainRepository,
 ):
     # Given
-    extract_history_entity = value_objects.ExtractHistory(
-        "test_file.csv", "saved_file.csv", timestamp=datetime.now()
-    )
+    extract_history_entity = entity_factories.ExtractHistoryFactory().create()
 
     # When
     test_django_extract_domain_repository.create(extract_history_entity)
@@ -78,9 +73,7 @@ def test_django_extract_domain_repository_create_method_raises_custom_exception_
     test_django_extract_domain_repository: ports.AbstractExtractDomainRepository,
 ):
     # Given
-    extract_history_entity = value_objects.ExtractHistory(
-        "test_file.csv", "saved_file.csv", timestamp=datetime.now()
-    )
+    extract_history_entity = entity_factories.ExtractHistoryFactory().create()
 
     side_effect = DatabaseError
     mocker.patch(

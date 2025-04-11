@@ -105,8 +105,8 @@ class ExtractViewSet(
         logger.info("Dataset extracted.")
 
         logger.info("Transforming dataset...")
-        output_data: list[
-            transform_value_objects.OutputData
+        transformed_data: list[
+            transform_value_objects.TransformedData
         ] = transform_commands.transform(
             transform_domain_commands.TransformData(input_data)
         )
@@ -116,7 +116,7 @@ class ExtractViewSet(
         try:
             load_commands.save(
                 unit_of_work=data_unit_of_work,
-                command=load_domain_commands.SaveData(output_data),
+                command=load_domain_commands.SaveData(transformed_data),
             )
         except common_exceptions.DatabaseError:
             logger.error("Database connection issue, can not save output data.")
