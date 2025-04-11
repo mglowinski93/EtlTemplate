@@ -8,6 +8,9 @@ from pytest_mock import MockFixture
 from django.db import DatabaseError
 import pytest
 from infrastructures.apps.common import exceptions as common_exceptions
+from tests.model_factories import DataFactory
+from infrastructures.apps.load import models 
+from modules.load.services import queries
 
 
 def test_django_data_domain_repository_create_method_creates_record(
@@ -86,42 +89,19 @@ def test_django_data_query_repository_list_method_raises_custom_exception_on_dja
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #todo fix it
-# def test_django_data_query_repository_get_method_returns_detailed_record(
-#     test_django_data_domain_repository: ports.AbstractDataDomainRepository,
-#     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
-# ):
-#     # Given
-#     #replace with factory
-#     data_entity = [transform_value_objects.TransformedData(full_name="John Snow", age=10, is_satisfied= True)]    
-#     test_django_data_domain_repository.create(data_entity)
-#     data: naszModelData = MODel_factory.DataFactory.create()
-#     # When
-#     result = test_django_data_query_repository.get(naszModelData.DataId) #todo add param id
+def test_django_data_query_repository_get_method_returns_detailed_record_when_record_exists(
 
-#     #Then
-#     assert all(data.full_name == result.full_name for data in data_entity)
+    test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
+):
+    # Given
+    data: models.Data = DataFactory.create()
+    # When
+    result = test_django_data_query_repository.get(data.id) #todo add param id
 
+    #Then
+    assert result.id == data.id
+    assert isinstance(result, queries.DetailedOutputData)
 
 
 

@@ -9,7 +9,6 @@ from infrastructures.apps.load import models as load_models
 from modules.common import time
 from . import fakers
 
-
 User = get_user_model()
 
 
