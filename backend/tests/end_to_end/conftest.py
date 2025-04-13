@@ -2,6 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 
 from ..common.annotations import YieldFixture
+from ..common.conftest import enable_db_access  # noqa: F401
 from .dtos import APIClientData, User
 
 
