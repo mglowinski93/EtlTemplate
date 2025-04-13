@@ -18,17 +18,17 @@ def test_django_data_domain_repository_create_method_creates_record(
     test_django_data_domain_repository: ports.AbstractDataDomainRepository,
 ):
     # Given
-    data_entity = TransformedDataFactory.create()
+    data = TransformedDataFactory.create()
 
     # When
-    test_django_data_domain_repository.create(data_entity)
+    test_django_data_domain_repository.create(data)
 
     # Then
     assert all(
         models.Data.objects.filter(
             data__contains={"full_name": data.full_name}
         ).exists()
-        for data in data_entity
+        for data in data
     )
 
 
@@ -46,7 +46,8 @@ def test_django_data_domain_repository_create_method_raises_custom_exception_on_
     # When and Then
     with pytest.raises(common_exceptions.DatabaseError):
         test_django_data_domain_repository.create(TransformedDataFactory.create())
-
+        
+    assert not models.Data.objects.exists()
 
 def test_django_data_query_repository_list_method_queries_all_records(
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,

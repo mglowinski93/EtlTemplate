@@ -9,7 +9,7 @@ from pytest_mock import MockFixture
 from infrastructures.apps.common import exceptions as common_exceptions
 from infrastructures.apps.extract import exceptions, models
 from modules.extract.domain import ports
-from tests import consts, entity_factories
+from tests import consts, entity_factories, fakers
 
 
 def test_django_file_domain_repository_save_method_saves_file(
@@ -57,14 +57,14 @@ def test_django_extract_domain_repository_create_method_creates_record(
     test_django_extract_domain_repository: ports.AbstractExtractDomainRepository,
 ):
     # Given
-    extract_history_entity = entity_factories.ExtractHistoryFactory().create()
+    extract_history = fakers.fake_extract_history()
 
     # When
-    test_django_extract_domain_repository.create(extract_history_entity)
+    test_django_extract_domain_repository.create(extract_history)
 
     # Then
     assert models.ExtractHistory.objects.filter(
-        input_file_name=extract_history_entity.input_file_name
+        input_file_name=extract_history.input_file_name
     ).exists()
 
 
@@ -73,7 +73,7 @@ def test_django_extract_domain_repository_create_method_raises_custom_exception_
     test_django_extract_domain_repository: ports.AbstractExtractDomainRepository,
 ):
     # Given
-    extract_history_entity = entity_factories.ExtractHistoryFactory().create()
+    extract_history = fakers.fake_extract_history()
 
     side_effect = DatabaseError
     mocker.patch(
@@ -82,4 +82,5 @@ def test_django_extract_domain_repository_create_method_raises_custom_exception_
     )
     # When and Then
     with pytest.raises(common_exceptions.DatabaseError):
-        test_django_extract_domain_repository.create(extract_history_entity)
+        test_django_extract_domain_repository.create(extract_history)
+    assert not models.ExtractHistory.objects.exists()
