@@ -77,7 +77,7 @@ def test_list_data_endpoint_returns_empty_list_when_no_data_exists(
     assert response.status_code == HTTPStatus.OK
 
     json_response: dict[str, Any] = response.data
-    results = json_response[infrastructure_common_consts.PAGINATION_DATA_NAME]
+    results = json_response[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
     assert isinstance(results, list)
     assert not results
     assert json_response[infrastructure_common_consts.PAGINATION_COUNT_NAME] == 0
@@ -103,8 +103,8 @@ def test_list_data_endpoint_returns_data_when_data_exists(
         json_response[infrastructure_common_consts.PAGINATION_COUNT_NAME] == data_number
     )
 
-    assert infrastructure_common_consts.PAGINATION_DATA_NAME in json_response
-    results = json_response[infrastructure_common_consts.PAGINATION_DATA_NAME]
+    assert infrastructure_common_consts.PAGINATION_RESULTS_NAME in json_response
+    results = json_response[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
 
     assert isinstance(results, list)
     assert all(

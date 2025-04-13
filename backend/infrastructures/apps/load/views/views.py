@@ -157,11 +157,11 @@ class LoadViewSet(
             ),
         )
         logger.info("Listed datasets.")
-
+        #todo change .data to .results
         return Response(
             data={
                 "count": count,
-                "data": OutputDataReadSerializer(output_data, many=True).data,
+                "results": OutputDataReadSerializer(output_data, many=True).data,
             },
             status=status.HTTP_200_OK,
         )
