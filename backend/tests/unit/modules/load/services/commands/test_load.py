@@ -17,7 +17,7 @@ def test_data_saved_successfully(
     # When
     commands.save(
         unit_of_work=test_data_unit_of_work,
-        command=domain_commands.SaveData(data=transformed_data),
+        command=domain_commands.SaveData(transformed_data),
     )
 
     # Then

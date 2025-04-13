@@ -30,9 +30,7 @@ def fake_timestamp():
     return datetime.now()
 
 
-def fake_transformed_data() -> dict:
-    return asdict(
-        transform_value_objects.TransformedData(
-            fake_name(10), fake_age(), fake_is_satisfied()
-        )
+def fake_transformed_data() -> transform_value_objects.TransformedData:
+    return transform_value_objects.TransformedData(
+        fake_name(10), fake_age(), fake_is_satisfied()
     )
