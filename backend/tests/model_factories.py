@@ -59,8 +59,12 @@ class GenerateDataMixin:
 class DataFactory(GenerateDataMixin, factory.django.DjangoModelFactory):
     class Meta:
         model = load_models.Data
-    
-    data = factory.LazyFunction(lambda: load_mappers.map_transformed_data_to_data_field(fakers.fake_transformed_data()))
+
+    data = factory.LazyFunction(
+        lambda: load_mappers.map_transformed_data_to_data_field(
+            fakers.fake_transformed_data()
+        )
+    )
 
 
 class ExtractHistoryFactory(GenerateDataMixin, factory.django.DjangoModelFactory):

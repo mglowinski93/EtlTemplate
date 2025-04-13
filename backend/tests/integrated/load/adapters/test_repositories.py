@@ -46,8 +46,9 @@ def test_django_data_domain_repository_create_method_raises_custom_exception_on_
     # When and Then
     with pytest.raises(common_exceptions.DatabaseError):
         test_django_data_domain_repository.create(TransformedDataFactory.create())
-        
+
     assert not models.Data.objects.exists()
+
 
 def test_django_data_query_repository_list_method_queries_all_records(
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
@@ -110,12 +111,13 @@ def test_django_data_query_repository_get_method_returns_detailed_record_when_re
     assert result.id == data.id
     assert isinstance(result, queries.DetailedOutputData)
 
+
 @pytest.mark.parametrize(
-    ("side_effect", "expected_error"), 
+    ("side_effect", "expected_error"),
     [
         (models.Data.DoesNotExist, common_exceptions.DataDoesNotExist),
-        (DatabaseError, common_exceptions.DatabaseError)
-        ]
+        (DatabaseError, common_exceptions.DatabaseError),
+    ],
 )
 def test_django_data_query_repository_get_method_raises_custom_exception_on_django_exception(
     mocker: MockFixture,

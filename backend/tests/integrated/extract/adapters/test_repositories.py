@@ -9,7 +9,7 @@ from pytest_mock import MockFixture
 from infrastructures.apps.common import exceptions as common_exceptions
 from infrastructures.apps.extract import exceptions, models
 from modules.extract.domain import ports
-from tests import consts, entity_factories, fakers
+from tests import consts, fakers
 
 
 def test_django_file_domain_repository_save_method_saves_file(
