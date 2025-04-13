@@ -19,7 +19,7 @@ class ExtractHistoryFactory(BatchMixin):
         return value_objects.ExtractHistory(
             input_file_name=kwargs.get("input_file_name", fakers.fake_file_name()),
             saved_file_name=kwargs.get("saved_file_name", fakers.fake_file_name()),
-            timestamp=kwargs.get("saved_file_name", fakers.fake_timestamp()),
+            timestamp=kwargs.get("timestamp", fakers.fake_timestamp()),
         )
 
 

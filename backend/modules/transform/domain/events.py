@@ -6,4 +6,4 @@ from ..domain.value_objects import TransformedData
 
 @dataclass(frozen=True)
 class DataTransformed(common_events.DomainEvent):
-    output_data: TransformedData
+    data: TransformedData

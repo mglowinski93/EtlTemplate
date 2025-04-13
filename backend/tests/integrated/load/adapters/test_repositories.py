@@ -52,8 +52,8 @@ def test_django_data_query_repository_list_method_queries_all_records(
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
 ):
     # Given
-    data_count = 1
-    DataFactory.create()
+    data_number = 1
+    DataFactory.create_batch(size=data_number)
 
     # When
     results, count = test_django_data_query_repository.list(
@@ -66,7 +66,7 @@ def test_django_data_query_repository_list_method_queries_all_records(
     )
 
     # Then
-    assert count == data_count
+    assert count == data_number
     assert isinstance(results, list)
     assert all(isinstance(result, query_dtos.OutputData) for result in results)
 
@@ -109,26 +109,25 @@ def test_django_data_query_repository_get_method_returns_detailed_record_when_re
     assert result.id == data.id
     assert isinstance(result, queries.DetailedOutputData)
 
-
-def test_django_data_query_repository_get_method_raises_custom_exception_when_data_not_found(
-    test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
-):
-    # When and Then
-    with pytest.raises(common_exceptions.DataDoesNotExist):
-        test_django_data_query_repository.get(data_id=value_objects.DataId.new())
-
-
+@pytest.mark.parametrize(
+    ("side_effect", "expected_error"), 
+    [
+        (models.Data.DoesNotExist, common_exceptions.DataDoesNotExist),
+        (DatabaseError, common_exceptions.DatabaseError)
+        ]
+)
 def test_django_data_query_repository_get_method_raises_custom_exception_on_django_exception(
     mocker: MockFixture,
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
+    side_effect,
+    expected_error,
 ):
     # Given
-    side_effect = DatabaseError
     mocker.patch(
         "infrastructures.apps.load.models.Data.objects.get",
         side_effect=side_effect,
     )
 
     # When and Then
-    with pytest.raises(common_exceptions.DatabaseError):
+    with pytest.raises(expected_error):
         test_django_data_query_repository.get(data_id=value_objects.DataId.new())
