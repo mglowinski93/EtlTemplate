@@ -4,7 +4,6 @@ from typing import Any
 import factory
 from django.contrib.auth import get_user_model
 
-from infrastructures.apps.extract import models as extract_models
 from infrastructures.apps.load import models as load_models
 from infrastructures.apps.load.adapters import mappers as load_mappers
 
@@ -65,11 +64,3 @@ class DataFactory(GenerateDataMixin, factory.django.DjangoModelFactory):
             fakers.fake_transformed_data()
         )
     )
-
-
-class ExtractHistoryFactory(GenerateDataMixin, factory.django.DjangoModelFactory):
-    class Meta:
-        model = extract_models.ExtractHistory
-
-    input_file_name = factory.LazyFunction(fakers.fake_file_name)
-    saved_file_name = factory.LazyFunction(fakers.fake_file_name)
