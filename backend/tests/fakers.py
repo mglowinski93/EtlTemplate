@@ -1,5 +1,6 @@
 import random
 import string
+import uuid
 from datetime import datetime
 
 from modules.extract.domain import value_objects as extract_value_objects
@@ -26,6 +27,10 @@ def fake_file_name(length=10):
 
 def fake_timestamp():
     return datetime.now()
+
+
+def fake_data_id():
+    return str(uuid.uuid4())
 
 
 def fake_transformed_data() -> transform_value_objects.TransformedData:

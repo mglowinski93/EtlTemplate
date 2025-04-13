@@ -1,4 +1,5 @@
 import logging
+import uuid
 
 import inject
 from drf_spectacular import utils as swagger_utils
@@ -73,8 +74,17 @@ class LoadViewSet(
         pk: str,
         query_data_repository: query_ports.AbstractDataQueryRepository,
     ):
+        logger.info("Querying Output Data...")
+
         try:
-            logger.info("Querying Output Data...")
+            uuid.UUID(pk)
+        except ValueError:
+            return Response(
+                {common_consts.ERROR_DETAIL_KEY: "Data not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
             detailed_output_data = queries.get_data(
                 query_data_repository, data_id=value_objects.DataId.from_hex(pk)
             )
@@ -83,6 +93,8 @@ class LoadViewSet(
                 {common_consts.ERROR_DETAIL_KEY: "Data not found."},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+        logger.info("Data Queried.")
 
         return Response(
             data={
