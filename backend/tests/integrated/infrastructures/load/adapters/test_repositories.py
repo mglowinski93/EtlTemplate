@@ -54,53 +54,6 @@ def test_django_data_domain_repository_create_method_raises_custom_exception_on_
     assert not models.Data.objects.exists()
 
 
-def test_django_data_query_repository_list_method_queries_all_records(
-    test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
-):
-    # Given
-    data_number = 5
-    DataFactory.create_batch(size=data_number)
-
-    # When
-    results, count = test_django_data_query_repository.list(
-        filters=query_ports.DataFilters(),
-        ordering=query_ports.DataOrdering(),
-        pagination=pagination_dtos.Pagination(
-            offset=pagination_dtos.PAGINATION_DEFAULT_OFFSET,
-            records_per_page=pagination_dtos.PAGINATION_DEFAULT_LIMIT,
-        ),
-    )
-
-    # Then
-    assert count == data_number
-    assert isinstance(results, list)
-    assert all(isinstance(result, query_dtos.OutputData) for result in results)
-
-
-def test_django_data_query_repository_list_method_raises_custom_exception_on_database_exception(
-    mocker: MockFixture,
-    test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
-):
-    # Given
-    side_effect = DatabaseError
-    mocker.patch.object(
-        models.Data.objects,
-        "filter",
-        side_effect=side_effect,
-    )
-
-    # When and then
-    with pytest.raises(common_exceptions.DatabaseError):
-        test_django_data_query_repository.list(
-            filters=query_ports.DataFilters(),
-            ordering=query_ports.DataOrdering(),
-            pagination=pagination_dtos.Pagination(
-                offset=pagination_dtos.PAGINATION_DEFAULT_OFFSET,
-                records_per_page=pagination_dtos.PAGINATION_DEFAULT_LIMIT,
-            ),
-        )
-
-
 def test_django_data_query_repository_get_method_returns_detailed_record_when_record_exists(
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
 ):
@@ -147,3 +100,50 @@ def test_django_data_query_repository_get_method_raises_data_does_not_exist_when
     # When and then
     with pytest.raises(common_exceptions.DataDoesNotExist):
         test_django_data_query_repository.get(data_id=value_objects.DataId.new())
+
+
+def test_django_data_query_repository_list_method_queries_all_records(
+    test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
+):
+    # Given
+    data_number = 5
+    DataFactory.create_batch(size=data_number)
+
+    # When
+    results, count = test_django_data_query_repository.list(
+        filters=query_ports.DataFilters(),
+        ordering=query_ports.DataOrdering(),
+        pagination=pagination_dtos.Pagination(
+            offset=pagination_dtos.PAGINATION_DEFAULT_OFFSET,
+            records_per_page=pagination_dtos.PAGINATION_DEFAULT_LIMIT,
+        ),
+    )
+
+    # Then
+    assert count == data_number
+    assert isinstance(results, list)
+    assert all(isinstance(result, query_dtos.OutputData) for result in results)
+
+
+def test_django_data_query_repository_list_method_raises_custom_exception_on_database_exception(
+    mocker: MockFixture,
+    test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
+):
+    # Given
+    side_effect = DatabaseError
+    mocker.patch.object(
+        models.Data.objects,
+        "filter",
+        side_effect=side_effect,
+    )
+
+    # When and then
+    with pytest.raises(common_exceptions.DatabaseError):
+        test_django_data_query_repository.list(
+            filters=query_ports.DataFilters(),
+            ordering=query_ports.DataOrdering(),
+            pagination=pagination_dtos.Pagination(
+                offset=pagination_dtos.PAGINATION_DEFAULT_OFFSET,
+                records_per_page=pagination_dtos.PAGINATION_DEFAULT_LIMIT,
+            ),
+        )

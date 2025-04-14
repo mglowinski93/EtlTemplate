@@ -83,6 +83,7 @@ def test_django_extract_domain_repository_create_method_raises_custom_exception_
         "create",
         side_effect=side_effect,
     )
+    
     # When and then
     with pytest.raises(common_exceptions.DatabaseError):
         test_django_extract_domain_repository.create(extract_history)
