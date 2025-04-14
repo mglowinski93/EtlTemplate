@@ -24,7 +24,7 @@ def test_get_data_endpoint_returns_data_when_specified_data_exists(
 
     # Then
     assert response.status_code == HTTPStatus.OK
-    json_response: dict[str, Any] = response.data["data"]
+    json_response: dict[str, Any] = response.data
     assert serializers.DetailedOutputDataReadSerializer(data=json_response).is_valid()
 
     timestamp = datetime.fromisoformat(json_response["timestamp"])

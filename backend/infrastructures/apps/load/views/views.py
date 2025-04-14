@@ -79,6 +79,7 @@ class LoadViewSet(
         try:
             uuid.UUID(pk)
         except ValueError:
+            logger.warning("'%s' is invalid format as Data_ID.", pk)
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "Data not found."},
                 status=status.HTTP_404_NOT_FOUND,
@@ -97,9 +98,7 @@ class LoadViewSet(
         logger.info("Data Queried.")
 
         return Response(
-            data={
-                "data": DetailedOutputDataReadSerializer(detailed_output_data).data,
-            },
+            data=DetailedOutputDataReadSerializer(detailed_output_data).data,
             status=status.HTTP_200_OK,
         )
 
