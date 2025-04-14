@@ -5,9 +5,10 @@ from typing import Any
 from infrastructures.apps.common import const as infrastructure_common_consts
 from infrastructures.apps.load.views import serializers
 
-from ..... import fakers, model_factories
+from ..... import model_factories
 from ....dtos import APIClientData
 from ....utils import get_url
+from . import fakers
 
 
 def test_get_data_endpoint_returns_data_when_specified_data_exists(
