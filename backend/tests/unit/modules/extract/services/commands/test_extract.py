@@ -111,6 +111,6 @@ def test_extract_raise_exception_when_any_dataset_row_is_invalid(
         file_name=consts.INCORRECT_INPUT.name,
     )
 
-    # When and Then
+    # When and then
     with pytest.raises(domain_exceptions.DataValidationError):
         extract(extract_unit_of_work=test_extract_unit_of_work, command=extract_command)

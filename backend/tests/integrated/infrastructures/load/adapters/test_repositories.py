@@ -15,16 +15,18 @@ from tests.model_factories import DataFactory
 from .....fakers import fake_transformed_data
 
 
-def test_django_data_domain_repository_create_method_creates_record(
+def test_django_data_domain_repository_create_method_creates_records(
     test_django_data_domain_repository: ports.AbstractDataDomainRepository,
 ):
     # Given
-    data = [fake_transformed_data()]
+    records_number = 5
+    data = [fake_transformed_data() for _ in range(records_number)]
 
     # When
     test_django_data_domain_repository.create(data)
 
     # Then
+    assert models.Data.objects.filter().count() == records_number
     assert all(
         models.Data.objects.filter(
             data__contains={"full_name": data.full_name}
@@ -33,7 +35,7 @@ def test_django_data_domain_repository_create_method_creates_record(
     )
 
 
-def test_django_data_domain_repository_create_method_raises_custom_exception_on_django_exception(
+def test_django_data_domain_repository_create_method_raises_custom_exception_on_database_exception(
     mocker: MockFixture,
     test_django_data_domain_repository: ports.AbstractDataDomainRepository,
 ):
@@ -44,7 +46,7 @@ def test_django_data_domain_repository_create_method_raises_custom_exception_on_
         side_effect=side_effect,
     )
 
-    # When and Then
+    # When and then
     with pytest.raises(common_exceptions.DatabaseError):
         test_django_data_domain_repository.create([fake_transformed_data()])
 
@@ -74,7 +76,7 @@ def test_django_data_query_repository_list_method_queries_all_records(
     assert all(isinstance(result, query_dtos.OutputData) for result in results)
 
 
-def test_django_data_query_repository_list_method_raises_custom_exception_on_django_exception(
+def test_django_data_query_repository_list_method_raises_custom_exception_on_database_exception(
     mocker: MockFixture,
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
 ):
@@ -85,7 +87,7 @@ def test_django_data_query_repository_list_method_raises_custom_exception_on_dja
         side_effect=side_effect,
     )
 
-    # When and Then
+    # When and then
     with pytest.raises(common_exceptions.DatabaseError):
         test_django_data_query_repository.list(
             filters=query_ports.DataFilters(),
@@ -120,7 +122,7 @@ def test_django_data_query_repository_get_method_returns_detailed_record_when_re
         (DatabaseError, common_exceptions.DatabaseError),
     ],
 )
-def test_django_data_query_repository_get_method_raises_custom_exception_on_django_exception(
+def test_django_data_query_repository_get_method_raises_custom_exception_on_database_exception(
     mocker: MockFixture,
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
     side_effect,
@@ -132,6 +134,6 @@ def test_django_data_query_repository_get_method_raises_custom_exception_on_djan
         side_effect=side_effect,
     )
 
-    # When and Then
+    # When and then
     with pytest.raises(expected_error):
         test_django_data_query_repository.get(data_id=value_objects.DataId.new())
