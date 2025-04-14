@@ -10,7 +10,7 @@ fake.add_provider(person)
 fake.add_provider(file)
 
 
-def fake_name() -> str:
+def fake_full_name() -> str:
     return f"{fake.first_name()} {fake.last_name()}"
 
 
@@ -32,5 +32,5 @@ def fake_timestamp() -> datetime:
 
 def fake_transformed_data() -> transform_value_objects.TransformedData:
     return transform_value_objects.TransformedData(
-        full_name=fake_name(), age=fake_age(), is_satisfied=fake_is_satisfied()
+        full_name=fake_full_name(), age=fake_age(), is_satisfied=fake_is_satisfied()
     )
