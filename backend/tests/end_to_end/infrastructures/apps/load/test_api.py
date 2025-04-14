@@ -375,16 +375,18 @@ def test_list_data_endpoint_filtering_by_is_satisfied(
 #         for item in response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
 #     )
 
+
+# todo fix age and is_satisfied - for some reason they are ignored and don't raise wanted exception
 @pytest.mark.parametrize(
     ("filter_key", "filter_value"),
     (
         ("age", "invalid-type"),
-        ("is_satisfied", "invalid-datetime"),
+        ("is_satisfied", "invalid-type"),
         ("timestamp_from", "invalid-datetime"),
         ("timestamp_to", "invalid-datetime"),       
     ),
 )
-def test_list_data_endpoint_returns_400_when_invalid_value_passed_as_query_parameter(
+def test_list_data_endpoint_returns_400_when_invalid_value_passed_as_query_filter_parameter(
     unauthenticated_client: APIClientData,
     filter_key: str, 
     filter_value: str    
@@ -423,7 +425,7 @@ def test_list_data_endpoint_skip_unsupported_filtering(
     assert response.status_code == HTTPStatus.OK
 
 
-@pytest.mark.parametrize("order_by", ("title", "-title"))
+@pytest.mark.parametrize("order_by", ("age", "-age"))
 def test_list_data_endpoint_ordering(
     unauthenticated_client: APIClientData,
     order_by: str

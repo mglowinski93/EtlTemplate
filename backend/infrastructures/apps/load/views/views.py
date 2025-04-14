@@ -15,6 +15,7 @@ from modules.load.domain import value_objects
 from modules.load.services.queries import ports as query_ports
 from modules.load.services.queries import queries
 from modules.common import ordering as ordering_dtos
+from django.core import exceptions as django_exceptions
 
 from infrastructures.apps.common import const as common_const
 from ...common import exceptions as common_exceptions
@@ -229,12 +230,13 @@ class LoadViewSet(
     ):
         logger.info("Listing all datasets...")
 
+
         filters=query_ports.DataFilters(
             age=request.query_params.get("age"),
             is_satisfied=request.query_params.get("is_satisfied"),
             timestamp_from=request.query_params.get("timestamp_from"),
             timestamp_to=request.query_params.get("timestamp_to"),
-        )
+        ) 
         logger.info("Filters: %s", filters)
 
         _ordering = ordering_dtos.Ordering.create_ordering(
@@ -268,14 +270,20 @@ class LoadViewSet(
             )
         logger.info("Pagination: %s", pagination)
 
-        output_data, count = queries.list_data(
-            repository=query_data_repository,
-            filters=filters,
-            ordering=ordering,
-            pagination=pagination,
-        )
-
+        try:
+            output_data, count = queries.list_data(
+                repository=query_data_repository,
+                filters=filters,
+                ordering=ordering,
+                pagination=pagination,
+            )
+        except django_exceptions.ValidationError:
+            return Response(
+                {common_consts.ERROR_DETAIL_KEY: "Invalid query parameters."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         logger.info("Dataset listed successfully.")
+
         return Response(
             data={
                 "count": count,
