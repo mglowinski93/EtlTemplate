@@ -1,10 +1,11 @@
-from modules.extract.domain import ports, value_objects
+from modules.extract.domain import ports as extract_ports
+from modules.extract.domain import value_objects as extract_value_objects
 
 
-class TestExtractUnitOfWork(ports.AbstractExtractUnitOfWork):
+class TestExtractUnitOfWork(extract_ports.AbstractExtractUnitOfWork):
     def __init__(self):
-        self.file: TestFileDomainRepository
-        self.extract: TestExtractDomainRepository
+        self.file = TestFileDomainRepository()
+        self.extract = TestExtractDomainRepository()
 
     def commit(self) -> None:
         pass
@@ -13,7 +14,7 @@ class TestExtractUnitOfWork(ports.AbstractExtractUnitOfWork):
         pass
 
 
-class TestFileDomainRepository(ports.AbstractFileDomainRepository):
+class TestFileDomainRepository(extract_ports.AbstractFileDomainRepository):
     def __init__(self):
         self.saved_files: dict[str, bytes] = {}
 
@@ -25,12 +26,12 @@ class TestFileDomainRepository(ports.AbstractFileDomainRepository):
         return file_name in self.saved_files
 
 
-class TestExtractDomainRepository(ports.AbstractExtractDomainRepository):
+class TestExtractDomainRepository(extract_ports.AbstractExtractDomainRepository):
     def __init__(self):
-        self.extract_histories: list[value_objects.ExtractHistory] = []
+        self.extract_histories: list[extract_value_objects.ExtractHistory] = []
 
-    def create(self, extract_history: value_objects.ExtractHistory) -> None:
+    def create(self, extract_history: extract_value_objects.ExtractHistory) -> None:
         self.extract_histories.append(extract_history)
 
-    def list(self) -> list[value_objects.ExtractHistory]:
+    def list(self) -> list[extract_value_objects.ExtractHistory]:
         return self.extract_histories

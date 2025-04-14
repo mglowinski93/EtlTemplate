@@ -13,7 +13,7 @@ def test_transformed_data_contains_fullname_column():
     command = transform_commands.TransformData(input_df)
 
     # When
-    result: list[transform_value_objects.OutputData] = service_commands.transform(
+    result: list[transform_value_objects.TransformedData] = service_commands.transform(
         command
     )
 
@@ -21,7 +21,7 @@ def test_transformed_data_contains_fullname_column():
     assert len(result) == test_dataset_size
     assert (
         result.count(
-            transform_value_objects.OutputData(
+            transform_value_objects.TransformedData(
                 full_name="Jessica Barnes", age=58, is_satisfied=False
             )
         )

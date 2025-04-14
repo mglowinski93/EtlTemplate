@@ -1,7 +1,18 @@
 from modules.load.domain import value_objects
 from modules.load.services import queries
+from modules.transform.domain import value_objects as transform_value_objects
 
 from ..models import Data
+
+
+def map_transformed_data_to_data_field(
+    data: transform_value_objects.TransformedData,
+) -> dict:
+    return {
+        "full_name": data.full_name,
+        "age": data.age,
+        "is_satisfied": data.is_satisfied,
+    }
 
 
 def map_data_model_to_output_data_dto(

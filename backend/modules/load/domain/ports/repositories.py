@@ -6,7 +6,7 @@ from ....transform.domain import value_objects as transform_value_objects
 
 class AbstractDataDomainRepository(common_ports.AbstractDomainRepository):
     @abstractmethod
-    def create(self, data: list[transform_value_objects.OutputData]) -> None:
+    def create(self, data: list[transform_value_objects.TransformedData]) -> None:
         """
         :param: Data to save.
         :raises: DatabaseError: Failed to save output data.

@@ -7,4 +7,4 @@ def save(
     command: SaveData,
 ):
     with unit_of_work:
-        unit_of_work.data.create(command.output_data)
+        unit_of_work.data.create(command.data)
