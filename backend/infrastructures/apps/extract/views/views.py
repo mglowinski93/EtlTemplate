@@ -7,7 +7,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from modules.common import const as common_consts
+from infrastructures.apps.common import const as common_consts
 from modules.extract.domain import commands as domain_commands
 from modules.extract.domain import exceptions, ports, value_objects
 from modules.extract.services import commands
