@@ -54,7 +54,7 @@ def test_django_data_query_repository_list_method_queries_all_records(
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
 ):
     # Given
-    data_number = 1
+    data_number = 3
     DataFactory.create_batch(size=data_number)
 
     # When
