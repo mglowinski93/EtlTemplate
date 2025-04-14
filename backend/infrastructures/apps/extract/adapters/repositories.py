@@ -25,7 +25,6 @@ class DjangoFileDomainRepository(ports.AbstractFileDomainRepository):
             return FileSystemStorage(location=settings.MEDIA_ROOT).save(
                 name=file_name, content=ContentFile(file)
             )
-
         except OSError as err:
             raise FileSaveError(
                 message=f"File {file_name} can not be saved.", file_name=file_name
