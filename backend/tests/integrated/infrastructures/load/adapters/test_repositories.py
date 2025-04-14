@@ -11,6 +11,7 @@ from modules.load.services.queries import ports as query_ports
 from modules.load.services.queries import queries as query_dtos
 from modules.load.services.queries.ports import repositories as query_repositories
 from tests.model_factories import DataFactory
+
 from .....fakers import fake_transformed_data
 
 
