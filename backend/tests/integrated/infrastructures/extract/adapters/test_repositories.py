@@ -78,8 +78,9 @@ def test_django_extract_domain_repository_create_method_raises_custom_exception_
     extract_history = fake_extract_history()
 
     side_effect = DatabaseError
-    mocker.patch(
-        "infrastructures.apps.extract.models.ExtractHistory.objects.create",
+    mocker.patch.object(
+        models.ExtractHistory.objects,
+        "create",
         side_effect=side_effect,
     )
     # When and then

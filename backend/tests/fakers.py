@@ -1,13 +1,10 @@
 from datetime import datetime
 
 from faker import Faker
-from faker.providers import file, person
 
 from modules.transform.domain import value_objects as transform_value_objects
 
 fake = Faker()
-fake.add_provider(person)
-fake.add_provider(file)
 
 
 def fake_full_name() -> str:

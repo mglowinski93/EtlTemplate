@@ -41,8 +41,9 @@ def test_django_data_domain_repository_create_method_raises_custom_exception_on_
 ):
     # Given
     side_effect = DatabaseError
-    mocker.patch(
-        "infrastructures.apps.load.models.Data.objects.bulk_create",
+    mocker.patch.object(
+        models.Data.objects,
+        "bulk_create",
         side_effect=side_effect,
     )
 
@@ -57,7 +58,7 @@ def test_django_data_query_repository_list_method_queries_all_records(
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
 ):
     # Given
-    data_number = 3
+    data_number = 5
     DataFactory.create_batch(size=data_number)
 
     # When
@@ -82,8 +83,9 @@ def test_django_data_query_repository_list_method_raises_custom_exception_on_dat
 ):
     # Given
     side_effect = DatabaseError
-    mocker.patch(
-        "infrastructures.apps.load.models.Data.objects.filter",
+    mocker.patch.object(
+        models.Data.objects,
+        "filter",
         side_effect=side_effect,
     )
 
@@ -115,25 +117,33 @@ def test_django_data_query_repository_get_method_returns_detailed_record_when_re
     assert isinstance(result, queries.DetailedOutputData)
 
 
-@pytest.mark.parametrize(
-    ("side_effect", "expected_error"),
-    [
-        (models.Data.DoesNotExist, common_exceptions.DataDoesNotExist),
-        (DatabaseError, common_exceptions.DatabaseError),
-    ],
-)
 def test_django_data_query_repository_get_method_raises_custom_exception_on_database_exception(
     mocker: MockFixture,
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
-    side_effect,
-    expected_error,
 ):
     # Given
-    mocker.patch(
-        "infrastructures.apps.load.models.Data.objects.get",
-        side_effect=side_effect,
+    mocker.patch.object(
+        models.Data.objects,
+        "get",
+        side_effect=DatabaseError,
     )
 
     # When and then
-    with pytest.raises(expected_error):
+    with pytest.raises(common_exceptions.DatabaseError):
+        test_django_data_query_repository.get(data_id=value_objects.DataId.new())
+
+
+def test_django_data_query_repository_get_method_raises_data_does_not_exist_when_data_not_found(
+    mocker: MockFixture,
+    test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
+):
+    # Given
+    mocker.patch.object(
+        models.Data.objects,
+        "get",
+        side_effect=models.Data.DoesNotExist,
+    )
+
+    # When and then
+    with pytest.raises(common_exceptions.DataDoesNotExist):
         test_django_data_query_repository.get(data_id=value_objects.DataId.new())
