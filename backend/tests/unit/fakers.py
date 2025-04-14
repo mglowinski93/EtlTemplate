@@ -10,8 +10,8 @@ from modules.transform.domain import value_objects as transform_value_objects
 
 class TestExtractUnitOfWork(extract_ports.AbstractExtractUnitOfWork):
     def __init__(self):
-        self.file: TestFileDomainRepository
-        self.extract: TestExtractDomainRepository
+        self.file = TestFileDomainRepository()
+        self.extract = TestExtractDomainRepository()
 
     def commit(self) -> None:
         pass

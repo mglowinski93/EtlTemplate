@@ -10,15 +10,15 @@ from modules.load.services import queries
 from modules.load.services.queries import ports as query_ports
 from modules.load.services.queries import queries as query_dtos
 from modules.load.services.queries.ports import repositories as query_repositories
-from tests.entity_factories import TransformedDataFactory
 from tests.model_factories import DataFactory
+from ....fakers import fake_transformed_data
 
 
 def test_django_data_domain_repository_create_method_creates_record(
     test_django_data_domain_repository: ports.AbstractDataDomainRepository,
 ):
     # Given
-    data = TransformedDataFactory.create()
+    data = [fake_transformed_data()]
 
     # When
     test_django_data_domain_repository.create(data)
@@ -45,7 +45,7 @@ def test_django_data_domain_repository_create_method_raises_custom_exception_on_
 
     # When and Then
     with pytest.raises(common_exceptions.DatabaseError):
-        test_django_data_domain_repository.create(TransformedDataFactory.create())
+        test_django_data_domain_repository.create([fake_transformed_data()])
 
     assert not models.Data.objects.exists()
 
