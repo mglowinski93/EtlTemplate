@@ -50,7 +50,6 @@ def test_django_data_domain_repository_create_method_raises_custom_exception_on_
     # When and then
     with pytest.raises(common_exceptions.DatabaseError):
         test_django_data_domain_repository.create([fake_transformed_data()])
-
     assert not models.Data.objects.exists()
 
 

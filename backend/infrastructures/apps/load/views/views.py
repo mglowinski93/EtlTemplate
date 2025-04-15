@@ -19,6 +19,7 @@ from modules.load.services.queries import ports as query_ports
 
 from ...common import exceptions as common_exceptions
 from .serializers import DetailedOutputDataReadSerializer, OutputDataReadSerializer
+from infrastructures.apps.common import parsers
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +80,7 @@ class LoadViewSet(
         logger.info("Querying Output Data...")
 
         try:
-            uuid.UUID(pk)
+            data_id=value_objects.DataId.from_hex(pk)
         except ValueError:
             logger.warning("'%s' is invalid format as Data_ID.", pk)
             return Response(
@@ -89,7 +90,7 @@ class LoadViewSet(
 
         try:
             detailed_output_data = queries.get_data(
-                query_data_repository, data_id=value_objects.DataId.from_hex(pk)
+                query_data_repository, data_id=data_id
             )
         except common_exceptions.DataDoesNotExist:
             return Response(
@@ -131,7 +132,7 @@ class LoadViewSet(
                 name="timestamp_to",
                 description="Timestamp to date to filter data.",
                 required=False,
-                type=str,
+                type=str,         
                 examples=[
                     swagger_utils.OpenApiExample("2025-04-08T18:48:38.504419+02:00"),
                 ],
@@ -220,8 +221,8 @@ class LoadViewSet(
         logger.info("Listing all datasets...")
 
         try:
-            is_satisfied = _str_to_bool(request.query_params.get("is_satisfied"))
-        except (ValueError, TypeError):
+            is_satisfied = parsers.map_bool_query_parameter_to_bool(request.query_params.get("is_satisfied"))
+        except ValueError:
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "Invalid filtering parameters."},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -292,15 +293,3 @@ class LoadViewSet(
             ).data,
             status=status.HTTP_200_OK,
         )
-
-
-def _str_to_bool(value: str) -> bool | None:
-    if value is None:
-        return None
-    val = value.strip().lower()
-    if val == "true":
-        return True
-    elif val == "false":
-        return False
-    else:
-        raise ValueError()

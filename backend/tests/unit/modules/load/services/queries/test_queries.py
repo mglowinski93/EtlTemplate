@@ -4,6 +4,7 @@ from modules.common import pagination as pagination_dtos
 from modules.load.domain import value_objects
 from modules.load.services import queries
 from modules.load.services.queries import ports
+from tests import fakers
 
 
 def test_returned_data_is_of_correct_type(
@@ -17,7 +18,7 @@ def test_returned_data_is_of_correct_type(
             full_name="Johnny Bravo",
             age=1,
             is_satisfied=True,
-            timestamp=datetime.now(),
+            timestamp=fakers.fake_timestamp(),
         )
     )
 
@@ -38,7 +39,7 @@ def test_returned_data_list_is_of_correct_type(
             id=data_id,
             full_name="Johnny Bravo",
             is_satisfied=True,
-            timestamp=datetime.now(),
+            timestamp=fakers.fake_timestamp(),
         )
     )
 

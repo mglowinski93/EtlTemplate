@@ -39,15 +39,15 @@ def test_django_data_domain_repository_create_method_raises_custom_exception_on_
 ):
     # Given
     side_effect = DatabaseError
-    mocker.patch(
-        "infrastructures.apps.load.models.Data.objects.bulk_create",
+    mocker.patch.object(
+        models.Data.objects,
+        "bulk_create",
         side_effect=side_effect,
     )
 
     # When and Then
     with pytest.raises(common_exceptions.DatabaseError):
         test_django_data_domain_repository.create([fake_transformed_data()])
-
     assert not models.Data.objects.exists()
 
 
@@ -80,8 +80,9 @@ def test_django_data_query_repository_list_method_raises_custom_exception_on_dja
 ):
     # Given
     side_effect = DatabaseError
-    mocker.patch(
-        "infrastructures.apps.load.models.Data.objects.filter",
+    mocker.patch.object(
+        models.Data.objects,
+        "filter",
         side_effect=side_effect,
     )
 
@@ -114,7 +115,7 @@ def test_django_data_query_repository_get_method_returns_detailed_record_when_re
 
 
 @pytest.mark.parametrize(
-    ("side_effect", "expected_error"),
+    ("side_effect", "expected_exception"),
     [
         (models.Data.DoesNotExist, common_exceptions.DataDoesNotExist),
         (DatabaseError, common_exceptions.DatabaseError),
@@ -124,14 +125,15 @@ def test_django_data_query_repository_get_method_raises_custom_exception_on_djan
     mocker: MockFixture,
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
     side_effect,
-    expected_error,
+    expected_exception,
 ):
     # Given
-    mocker.patch(
-        "infrastructures.apps.load.models.Data.objects.get",
+    mocker.patch.object(
+        models.Data.objects,
+        "get",
         side_effect=side_effect,
     )
 
     # When and Then
-    with pytest.raises(expected_error):
+    with pytest.raises(expected_exception):
         test_django_data_query_repository.get(data_id=value_objects.DataId.new())

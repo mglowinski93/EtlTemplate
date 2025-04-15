@@ -43,8 +43,9 @@ def test_get_data_endpoint_returns_404_when_specified_data_does_not_exist(
 ):
     # Given
     client = unauthenticated_client.client
-    data_id = fakers.fake_data_id()
 
+    data_id = fakers.fake_data_id()
+    
     # When
     response = client.get(get_url(path_name="load-detail", path_params={"pk": data_id}))
 
@@ -58,6 +59,7 @@ def test_get_data_endpoint_returns_404_when_data_id_has_invalid_format(
 ):
     # Given
     client = unauthenticated_client.client
+
     data_id = "invalid-format-data-id"
 
     # When
@@ -91,8 +93,9 @@ def test_list_data_endpoint_returns_data_when_data_exists(
     unauthenticated_client: APIClientData,
 ):
     # Given
-    data_number = 3
     client = unauthenticated_client.client
+
+    data_number = 3
     model_factories.DataFactory.create_batch(data_number)
 
     # When
@@ -284,6 +287,7 @@ def test_list_data_endpoint_filtering_by_timestamp_to(
 ):
     # Given
     client = unauthenticated_client.client
+
     data = model_factories.DataFactory.create()
     model_factories.DataFactory.create()
 
@@ -309,6 +313,7 @@ def test_list_data_endpoint_filtering_by_timestamp_from(
 ):
     # Given
     client = unauthenticated_client.client
+
     model_factories.DataFactory.create()
     data = model_factories.DataFactory.create()
 

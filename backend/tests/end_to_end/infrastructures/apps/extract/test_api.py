@@ -11,18 +11,20 @@ from ....utils import get_url
 
 
 @pytest.mark.parametrize(
-    "test_file_path",
+    "file_path",
     (consts.CORRECT_INPUT_CSV, consts.CORRECT_INPUT_XLS, consts.CORRECT_INPUT_XLSX),
 )
 def test_create_data_endpoint_returns_201_created(
-    unauthenticated_client: APIClientData, test_file_path: Path
+    unauthenticated_client: APIClientData, file_path: Path
 ):
     # Given
-    with open(test_file_path, "rb") as f:
-        file_data = SimpleUploadedFile(name=test_file_path.name, content=f.read())
+    client = unauthenticated_client.client
+
+    with open(file_path, "rb") as f:
+        file_data = SimpleUploadedFile(name=file_path.name, content=f.read())
 
         # When
-        response = unauthenticated_client.client.post(
+        response = client.post(
             get_url("extract-list"), {"file": file_data}, format="multipart"
         )
 
@@ -44,13 +46,15 @@ def test_create_data_endpoint_returns_400_when_extension_not_supported(
     unauthenticated_client: APIClientData,
 ):
     # Given
+    client = unauthenticated_client.client
+    
     with open(consts.CORRECT_INPUT_CSV, "rb") as f:
         file_data = SimpleUploadedFile(
             name=consts.NOT_SUPPORTED_INPUT.name, content=f.read()
         )
 
         # When
-        response = unauthenticated_client.client.post(
+        response = client.post(
             get_url("extract-list"), {"file": file_data}, format="multipart"
         )
 
@@ -62,13 +66,15 @@ def test_create_data_endpoint_returns_400_when_invalid_data(
     unauthenticated_client: APIClientData,
 ):
     # Given
+    client = unauthenticated_client.client
+        
     with open(consts.INCORRECT_INPUT, "rb") as f:
         file_data = SimpleUploadedFile(
             name=consts.NOT_SUPPORTED_INPUT.name, content=f.read()
         )
 
         # When
-        response = unauthenticated_client.client.post(
+        response = client.post(
             get_url("extract-list"), {"file": file_data}, format="multipart"
         )
 

@@ -2,14 +2,15 @@ from faker import Faker
 
 from ..... import fakers
 
+from modules.load.domain import value_objects
+
 fake = Faker()
 
 
-def fake_data_id() -> str:
-    return fake.uuid4()
+def fake_data_id() -> value_objects.DataId:
+    return value_objects.DataId.new()
 
-
-def fake_data(is_satisfied: bool = None) -> dict:  # type: ignore[assignment]
+def fake_data(is_satisfied: bool | None = None) -> dict:  # type: ignore[assignment]
     return {
         "full_name": fakers.fake_full_name(),
         "age": fakers.fake_age(),
