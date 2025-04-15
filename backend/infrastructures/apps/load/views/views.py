@@ -1,5 +1,4 @@
 import logging
-import uuid
 
 import inject
 from django.core import exceptions as django_exceptions
@@ -11,6 +10,7 @@ from rest_framework.viewsets import ViewSet
 
 from infrastructures.apps.common import consts as common_consts
 from infrastructures.apps.common import pagination as common_pagination
+from infrastructures.apps.common import parsers
 from modules.common import ordering as ordering_dtos
 from modules.common import pagination as pagination_dtos
 from modules.load.domain import value_objects
@@ -19,7 +19,6 @@ from modules.load.services.queries import ports as query_ports
 
 from ...common import exceptions as common_exceptions
 from .serializers import DetailedOutputDataReadSerializer, OutputDataReadSerializer
-from infrastructures.apps.common import parsers
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +79,7 @@ class LoadViewSet(
         logger.info("Querying Output Data...")
 
         try:
-            data_id=value_objects.DataId.from_hex(pk)
+            data_id = value_objects.DataId.from_hex(pk)
         except ValueError:
             logger.warning("'%s' is invalid format as Data_ID.", pk)
             return Response(
@@ -132,7 +131,7 @@ class LoadViewSet(
                 name="timestamp_to",
                 description="Timestamp to date to filter data.",
                 required=False,
-                type=str,         
+                type=str,
                 examples=[
                     swagger_utils.OpenApiExample("2025-04-08T18:48:38.504419+02:00"),
                 ],
@@ -221,7 +220,9 @@ class LoadViewSet(
         logger.info("Listing all datasets...")
 
         try:
-            is_satisfied = parsers.map_bool_query_parameter_to_bool(request.query_params.get("is_satisfied"))
+            is_satisfied = parsers.map_bool_query_parameter_to_bool(
+                request.query_params.get("is_satisfied")
+            )
         except ValueError:
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "Invalid filtering parameters."},

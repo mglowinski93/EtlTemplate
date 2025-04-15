@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from modules.common import pagination as pagination_dtos
 from modules.load.domain import value_objects
 from modules.load.services import queries

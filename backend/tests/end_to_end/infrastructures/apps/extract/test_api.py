@@ -47,7 +47,7 @@ def test_create_data_endpoint_returns_400_when_extension_not_supported(
 ):
     # Given
     client = unauthenticated_client.client
-    
+
     with open(consts.CORRECT_INPUT_CSV, "rb") as f:
         file_data = SimpleUploadedFile(
             name=consts.NOT_SUPPORTED_INPUT.name, content=f.read()
@@ -67,7 +67,7 @@ def test_create_data_endpoint_returns_400_when_invalid_data(
 ):
     # Given
     client = unauthenticated_client.client
-        
+
     with open(consts.INCORRECT_INPUT, "rb") as f:
         file_data = SimpleUploadedFile(
             name=consts.NOT_SUPPORTED_INPUT.name, content=f.read()

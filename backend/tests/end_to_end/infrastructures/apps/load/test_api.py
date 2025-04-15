@@ -45,7 +45,7 @@ def test_get_data_endpoint_returns_404_when_specified_data_does_not_exist(
     client = unauthenticated_client.client
 
     data_id = fakers.fake_data_id()
-    
+
     # When
     response = client.get(get_url(path_name="load-detail", path_params={"pk": data_id}))
 
@@ -330,6 +330,36 @@ def test_list_data_endpoint_filtering_by_timestamp_from(
     assert response.data[infrastructure_common_consts.PAGINATION_COUNT_NAME] == 1
     assert all(
         datetime.fromisoformat(item["timestamp"]) <= data.created_at
+        for item in response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
+    )
+
+
+def test_list_data_endpoint_filtering_by_multiple_criteria(
+    unauthenticated_client: APIClientData,
+):
+    # Given
+    client = unauthenticated_client.client
+
+    model_factories.DataFactory.create(data=fakers.fake_data(is_satisfied=False))
+    data = model_factories.DataFactory.create(data=fakers.fake_data(is_satisfied=False))
+    data2 = model_factories.DataFactory.create(data=fakers.fake_data(is_satisfied=True))
+    # When
+    response = client.get(
+        get_url(
+            path_name="load-list",
+            query_params={
+                "timestamp_from": data.created_at.isoformat(),
+                "timestamp_to": data2.created_at.isoformat(),
+                "is_satisfied": True,
+            },
+        )
+    )
+
+    # Then
+    assert response.status_code == HTTPStatus.OK
+    assert response.data[infrastructure_common_consts.PAGINATION_COUNT_NAME] == 1
+    assert all(
+        datetime.fromisoformat(item["timestamp"]) <= data2.created_at
         for item in response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
     )
 
