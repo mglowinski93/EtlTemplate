@@ -12,6 +12,7 @@ from . import fakers
 from uuid import UUID
 import pytest
 
+
 def test_get_data_endpoint_returns_data_when_specified_data_exists(
     unauthenticated_client: APIClientData,
 ):
@@ -216,9 +217,15 @@ def test_list_data_endpoint_pagination_next_link(
         is None
     )
 
-
+@pytest.mark.parametrize(
+    ("pagination_key", "pagination_value"), 
+    ((infrastructure_common_consts.PAGINATION_OFFSET_QUERY_PARAMETER_NAME,"invalid-offset"),
+     (infrastructure_common_consts.PAGINATION_LIMIT_QUERY_PARAMETER_NAME, "invalid-records_per_page"))
+)
 def test_list_data_endpoint_handles_invalid_pagination_parameters(
     unauthenticated_client: APIClientData,
+    pagination_key: str,
+    pagination_value: str
 ):
     # Given
     client = unauthenticated_client.client
@@ -228,7 +235,7 @@ def test_list_data_endpoint_handles_invalid_pagination_parameters(
         get_url(
             path_name="load-list",
             query_params={
-                infrastructure_common_consts.PAGINATION_OFFSET_QUERY_PARAMETER_NAME: "invalid-offset",
+                pagination_key: pagination_value,
             },
         ),
     )
@@ -236,65 +243,6 @@ def test_list_data_endpoint_handles_invalid_pagination_parameters(
     # Then
     assert response.status_code == HTTPStatus.BAD_REQUEST
     assert infrastructure_common_consts.ERROR_DETAIL_KEY in response.data
-
-
-
-#todo help me with that
-# @pytest.mark.parametrize(
-#     ("filter_key", "filter_value"), (("data", fakers.fake_data()),)
-# )
-# def test_list_data_endpoint_filtering(
-#     unauthenticated_client: APIClientData,
-#     filter_key: str, 
-#     filter_value: dict
-# ):
-#     # Given
-#     client = unauthenticated_client.client
-
-#     model_factories.DataFactory.create(data=)
-#     model_factories.DataFactory.create()
-
-#     # When
-#     response = client.get(
-#         get_url(
-#             path_name="load-list",
-#             query_params={filter_key: filter_value},
-#         )
-#     )
-
-#     # Then
-#     assert response.status_code == HTTPStatus.OK
-#     assert response.data[infrastructure_common_consts.PAGINATION_COUNT_NAME] == 1
-#     assert all(
-#         item[filter_key] == filter_value
-#         for item in response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
-#     )
-
-
-def test_list_data_endpoint_filtering_by_age(
-    unauthenticated_client: APIClientData,
-):
-    # Given
-    client = unauthenticated_client.client
-    age = 10
-    data = model_factories.DataFactory.create(data = fakers.fake_data(age=age))
-    model_factories.DataFactory.create(data = fakers.fake_data(age=age + 1))
-
-    # When
-    response = client.get(
-        get_url(
-            path_name="load-list",
-            query_params={"age": data.data["age"]},
-        )
-    )
-    
-    # Then
-    assert response.status_code == HTTPStatus.OK
-    assert response.data[infrastructure_common_consts.PAGINATION_COUNT_NAME] == 1
-    assert all(
-        item["age"] == data.data["age"]
-        for item in response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
-    )
 
 
 def test_list_data_endpoint_filtering_by_is_satisfied(
@@ -323,64 +271,59 @@ def test_list_data_endpoint_filtering_by_is_satisfied(
     )
 
 
-# TODO override dates so one is before and another is after filtering date
-# def test_list_data_endpoint_filtering_by_timestamp_from(
-#     unauthenticated_client: APIClientData,
-# ):
-#     # Given
-#     client = unauthenticated_client.client
+def test_list_data_endpoint_filtering_by_timestamp_to(
+    unauthenticated_client: APIClientData,
+):
+    # Given
+    client = unauthenticated_client.client
+    data = model_factories.DataFactory.create()
+    model_factories.DataFactory.create()
 
-#     data = model_factories.DataFactory.create()
-#     model_factories.DataFactory.create()
-
-#     # When
-#     response = client.get(
-#         get_url(
-#             path_name="load-list",
-#             query_params={"timestamp_from": data.data["timestamp_from"]},
-#         )
-#     )
+    # When  
+    response = client.get(
+        get_url(
+            path_name="load-list",
+            query_params={"timestamp_to": data.created_at.isoformat()},
+        )
+    )
     
-#     # Then
-#     assert response.status_code == HTTPStatus.OK
-#     assert response.data[infrastructure_common_consts.PAGINATION_COUNT_NAME] == 1
-#     assert all(
-#         item["is_satisfied"] == data.data["is_satisfied"]
-#         for item in response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
-#     )
+    # Then
+    assert response.status_code == HTTPStatus.OK
+    assert response.data[infrastructure_common_consts.PAGINATION_COUNT_NAME] == 1
+    assert all(
+        datetime.fromisoformat(item["timestamp"]) >= data.created_at
+        for item in response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
+    )
 
 
-# TODO opposite of above test
-# def test_list_data_endpoint_filtering_by_timestamp_to(
-#     unauthenticated_client: APIClientData,
-# ):
-#     # Given
-#     client = unauthenticated_client.client
+def test_list_data_endpoint_filtering_by_timestamp_from(
+    unauthenticated_client: APIClientData,
+):
+    # Given
+    client = unauthenticated_client.client
+    model_factories.DataFactory.create()
+    data = model_factories.DataFactory.create()
 
-#     data = model_factories.DataFactory.create()
-#     model_factories.DataFactory.create()
-
-#     # When
-#     response = client.get(
-#         get_url(
-#             path_name="load-list",
-#             query_params={"timestamp_from": data.data["timestamp_from"]},
-#         )
-#     )
+    # When  
+    response = client.get(
+        get_url(
+            path_name="load-list",
+            query_params={"timestamp_from": data.created_at.isoformat()},
+        )
+    )
     
-#     # Then
-#     assert response.status_code == HTTPStatus.OK
-#     assert response.data[infrastructure_common_consts.PAGINATION_COUNT_NAME] == 1
-#     assert all(
-#         item["is_satisfied"] == data.data["is_satisfied"]
-#         for item in response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
-#     )
+    # Then
+    assert response.status_code == HTTPStatus.OK
+    assert response.data[infrastructure_common_consts.PAGINATION_COUNT_NAME] == 1
+    assert all(
+        datetime.fromisoformat(item["timestamp"]) <= data.created_at
+        for item in response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
+    )    
 
 
 @pytest.mark.parametrize(
     ("filter_key", "filter_value"),
     (
-        ("age", "invalid-type"),
         ("is_satisfied", "invalid-type"),
         ("timestamp_from", "invalid-datetime"),
         ("timestamp_to", "invalid-datetime"),       
@@ -424,117 +367,36 @@ def test_list_data_endpoint_skip_unsupported_filtering(
     # Then
     assert response.status_code == HTTPStatus.OK
 
-#todo fix that once ordering is done
-# @pytest.mark.parametrize("order_by", ("age", "-age"))
-# def test_list_data_endpoint_ordering(
-#     unauthenticated_client: APIClientData,
-#     order_by: str
-# ):
-#     # Given
-#     client = unauthenticated_client.client
 
-#     batch_size=5
-#     model_factories.DataFactory.create_batch(batch_size)
+@pytest.mark.parametrize("order_by", ("full_name", "-full_name", "timestamp", "-timestamp"))
+def test_list_data_endpoint_ordering(
+    unauthenticated_client: APIClientData,
+    order_by: str
+):
+    # Given
+    client = unauthenticated_client.client
 
-#     # When
-#     response = client.get(
-#         get_url(
-#             path_name="load-list",
-#             query_params={"ordering": order_by},
-#         )
-#     )
+    batch_size=5
+    model_factories.DataFactory.create_batch(batch_size)
 
-#     # Then
-#     compare_key = order_by[1:] if order_by.startswith("-") else order_by
-#     assert response.status_code == HTTPStatus.OK
-#     results = response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
-#     assert results == sorted(
-#         results,
-#         key=lambda x: x[compare_key],
-#         reverse=order_by.startswith("-"),
-#     )
+    # When
+    response = client.get(
+        get_url(
+            path_name="load-list",
+            query_params={"ordering": order_by},
+        )
+    )
 
+    # Then
+    compare_key = order_by[1:] if order_by.startswith("-") else order_by
+    assert response.status_code == HTTPStatus.OK
+    results = response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
+    assert results == sorted(
+        results,
+        key=lambda x: x[compare_key],
+        reverse=order_by.startswith("-"),
+    )
 
-#todo fix that once ordering is done
-# def test_list_data_endpoint_ordering_by_age(unauthenticated_client: APIClientData):
-#     # Given
-#     client = unauthenticated_client.client
-
-#     batch_size=5
-#     model_factories.DataFactory.create_batch(batch_size)
-
-#     # When and then
-#     response = client.get(
-#         get_url(
-#             path_name="load-list",
-#             query_params={"ordering": "age"},
-#         )
-#     )
-
-#     assert response.status_code == HTTPStatus.OK
-#     results = response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
-#     assert results == sorted(
-#         results,
-#         key=lambda x: x["age"],
-#         reverse=False,
-#     )
-
-#     # When and then
-#     response = client.get(
-#         get_url(
-#             path_name="load-list",
-#             query_params={"ordering": "-age"},
-#         )
-#     )
-
-#     assert response.status_code == HTTPStatus.OK
-#     results = response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
-#     assert results == sorted(
-#         results,
-#         key=lambda x: x["age"],
-#         reverse=True,
-#     )
-
-
-# todo this test doesn't work, because we can't verify timestamp order. we must replace it.  
-# def test_list_data_endpoint_ordering_by_timestamp(unauthenticated_client: APIClientData):
-#     # Given
-#     client = unauthenticated_client.client
-
-#     batch_size=5
-#     model_factories.DataFactory.create_batch(batch_size)
-
-#     # When and then
-#     response = client.get(
-#         get_url(
-#             path_name="load-list",
-#             query_params={"ordering": "timestamp"},
-#         )
-#     )
-
-#     assert response.status_code == HTTPStatus.OK
-#     results = response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
-#     assert results == sorted(
-#         results,
-#         key=lambda x: x["timestamp"],
-#         reverse=False,
-#     )
-
-#     # When and then
-#     response = client.get(
-#         get_url(
-#             path_name="load-list",
-#             query_params={"ordering": "-timestamp"},
-#         )
-#     )
-
-#     assert response.status_code == HTTPStatus.OK
-#     results = response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
-#     assert results == sorted(
-#         results,
-#         key=lambda x: x["timestamp"],
-#         reverse=True,
-#     )
 
 def test_list_data_endpoint_ordering_skip_unsupported_ordering(unauthenticated_client: APIClientData):
     # Given
