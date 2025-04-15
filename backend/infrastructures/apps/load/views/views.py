@@ -239,6 +239,7 @@ class LoadViewSet(
             else {}
         )
         ordering = query_ports.DataOrdering(
+            full_name=_ordering.get("full_name"),
             timestamp=_ordering.get("timestamp"),
         )        
         logger.info("Ordering: %s", ordering)

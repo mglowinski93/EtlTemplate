@@ -99,7 +99,7 @@ def _get_django_output_data_ordering(
     if ordering.timestamp is not None:
         django_ordering["created_at"] = ordering.timestamp
 
-    if ordering.is_satisfied is not None:
-        django_ordering["is_satisfied"] = ordering.is_satisfied
+    if ordering.full_name is not None:
+        django_ordering["data__full_name"] = ordering.full_name
 
     return common_ordering.get_django_ordering(django_ordering)

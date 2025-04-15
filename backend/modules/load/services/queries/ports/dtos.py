@@ -13,5 +13,5 @@ class DataFilters:
 
 @dataclass
 class DataOrdering:
-    is_satisfied: Ordering | None = None
+    full_name: Ordering | None = None
     timestamp: Ordering | None = None
