@@ -79,9 +79,6 @@ class DjangoDataQueryRepository(query_ports.AbstractDataQueryRepository):
 def _get_django_output_data_filters(filters: query_ports.DataFilters) -> dict:
     django_filters: dict[str, Any] = {}
 
-    if filters.age is not None:
-        django_filters["data__age"] = filters.age
-
     if filters.is_satisfied is not None:
         django_filters["data__is_satisfied"] = filters.is_satisfied
 
@@ -101,5 +98,8 @@ def _get_django_output_data_ordering(
 
     if ordering.timestamp is not None:
         django_ordering["created_at"] = ordering.timestamp
+
+    if ordering.is_satisfied is not None:
+        django_ordering["is_satisfied"] = ordering.is_satisfied
 
     return common_ordering.get_django_ordering(django_ordering)

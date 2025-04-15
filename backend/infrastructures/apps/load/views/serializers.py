@@ -14,4 +14,3 @@ class OutputDataReadSerializer(serializers.Serializer):
 
 class DetailedOutputDataReadSerializer(OutputDataReadSerializer):
     age = serializers.IntegerField()
-

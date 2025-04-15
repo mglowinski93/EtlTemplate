@@ -108,16 +108,6 @@ class LoadViewSet(
         parameters=[
             swagger_utils.OpenApiParameter(
                 location=swagger_utils.OpenApiParameter.QUERY,
-                name="age",
-                description="Age to filter data by.",
-                required=False,
-                type=int,
-                examples=[
-                    swagger_utils.OpenApiExample(name="age", value=15),
-                ],
-            ),
-            swagger_utils.OpenApiParameter(
-                location=swagger_utils.OpenApiParameter.QUERY,
                 name="is_satisfied",
                 description="Satisfaction to filter data by.",
                 required=False,
@@ -154,8 +144,8 @@ class LoadViewSet(
                 required=False,
                 type=str,
                 examples=[
-                    swagger_utils.OpenApiExample("age"),
-                    swagger_utils.OpenApiExample("-age"),
+                    swagger_utils.OpenApiExample("is_satisfied"),
+                    swagger_utils.OpenApiExample("-is_satisfied"),
                     swagger_utils.OpenApiExample("timestamp"),
                     swagger_utils.OpenApiExample("-timestamp"),
                 ],
@@ -230,7 +220,6 @@ class LoadViewSet(
         logger.info("Listing all datasets...")
 
         try:
-            age = _cast(request.query_params.get("age"), int)
             is_satisfied = _str_to_bool(request.query_params.get("is_satisfied"))
         except (ValueError, TypeError):
             return Response(
@@ -238,7 +227,6 @@ class LoadViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )   
         filters=query_ports.DataFilters(
-            age=age,
             is_satisfied=is_satisfied,
             timestamp_from=request.query_params.get("timestamp_from"),
             timestamp_to=request.query_params.get("timestamp_to"),
@@ -251,7 +239,6 @@ class LoadViewSet(
             else {}
         )
         ordering = query_ports.DataOrdering(
-            age=_ordering.get("age"),
             timestamp=_ordering.get("timestamp"),
         )        
         logger.info("Ordering: %s", ordering)
@@ -302,13 +289,6 @@ class LoadViewSet(
             ).data, 
             status=status.HTTP_200_OK,
         )
-
-
-def _cast(value, cast_func):
-    if value is None:
-        return None
-    return cast_func(value)
-
     
 def _str_to_bool(value: str) -> bool | None:
     if value is None:
