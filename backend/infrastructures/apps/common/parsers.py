@@ -8,4 +8,4 @@ def map_bool_query_parameter_to_bool(value: str | None) -> bool | None:
     if _value in {"false", "0", "no"}:
         return False
 
-    raise ValueError()
+    raise ValueError

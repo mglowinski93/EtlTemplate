@@ -334,7 +334,7 @@ def test_list_data_endpoint_filtering_by_timestamp_from(
     )
 
 
-def test_list_data_endpoint_filtering_by_multiple_criteria(
+def test_list_data_endpoint_filtering_by_a_few_attributes(
     unauthenticated_client: APIClientData,
 ):
     # Given
