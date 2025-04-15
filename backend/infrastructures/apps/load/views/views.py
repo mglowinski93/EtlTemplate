@@ -8,16 +8,15 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from infrastructures.apps.common import const as common_consts
-from modules.common import ordering as common_ordering
+from infrastructures.apps.common import consts as common_consts, pagination as common_pagination
 from modules.common import pagination as pagination_dtos
 from modules.load.domain import value_objects
 from modules.load.services.queries import ports as query_ports
-from modules.load.services.queries import queries
+from modules.load.services import queries
 from modules.common import ordering as ordering_dtos
 from django.core import exceptions as django_exceptions
 
-from infrastructures.apps.common import const as common_const
+
 from ...common import exceptions as common_exceptions
 from .serializers import DetailedOutputDataReadSerializer, OutputDataReadSerializer
 
@@ -230,10 +229,17 @@ class LoadViewSet(
     ):
         logger.info("Listing all datasets...")
 
-
+        try:
+            age = _cast(request.query_params.get("age"), int)
+            is_satisfied = _str_to_bool(request.query_params.get("is_satisfied"))
+        except (ValueError, TypeError):
+            return Response(
+                {common_consts.ERROR_DETAIL_KEY: "Invalid filtering parameters."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )   
         filters=query_ports.DataFilters(
-            age=request.query_params.get("age"),
-            is_satisfied=request.query_params.get("is_satisfied"),
+            age=age,
+            is_satisfied=is_satisfied,
             timestamp_from=request.query_params.get("timestamp_from"),
             timestamp_to=request.query_params.get("timestamp_to"),
         ) 
@@ -266,12 +272,14 @@ class LoadViewSet(
             logger.warning("Invalid pagination parameters.")
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "Invalid pagination parameters."},
-                status=status.HTTP_404_NOT_FOUND,
+                status=status.HTTP_400_BAD_REQUEST,
             )
         logger.info("Pagination: %s", pagination)
 
         try:
-            output_data, count = queries.list_data(
+            results: list[queries.OutputData]
+            count: int 
+            results, count = queries.list_data(
                 repository=query_data_repository,
                 filters=filters,
                 ordering=ordering,
@@ -285,9 +293,30 @@ class LoadViewSet(
         logger.info("Dataset listed successfully.")
 
         return Response(
-            data={
-                "count": count,
-                "results": OutputDataReadSerializer(output_data, many=True).data,
-            },
+            data=common_pagination.make_paginated_response(
+                url=request.build_absolute_uri(),
+                count=count,
+                offset=pagination.offset,
+                records_per_page=pagination.records_per_page,
+                results=[OutputDataReadSerializer(output_data).data for output_data in results],
+            ).data, 
             status=status.HTTP_200_OK,
         )
+
+
+def _cast(value, cast_func):
+    if value is None:
+        return None
+    return cast_func(value)
+
+    
+def _str_to_bool(value: str) -> bool | None:
+    if value is None:
+        return None
+    val = value.strip().lower()
+    if val == "true":
+        return True
+    elif val == "false":
+        return False
+    else:
+        raise ValueError()
