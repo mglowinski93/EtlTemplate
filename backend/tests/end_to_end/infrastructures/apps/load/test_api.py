@@ -350,7 +350,7 @@ def test_list_data_endpoint_returns_400_when_invalid_value_passed_as_query_filte
     assert infrastructure_common_consts.ERROR_DETAIL_KEY in response.data
 
 
-def test_list_data_endpoint_skip_unsupported_filtering(
+def test_list_data_endpoint_skip_unsupported_query_parameter(
     unauthenticated_client: APIClientData,
 ):
     # Given
@@ -396,6 +396,38 @@ def test_list_data_endpoint_ordering(
         key=lambda x: x[compare_key],
         reverse=order_by.startswith("-"),
     )
+
+
+def test_list_data_endpoint_ordering_by_a_few_attributes(
+    unauthenticated_client: APIClientData,
+):
+    # Given
+    client = unauthenticated_client.client
+
+    batch_size=5
+    model_factories.DataFactory.create_batch(batch_size)
+
+    # When
+    response = client.get(
+        get_url(
+            path_name="load-list",
+            query_params={"ordering": "timestamp,full_name"},
+        )
+    )
+
+    # Then
+    assert response.status_code == HTTPStatus.OK
+    results = response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
+    assert [
+        (data["timestamp"], data["full_name"])
+        for data in results
+    ] == [
+        (data["timestamp"], data["full_name"])
+        for data in sorted(
+            results,
+            key=lambda item: (item["timestamp"], item["full_name"]),
+        )
+    ]
 
 
 def test_list_data_endpoint_ordering_skip_unsupported_ordering(unauthenticated_client: APIClientData):

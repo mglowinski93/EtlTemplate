@@ -37,8 +37,8 @@ def test_returned_data_list_is_of_correct_type(
         data=queries.OutputData(
             id=data_id,
             full_name="Johnny Bravo",
-            age=1,
             is_satisfied=True,
+            timestamp=datetime.now()
         )
     )
 
