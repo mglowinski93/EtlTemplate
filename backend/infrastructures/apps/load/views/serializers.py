@@ -8,9 +8,10 @@ class OutputDataBaseSerializer(serializers.Serializer):
 class OutputDataReadSerializer(serializers.Serializer):
     id = serializers.UUIDField()
     full_name = serializers.CharField()
-    age = serializers.IntegerField()
+    timestamp = serializers.DateTimeField()
     is_satisfied = serializers.BooleanField()
 
 
 class DetailedOutputDataReadSerializer(OutputDataReadSerializer):
-    timestamp = serializers.DateTimeField()
+    age = serializers.IntegerField()
+

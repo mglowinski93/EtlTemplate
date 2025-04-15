@@ -8,10 +8,10 @@ from ...domain.value_objects import DataId
 class OutputData:
     id: DataId
     full_name: str
-    age: int
     is_satisfied: bool
-
+    timestamp: datetime
 
 @dataclass(frozen=True)
 class DetailedOutputData(OutputData):
-    timestamp: datetime
+    age: int
+

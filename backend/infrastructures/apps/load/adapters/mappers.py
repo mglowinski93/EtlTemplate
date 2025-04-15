@@ -21,8 +21,8 @@ def map_data_model_to_output_data_dto(
     return queries.OutputData(
         id=value_objects.DataId.from_hex(data.id.hex),
         full_name=data.data["full_name"],
-        age=data.data["age"],
         is_satisfied=data.data["is_satisfied"],
+        timestamp=data.created_at,
     )
 
 
