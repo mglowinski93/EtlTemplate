@@ -1,6 +1,9 @@
 from datetime import datetime
 from http import HTTPStatus
 from typing import Any
+from uuid import UUID
+
+import pytest
 
 from infrastructures.apps.common import consts as infrastructure_common_consts
 from infrastructures.apps.load.views import serializers
@@ -9,8 +12,6 @@ from ..... import model_factories
 from ....dtos import APIClientData
 from ....utils import get_url
 from . import fakers
-from uuid import UUID
-import pytest
 
 
 def test_get_data_endpoint_returns_data_when_specified_data_exists(
@@ -117,6 +118,7 @@ def test_list_data_endpoint_returns_data_when_data_exists(
         serializers.OutputDataReadSerializer(data=data).is_valid() for data in results
     )
 
+
 def test_list_data_endpoint_pagination(
     unauthenticated_client: APIClientData,
 ):
@@ -127,7 +129,7 @@ def test_list_data_endpoint_pagination(
     pagination_offset = 1
     pagination_limit = 5
     model_factories.DataFactory.create_batch(data_number)
-    
+
     # When
     response = client.get(
         get_url(
@@ -150,9 +152,8 @@ def test_list_data_endpoint_pagination(
     assert infrastructure_common_consts.PAGINATION_NEXT_LINK_NAME in json_response
     assert infrastructure_common_consts.PAGINATION_PREVIOUS_LINK_NAME in json_response
     assert (
-        json_response[infrastructure_common_consts.PAGINATION_COUNT_NAME]
-        == data_number
-    )   
+        json_response[infrastructure_common_consts.PAGINATION_COUNT_NAME] == data_number
+    )
 
 
 def test_list_data_endpoint_pagination_next_link(
@@ -175,7 +176,7 @@ def test_list_data_endpoint_pagination_next_link(
             },
         ),
     )
-    
+
     assert response.status_code == HTTPStatus.OK
     json_response: dict[str, Any] = response.data
     assert infrastructure_common_consts.PAGINATION_NEXT_LINK_NAME in json_response
@@ -217,15 +218,22 @@ def test_list_data_endpoint_pagination_next_link(
         is None
     )
 
+
 @pytest.mark.parametrize(
-    ("pagination_key", "pagination_value"), 
-    ((infrastructure_common_consts.PAGINATION_OFFSET_QUERY_PARAMETER_NAME,"invalid-offset"),
-     (infrastructure_common_consts.PAGINATION_LIMIT_QUERY_PARAMETER_NAME, "invalid-records_per_page"))
+    ("pagination_key", "pagination_value"),
+    (
+        (
+            infrastructure_common_consts.PAGINATION_OFFSET_QUERY_PARAMETER_NAME,
+            "invalid-offset",
+        ),
+        (
+            infrastructure_common_consts.PAGINATION_LIMIT_QUERY_PARAMETER_NAME,
+            "invalid-records_per_page",
+        ),
+    ),
 )
 def test_list_data_endpoint_handles_invalid_pagination_parameters(
-    unauthenticated_client: APIClientData,
-    pagination_key: str,
-    pagination_value: str
+    unauthenticated_client: APIClientData, pagination_key: str, pagination_value: str
 ):
     # Given
     client = unauthenticated_client.client
@@ -261,7 +269,7 @@ def test_list_data_endpoint_filtering_by_is_satisfied(
             query_params={"is_satisfied": data.data["is_satisfied"]},
         )
     )
-    
+
     # Then
     assert response.status_code == HTTPStatus.OK
     assert response.data[infrastructure_common_consts.PAGINATION_COUNT_NAME] == 1
@@ -279,14 +287,14 @@ def test_list_data_endpoint_filtering_by_timestamp_to(
     data = model_factories.DataFactory.create()
     model_factories.DataFactory.create()
 
-    # When  
+    # When
     response = client.get(
         get_url(
             path_name="load-list",
             query_params={"timestamp_to": data.created_at.isoformat()},
         )
     )
-    
+
     # Then
     assert response.status_code == HTTPStatus.OK
     assert response.data[infrastructure_common_consts.PAGINATION_COUNT_NAME] == 1
@@ -304,21 +312,21 @@ def test_list_data_endpoint_filtering_by_timestamp_from(
     model_factories.DataFactory.create()
     data = model_factories.DataFactory.create()
 
-    # When  
+    # When
     response = client.get(
         get_url(
             path_name="load-list",
             query_params={"timestamp_from": data.created_at.isoformat()},
         )
     )
-    
+
     # Then
     assert response.status_code == HTTPStatus.OK
     assert response.data[infrastructure_common_consts.PAGINATION_COUNT_NAME] == 1
     assert all(
         datetime.fromisoformat(item["timestamp"]) <= data.created_at
         for item in response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
-    )    
+    )
 
 
 @pytest.mark.parametrize(
@@ -326,13 +334,11 @@ def test_list_data_endpoint_filtering_by_timestamp_from(
     (
         ("is_satisfied", "invalid-type"),
         ("timestamp_from", "invalid-datetime"),
-        ("timestamp_to", "invalid-datetime"),       
+        ("timestamp_to", "invalid-datetime"),
     ),
 )
 def test_list_data_endpoint_returns_400_when_invalid_value_passed_as_query_filter_parameter(
-    unauthenticated_client: APIClientData,
-    filter_key: str, 
-    filter_value: str    
+    unauthenticated_client: APIClientData, filter_key: str, filter_value: str
 ):
     # Given
     client = unauthenticated_client.client
@@ -368,15 +374,16 @@ def test_list_data_endpoint_skip_unsupported_query_parameter(
     assert response.status_code == HTTPStatus.OK
 
 
-@pytest.mark.parametrize("order_by", ("full_name", "-full_name", "timestamp", "-timestamp"))
+@pytest.mark.parametrize(
+    "order_by", ("full_name", "-full_name", "timestamp", "-timestamp")
+)
 def test_list_data_endpoint_ordering(
-    unauthenticated_client: APIClientData,
-    order_by: str
+    unauthenticated_client: APIClientData, order_by: str
 ):
     # Given
     client = unauthenticated_client.client
 
-    batch_size=5
+    batch_size = 5
     model_factories.DataFactory.create_batch(batch_size)
 
     # When
@@ -404,7 +411,7 @@ def test_list_data_endpoint_ordering_by_a_few_attributes(
     # Given
     client = unauthenticated_client.client
 
-    batch_size=5
+    batch_size = 5
     model_factories.DataFactory.create_batch(batch_size)
 
     # When
@@ -418,10 +425,7 @@ def test_list_data_endpoint_ordering_by_a_few_attributes(
     # Then
     assert response.status_code == HTTPStatus.OK
     results = response.data[infrastructure_common_consts.PAGINATION_RESULTS_NAME]
-    assert [
-        (data["timestamp"], data["full_name"])
-        for data in results
-    ] == [
+    assert [(data["timestamp"], data["full_name"]) for data in results] == [
         (data["timestamp"], data["full_name"])
         for data in sorted(
             results,
@@ -430,7 +434,9 @@ def test_list_data_endpoint_ordering_by_a_few_attributes(
     ]
 
 
-def test_list_data_endpoint_ordering_skip_unsupported_ordering(unauthenticated_client: APIClientData):
+def test_list_data_endpoint_ordering_skip_unsupported_ordering(
+    unauthenticated_client: APIClientData,
+):
     # Given
     client = unauthenticated_client.client
 

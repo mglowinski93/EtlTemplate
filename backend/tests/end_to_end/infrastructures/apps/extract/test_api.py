@@ -1,30 +1,29 @@
-from ....dtos import APIClientData
-from django.core.files.uploadedfile import SimpleUploadedFile
-from tests import consts
 from http import HTTPStatus
-from django.urls import reverse
-import pytest
 from pathlib import Path
 
+import pytest
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+from tests import consts
+
+from ....dtos import APIClientData
+from ....utils import get_url
+
+
 @pytest.mark.parametrize(
-    "test_file_path", (consts.CORRECT_INPUT_CSV, consts.CORRECT_INPUT_XLS, consts.CORRECT_INPUT_XLSX)
+    "test_file_path",
+    (consts.CORRECT_INPUT_CSV, consts.CORRECT_INPUT_XLS, consts.CORRECT_INPUT_XLSX),
 )
 def test_create_data_endpoint_returns_201_created(
-    unauthenticated_client: APIClientData,
-    test_file_path: Path
+    unauthenticated_client: APIClientData, test_file_path: Path
 ):
     # Given
     with open(test_file_path, "rb") as f:
-        file_data = SimpleUploadedFile(
-            name=test_file_path.name,
-            content=f.read()
-        )
+        file_data = SimpleUploadedFile(name=test_file_path.name, content=f.read())
 
         # When
         response = unauthenticated_client.client.post(
-            reverse("extract-list"),
-            {"file": file_data},
-            format="multipart"
+            get_url("extract-list"), {"file": file_data}, format="multipart"
         )
 
     # Then
@@ -34,13 +33,12 @@ def test_create_data_endpoint_returns_201_created(
 def test_create_data_endpoint_returns_422_unprocessable_entity_when_file_not_attached(
     unauthenticated_client: APIClientData,
 ):
-     # When
-    response = unauthenticated_client.client.post(
-        reverse("extract-list")
-    )
+    # When
+    response = unauthenticated_client.client.post(get_url("extract-list"))
 
     # Then
     assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
+
 
 def test_create_data_endpoint_returns_400_when_extension_not_supported(
     unauthenticated_client: APIClientData,
@@ -48,15 +46,12 @@ def test_create_data_endpoint_returns_400_when_extension_not_supported(
     # Given
     with open(consts.CORRECT_INPUT_CSV, "rb") as f:
         file_data = SimpleUploadedFile(
-            name=consts.NOT_SUPPORTED_INPUT.name,
-            content=f.read()
+            name=consts.NOT_SUPPORTED_INPUT.name, content=f.read()
         )
 
         # When
         response = unauthenticated_client.client.post(
-            reverse("extract-list"),
-            {"file": file_data},
-            format="multipart"
+            get_url("extract-list"), {"file": file_data}, format="multipart"
         )
 
     # Then
@@ -69,15 +64,12 @@ def test_create_data_endpoint_returns_400_when_invalid_data(
     # Given
     with open(consts.INCORRECT_INPUT, "rb") as f:
         file_data = SimpleUploadedFile(
-            name=consts.NOT_SUPPORTED_INPUT.name,
-            content=f.read()
+            name=consts.NOT_SUPPORTED_INPUT.name, content=f.read()
         )
 
         # When
         response = unauthenticated_client.client.post(
-            reverse("extract-list"),
-            {"file": file_data},
-            format="multipart"
+            get_url("extract-list"), {"file": file_data}, format="multipart"
         )
 
     # Then

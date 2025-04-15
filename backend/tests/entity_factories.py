@@ -17,7 +17,7 @@ class TransformedDataFactory(BatchMixin):
     def create(**kwargs) -> list[transform_value_objects.TransformedData]:
         return [
             transform_value_objects.TransformedData(
-                full_name=kwargs.get("full_name", fakers.fake_name()),
+                full_name=kwargs.get("full_name", fakers.fake_full_name()),
                 age=kwargs.get("age", fakers.fake_age()),
                 is_satisfied=kwargs.get("is_satisfied", fakers.fake_is_satisfied()),
             )

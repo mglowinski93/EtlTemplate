@@ -2,20 +2,20 @@ import logging
 import uuid
 
 import inject
+from django.core import exceptions as django_exceptions
 from drf_spectacular import utils as swagger_utils
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from infrastructures.apps.common import consts as common_consts, pagination as common_pagination
+from infrastructures.apps.common import consts as common_consts
+from infrastructures.apps.common import pagination as common_pagination
+from modules.common import ordering as ordering_dtos
 from modules.common import pagination as pagination_dtos
 from modules.load.domain import value_objects
-from modules.load.services.queries import ports as query_ports
 from modules.load.services import queries
-from modules.common import ordering as ordering_dtos
-from django.core import exceptions as django_exceptions
-
+from modules.load.services.queries import ports as query_ports
 
 from ...common import exceptions as common_exceptions
 from .serializers import DetailedOutputDataReadSerializer, OutputDataReadSerializer
@@ -135,7 +135,7 @@ class LoadViewSet(
                 examples=[
                     swagger_utils.OpenApiExample("2025-04-08T18:48:38.504419+02:00"),
                 ],
-            ),            
+            ),
             swagger_utils.OpenApiParameter(
                 location=swagger_utils.OpenApiParameter.QUERY,
                 name=common_consts.ORDERING_QUERY_PARAMETER_NAME,
@@ -166,7 +166,7 @@ class LoadViewSet(
                 type=int,
                 default=pagination_dtos.PAGINATION_DEFAULT_LIMIT,
             ),
-        ],    
+        ],
         responses={
             status.HTTP_200_OK: swagger_utils.OpenApiResponse(
                 description="Load all Output Data.",
@@ -208,7 +208,7 @@ class LoadViewSet(
                         }
                     },
                 },
-            ),            
+            ),
         },
     )
     @inject.param(name="query_data_repository", cls="query_data_repository")
@@ -225,12 +225,12 @@ class LoadViewSet(
             return Response(
                 {common_consts.ERROR_DETAIL_KEY: "Invalid filtering parameters."},
                 status=status.HTTP_400_BAD_REQUEST,
-            )   
-        filters=query_ports.DataFilters(
+            )
+        filters = query_ports.DataFilters(
             is_satisfied=is_satisfied,
             timestamp_from=request.query_params.get("timestamp_from"),
             timestamp_to=request.query_params.get("timestamp_to"),
-        ) 
+        )
         logger.info("Filters: %s", filters)
 
         _ordering = ordering_dtos.Ordering.create_ordering(
@@ -241,9 +241,8 @@ class LoadViewSet(
         ordering = query_ports.DataOrdering(
             full_name=_ordering.get("full_name"),
             timestamp=_ordering.get("timestamp"),
-        )        
+        )
         logger.info("Ordering: %s", ordering)
-
 
         try:
             pagination = pagination_dtos.Pagination(
@@ -266,7 +265,7 @@ class LoadViewSet(
 
         try:
             results: list[queries.OutputData]
-            count: int 
+            count: int
             results, count = queries.list_data(
                 repository=query_data_repository,
                 filters=filters,
@@ -286,11 +285,15 @@ class LoadViewSet(
                 count=count,
                 offset=pagination.offset,
                 records_per_page=pagination.records_per_page,
-                results=[OutputDataReadSerializer(output_data).data for output_data in results],
-            ).data, 
+                results=[
+                    OutputDataReadSerializer(output_data).data
+                    for output_data in results
+                ],
+            ).data,
             status=status.HTTP_200_OK,
         )
-    
+
+
 def _str_to_bool(value: str) -> bool | None:
     if value is None:
         return None

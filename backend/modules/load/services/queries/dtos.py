@@ -11,7 +11,7 @@ class OutputData:
     is_satisfied: bool
     timestamp: datetime
 
+
 @dataclass(frozen=True)
 class DetailedOutputData(OutputData):
     age: int
-

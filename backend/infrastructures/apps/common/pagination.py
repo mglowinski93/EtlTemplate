@@ -88,6 +88,3 @@ def __create_paginate_serializer():
 
 
 PaginateSerializer = __create_paginate_serializer()
-
-
-

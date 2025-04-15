@@ -38,7 +38,7 @@ def test_returned_data_list_is_of_correct_type(
             id=data_id,
             full_name="Johnny Bravo",
             is_satisfied=True,
-            timestamp=datetime.now()
+            timestamp=datetime.now(),
         )
     )
 
