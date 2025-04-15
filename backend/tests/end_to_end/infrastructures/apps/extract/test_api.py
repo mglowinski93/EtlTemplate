@@ -17,8 +17,7 @@ def test_create_data_endpoint_returns_201_created(
     with open(test_file_path, "rb") as f:
         file_data = SimpleUploadedFile(
             name=test_file_path.name,
-            content=f.read(),
-            content_type="text/csv"
+            content=f.read()
         )
 
         # When
@@ -50,8 +49,7 @@ def test_create_data_endpoint_returns_400_when_extension_not_supported(
     with open(consts.CORRECT_INPUT_CSV, "rb") as f:
         file_data = SimpleUploadedFile(
             name=consts.NOT_SUPPORTED_INPUT.name,
-            content=f.read(),
-            content_type="text/csv"
+            content=f.read()
         )
 
         # When
@@ -72,8 +70,7 @@ def test_create_data_endpoint_returns_400_when_invalid_data(
     with open(consts.INCORRECT_INPUT, "rb") as f:
         file_data = SimpleUploadedFile(
             name=consts.NOT_SUPPORTED_INPUT.name,
-            content=f.read(),
-            content_type="text/csv"
+            content=f.read()
         )
 
         # When
