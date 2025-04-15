@@ -1,18 +1,21 @@
 import logging
 
 import inject
+from django.core import exceptions as django_exceptions
 from drf_spectacular import utils as swagger_utils
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from modules.common import const as common_consts
-from modules.common import ordering as common_ordering
+from infrastructures.apps.common import consts as common_consts
+from infrastructures.apps.common import pagination as common_pagination
+from infrastructures.apps.common import parsers
+from modules.common import ordering as ordering_dtos
 from modules.common import pagination as pagination_dtos
 from modules.load.domain import value_objects
+from modules.load.services import queries
 from modules.load.services.queries import ports as query_ports
-from modules.load.services.queries import queries
 
 from ...common import exceptions as common_exceptions
 from .serializers import DetailedOutputDataReadSerializer, OutputDataReadSerializer
@@ -73,10 +76,20 @@ class LoadViewSet(
         pk: str,
         query_data_repository: query_ports.AbstractDataQueryRepository,
     ):
+        logger.info("Querying Output Data...")
+
         try:
-            logger.info("Querying Output Data...")
+            data_id = value_objects.DataId.from_hex(pk)
+        except ValueError:
+            logger.warning("'%s' is invalid format as Data_ID.", pk)
+            return Response(
+                {common_consts.ERROR_DETAIL_KEY: "Data not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
             detailed_output_data = queries.get_data(
-                query_data_repository, data_id=value_objects.DataId.from_hex(pk)
+                query_data_repository, data_id=data_id
             )
         except common_exceptions.DataDoesNotExist:
             return Response(
@@ -84,14 +97,76 @@ class LoadViewSet(
                 status=status.HTTP_404_NOT_FOUND,
             )
 
+        logger.info("Data Queried.")
+
         return Response(
-            data={
-                "data": DetailedOutputDataReadSerializer(detailed_output_data).data,
-            },
+            data=DetailedOutputDataReadSerializer(detailed_output_data).data,
             status=status.HTTP_200_OK,
         )
 
     @swagger_utils.extend_schema(
+        parameters=[
+            swagger_utils.OpenApiParameter(
+                location=swagger_utils.OpenApiParameter.QUERY,
+                name="is_satisfied",
+                description="Satisfaction to filter data by.",
+                required=False,
+                type=bool,
+                examples=[
+                    swagger_utils.OpenApiExample(name="is_satisfied", value=True),
+                ],
+            ),
+            swagger_utils.OpenApiParameter(
+                location=swagger_utils.OpenApiParameter.QUERY,
+                name="timestamp_from",
+                description="Timestamp from date to filter data.",
+                required=False,
+                type=str,
+                examples=[
+                    swagger_utils.OpenApiExample("2025-04-08T18:48:38.504419+02:00"),
+                ],
+            ),
+            swagger_utils.OpenApiParameter(
+                location=swagger_utils.OpenApiParameter.QUERY,
+                name="timestamp_to",
+                description="Timestamp to date to filter data.",
+                required=False,
+                type=str,
+                examples=[
+                    swagger_utils.OpenApiExample("2025-04-08T18:48:38.504419+02:00"),
+                ],
+            ),
+            swagger_utils.OpenApiParameter(
+                location=swagger_utils.OpenApiParameter.QUERY,
+                name=common_consts.ORDERING_QUERY_PARAMETER_NAME,
+                description="Ordering fields separated by commas.\n\n"
+                "Prefix '-' before name means descending, without prefix means ascending.",
+                required=False,
+                type=str,
+                examples=[
+                    swagger_utils.OpenApiExample("is_satisfied"),
+                    swagger_utils.OpenApiExample("-is_satisfied"),
+                    swagger_utils.OpenApiExample("timestamp"),
+                    swagger_utils.OpenApiExample("-timestamp"),
+                ],
+            ),
+            swagger_utils.OpenApiParameter(
+                location=swagger_utils.OpenApiParameter.QUERY,
+                name=common_consts.PAGINATION_OFFSET_QUERY_PARAMETER_NAME,
+                description="Number of records to be skipped.",
+                required=False,
+                type=int,
+                default=pagination_dtos.PAGINATION_DEFAULT_OFFSET,
+            ),
+            swagger_utils.OpenApiParameter(
+                location=swagger_utils.OpenApiParameter.QUERY,
+                name=common_consts.PAGINATION_LIMIT_QUERY_PARAMETER_NAME,
+                description="Results limit per page.",
+                required=False,
+                type=int,
+                default=pagination_dtos.PAGINATION_DEFAULT_LIMIT,
+            ),
+        ],
         responses={
             status.HTTP_200_OK: swagger_utils.OpenApiResponse(
                 description="Load all Output Data.",
@@ -122,6 +197,18 @@ class LoadViewSet(
                     },
                 },
             ),
+            status.HTTP_400_BAD_REQUEST: swagger_utils.OpenApiResponse(
+                description="Invalid query parameters.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        common_consts.ERROR_DETAIL_KEY: {
+                            "type": "string",
+                            "example": "Invalid pagination parameters.",
+                        }
+                    },
+                },
+            ),
         },
     )
     @inject.param(name="query_data_repository", cls="query_data_repository")
@@ -131,25 +218,79 @@ class LoadViewSet(
         query_data_repository: query_ports.AbstractDataQueryRepository,
     ):
         logger.info("Listing all datasets...")
-        output_data, count = queries.list_data(
-            repository=query_data_repository,
-            filters=query_ports.DataFilters(),
-            ordering=query_ports.DataOrdering(
-                timestamp=common_ordering.Ordering(
-                    common_ordering.OrderingOrder.ASCENDING, 0
-                )
-            ),
-            pagination=pagination_dtos.Pagination(
-                pagination_dtos.PAGINATION_DEFAULT_OFFSET,
-                pagination_dtos.PAGINATION_DEFAULT_LIMIT,
-            ),
+
+        try:
+            is_satisfied = parsers.map_bool_query_parameter_to_bool(
+                request.query_params.get("is_satisfied")
+            )
+        except ValueError:
+            return Response(
+                {common_consts.ERROR_DETAIL_KEY: "Invalid filtering parameters."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        filters = query_ports.DataFilters(
+            is_satisfied=is_satisfied,
+            timestamp_from=request.query_params.get("timestamp_from"),
+            timestamp_to=request.query_params.get("timestamp_to"),
         )
-        logger.info("Listed datasets.")
+        logger.info("Filters: %s", filters)
+
+        _ordering = ordering_dtos.Ordering.create_ordering(
+            request.query_params[common_consts.ORDERING_QUERY_PARAMETER_NAME].split(",")
+            if common_consts.ORDERING_QUERY_PARAMETER_NAME in request.query_params
+            else {}
+        )
+        ordering = query_ports.DataOrdering(
+            full_name=_ordering.get("full_name"),
+            timestamp=_ordering.get("timestamp"),
+        )
+        logger.info("Ordering: %s", ordering)
+
+        try:
+            pagination = pagination_dtos.Pagination(
+                offset=request.query_params.get(
+                    common_consts.PAGINATION_OFFSET_QUERY_PARAMETER_NAME,
+                    pagination_dtos.PAGINATION_DEFAULT_OFFSET,
+                ),
+                records_per_page=request.query_params.get(
+                    common_consts.PAGINATION_LIMIT_QUERY_PARAMETER_NAME,
+                    pagination_dtos.PAGINATION_DEFAULT_LIMIT,
+                ),
+            )
+        except ValueError:
+            logger.warning("Invalid pagination parameters.")
+            return Response(
+                {common_consts.ERROR_DETAIL_KEY: "Invalid pagination parameters."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        logger.info("Pagination: %s", pagination)
+
+        try:
+            results: list[queries.OutputData]
+            count: int
+            results, count = queries.list_data(
+                repository=query_data_repository,
+                filters=filters,
+                ordering=ordering,
+                pagination=pagination,
+            )
+        except django_exceptions.ValidationError:
+            return Response(
+                {common_consts.ERROR_DETAIL_KEY: "Invalid query parameters."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        logger.info("Dataset listed successfully.")
 
         return Response(
-            data={
-                "count": count,
-                "data": OutputDataReadSerializer(output_data, many=True).data,
-            },
+            data=common_pagination.make_paginated_response(
+                url=request.build_absolute_uri(),
+                count=count,
+                offset=pagination.offset,
+                records_per_page=pagination.records_per_page,
+                results=[
+                    OutputDataReadSerializer(output_data).data
+                    for output_data in results
+                ],
+            ).data,
             status=status.HTTP_200_OK,
         )
