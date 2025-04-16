@@ -51,8 +51,8 @@ class OutputDataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
     def get_export_queryset(self, request):
         qs = self.model.objects.all()
 
-        start = request.GET.get("updated_at_start")
-        end = request.GET.get("updated_at_end")
+        start = request.GET.get("timestamp_from")
+        end = request.GET.get("timestamp_to")
 
         try:
             if start:
@@ -71,7 +71,7 @@ class OutputDataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
         Remove custom query params (like updated_at_start / end) so import-export doesn't break.
         """
         cleaned_get = request.GET.copy()
-        for param in ["updated_at_start", "updated_at_end"]:
+        for param in ["timestamp_from", "timestamp_to"]:
             cleaned_get.pop(param, None)
         request.GET = cleaned_get  # mutate it safely
         return super().get_export_resource_kwargs(request, *args, **kwargs)
