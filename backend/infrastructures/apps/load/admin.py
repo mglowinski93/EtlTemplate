@@ -47,3 +47,31 @@ class OutputDataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
 
     def created_at(self, data: Data) -> int:
         return data.created_at
+
+    def get_export_queryset(self, request):
+        qs = self.model.objects.all()
+
+        start = request.GET.get("updated_at_start")
+        end = request.GET.get("updated_at_end")
+
+        try:
+            if start:
+                start_date = datetime.strptime(start, "%Y-%m-%d")
+                qs = qs.filter(updated_at__gte=start_date)
+            if end:
+                end_date = datetime.strptime(end, "%Y-%m-%d")
+                qs = qs.filter(updated_at__lt=end_date)
+        except ValueError:
+            pass  # Ignore invalid date inputs
+
+        return qs
+
+    def get_export_resource_kwargs(self, request, *args, **kwargs):
+        """
+        Remove custom query params (like updated_at_start / end) so import-export doesn't break.
+        """
+        cleaned_get = request.GET.copy()
+        for param in ["updated_at_start", "updated_at_end"]:
+            cleaned_get.pop(param, None)
+        request.GET = cleaned_get  # mutate it safely
+        return super().get_export_resource_kwargs(request, *args, **kwargs)
