@@ -51,27 +51,15 @@ class OutputDataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
     def get_export_queryset(self, request):
         query_set = self.model.objects.all()
 
-        start = request.GET.get("timestamp_from")
-        end = request.GET.get("timestamp_to")
+        timestamp_from = request.GET.get("timestamp_from")
+        timestamp_to = request.GET.get("timestamp_to")
 
         try:
-            if start:
-                start_date = datetime.strptime(start, "%Y-%m-%d")
-                query_set = query_set.filter(updated_at__gte=start_date)
-            if end:
-                end_date = datetime.strptime(end, "%Y-%m-%d")
-                query_set = query_set.filter(updated_at__lt=end_date)
+            if timestamp_from:
+                query_set = query_set.filter(updated_at__gte=datetime.fromisoformat(timestamp_from))
+            if timestamp_to:
+                query_set = query_set.filter(updated_at__lt=datetime.fromisoformat(timestamp_to))
         except ValueError:
             pass  
 
         return query_set
-
-    # def get_export_resource_kwargs(self, request, *args, **kwargs):
-    #     """
-    #     Remove custom query params so import-export doesn't break.
-    #     """
-    #     # cleaned_get = request.GET.copy()
-    #     # # for param in ["timestamp_from", "timestamps_to"]:
-    #     # #     cleaned_get.pop(param, None)
-    #     # request.GET = cleaned_get  # mutate it safely
-    #     return super().get_export_resource_kwargs(request, *args, **kwargs)
