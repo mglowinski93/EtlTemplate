@@ -49,7 +49,7 @@ class OutputDataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
         return data.created_at
 
     def get_export_queryset(self, request):
-        qs = self.model.objects.all()
+        query_set = self.model.objects.all()
 
         start = request.GET.get("timestamp_from")
         end = request.GET.get("timestamp_to")
@@ -57,21 +57,21 @@ class OutputDataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
         try:
             if start:
                 start_date = datetime.strptime(start, "%Y-%m-%d")
-                qs = qs.filter(updated_at__gte=start_date)
+                query_set = query_set.filter(updated_at__gte=start_date)
             if end:
                 end_date = datetime.strptime(end, "%Y-%m-%d")
-                qs = qs.filter(updated_at__lt=end_date)
+                query_set = query_set.filter(updated_at__lt=end_date)
         except ValueError:
-            pass  # Ignore invalid date inputs
+            pass  
 
-        return qs
+        return query_set
 
-    def get_export_resource_kwargs(self, request, *args, **kwargs):
-        """
-        Remove custom query params (like updated_at_start / end) so import-export doesn't break.
-        """
-        cleaned_get = request.GET.copy()
-        for param in ["timestamp_from", "timestamp_to"]:
-            cleaned_get.pop(param, None)
-        request.GET = cleaned_get  # mutate it safely
-        return super().get_export_resource_kwargs(request, *args, **kwargs)
+    # def get_export_resource_kwargs(self, request, *args, **kwargs):
+    #     """
+    #     Remove custom query params so import-export doesn't break.
+    #     """
+    #     # cleaned_get = request.GET.copy()
+    #     # # for param in ["timestamp_from", "timestamps_to"]:
+    #     # #     cleaned_get.pop(param, None)
+    #     # request.GET = cleaned_get  # mutate it safely
+    #     return super().get_export_resource_kwargs(request, *args, **kwargs)
