@@ -12,16 +12,40 @@ from .models import Data
 
 
 class CustomExportForm(ExportForm):
-    timestamp_from = forms.DateTimeField(label="timestamp_from")
-    timestamp_to = forms.DateTimeField(label="timestamp_to")
-
+    timestamp_from = forms.DateTimeField(label="timestamp_from", required=False)
+    timestamp_to = forms.DateTimeField(label="timestamp_to", required=False)
+    id = forms.BooleanField(label="id", initial=True, required=False)
+    full_name = forms.BooleanField(label="full_name", initial=True, required=False)
+    is_satisfied = forms.BooleanField(label="is_satisfied", initial=True, required=False)
+    age = forms.BooleanField(label="age", initial=True, required=False)    
+    created_at = forms.BooleanField(label="created_at", initial=True, required=False)        
 
 class DataResource(resources.ModelResource):
     def __init__(self, **kwargs):
         super().__init__()
         self.timestamp_from = kwargs.get("timestamp_from")
-        self.timestamp_to = kwargs.get("timestamp_to")        
-
+        self.timestamp_to = kwargs.get("timestamp_to")       
+        self.id = kwargs.get("id")               
+        self.full_name = kwargs.get("full_name")       
+        self.is_satisfied = kwargs.get("is_satisfied")       
+        self.age = kwargs.get("age")       
+        self.created_at = kwargs.get("created_at")               
+        
+    def get_export_fields(self):
+        # Pick which fields you want to include in export
+        wanted_fields = []
+        if self.id:
+            wanted_fields.append("id")           
+        if self.full_name:
+            wanted_fields.append("full_name")        
+        if self.is_satisfied:              
+            wanted_fields.append("is_satisfied")      
+        if self.age:   
+            wanted_fields.append("age")
+        if self.created_at:
+            wanted_fields.append("created_at")
+        all_fields = super().get_export_fields()
+        return [f for f in all_fields if f.column_name in wanted_fields]
 
     full_name = fields.Field(column_name="full_name")
     is_satisfied = fields.Field(column_name="is_satisfied")
@@ -94,9 +118,6 @@ class DataAdminForm(forms.ModelForm):
         return data
 
 
-
-
-
 class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
     resource_class = DataResource
     export_form_class = CustomExportForm
@@ -127,41 +148,11 @@ class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
         if export_form:
             kwargs.update(timestamp_from=export_form.cleaned_data["timestamp_from"])
             kwargs.update(timestamp_to=export_form.cleaned_data["timestamp_to"])
+            kwargs.update(id=export_form.cleaned_data["id"])
+            kwargs.update(full_name=export_form.cleaned_data["full_name"])
+            kwargs.update(is_satisfied=export_form.cleaned_data["is_satisfied"])
+            kwargs.update(age=export_form.cleaned_data["age"])            
+            kwargs.update(created_at=export_form.cleaned_data["created_at"])               
         return kwargs
 
 admin.site.register(Data, DataAdmin)
-
-
-
-
-
-
-
-
-
-
-
-    # def get_export_queryset(self, request):
-    #     query_set = self.model.objects.all()
-
-    #     timestamp_from = request.GET.get("timestamp_from")
-    #     timestamp_to = request.GET.get("timestamp_to")
-
-    #     try:
-    #         if timestamp_from:
-    #             query_set = query_set.filter(
-    #                 updated_at__gte=datetime.fromisoformat(timestamp_from)
-    #             )
-    #     except ValueError:
-    #         pass
-
-    #     try:
-    #         if timestamp_to:
-    #             query_set = query_set.filter(
-    #                 updated_at__lt=datetime.fromisoformat(timestamp_to)
-    #             )
-    #     except ValueError:
-    #         pass
-
-    #     return query_set
-
