@@ -3,9 +3,9 @@ from datetime import datetime
 from django import forms
 from django.contrib import admin
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from import_export import admin as import_export_admin
 from import_export import fields, resources
-from django.utils.translation import gettext_lazy as _
 from import_export.forms import ExportForm
 
 from .models import Data
@@ -15,11 +15,12 @@ class CustomExportForm(ExportForm):
     timestamp_from = forms.DateTimeField(label=_("Timestamp from"), required=False)
     timestamp_to = forms.DateTimeField(label=_("Timestamp to"), required=False)
 
+
 class DataResource(resources.ModelResource):
     def __init__(self, **kwargs):
         super().__init__()
         self.timestamp_from = kwargs.get("timestamp_from")
-        self.timestamp_to = kwargs.get("timestamp_to")                 
+        self.timestamp_to = kwargs.get("timestamp_to")
 
     full_name = fields.Field(column_name="full_name")
     is_satisfied = fields.Field(column_name="is_satisfied")
@@ -46,24 +47,20 @@ class DataResource(resources.ModelResource):
         return obj.data["age"]
 
     def filter_export(self, queryset, **kwargs):
-
         try:
-            if self.timestamp_from :
-                queryset = queryset.filter(
-                    updated_at__gte=self.timestamp_from
-                )
+            if self.timestamp_from:
+                queryset = queryset.filter(updated_at__gte=self.timestamp_from)
         except ValueError:
             pass
 
         try:
             if self.timestamp_to:
-                queryset = queryset.filter(
-                    updated_at__lt=self.timestamp_to
-                )
+                queryset = queryset.filter(updated_at__lt=self.timestamp_to)
         except ValueError:
             pass
 
         return queryset
+
 
 class DataAdminForm(forms.ModelForm):
     class Meta:
@@ -96,7 +93,6 @@ class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
     resource_class = DataResource
     export_form_class = CustomExportForm
 
-
     list_display = ("id", "full_name", "age", "is_satisfied", "created_at")
     search_fields = ("id", "full_name", "age", "is_satisfied", "created_at")
     ordering = ("-created_at",)
@@ -121,7 +117,8 @@ class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
         export_form = kwargs.get("export_form")
         if export_form:
             kwargs.update(timestamp_from=export_form.cleaned_data["timestamp_from"])
-            kwargs.update(timestamp_to=export_form.cleaned_data["timestamp_to"])           
+            kwargs.update(timestamp_to=export_form.cleaned_data["timestamp_to"])
         return kwargs
+
 
 admin.site.register(Data, DataAdmin)
