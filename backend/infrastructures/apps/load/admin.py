@@ -17,6 +17,12 @@ class CustomExportForm(ExportForm):
 
 
 class DataResource(resources.ModelResource):
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.timestamp_from = kwargs.get("timestamp_from")
+        self.timestamp_to = kwargs.get("timestamp_to")        
+
+
     full_name = fields.Field(column_name="full_name")
     is_satisfied = fields.Field(column_name="is_satisfied")
     age = fields.Field(column_name="age")
@@ -42,21 +48,19 @@ class DataResource(resources.ModelResource):
         return obj.data["age"]
 
     def filter_export(self, queryset, **kwargs):
-        timestamp_from = kwargs.get("timestamp_from")
-        timestamp_to = kwargs.get("timestamp_to")
 
         try:
-            if timestamp_from:
+            if self.timestamp_from :
                 queryset = queryset.filter(
-                    updated_at__gte=datetime.fromisoformat(timestamp_from)
+                    updated_at__gte=self.timestamp_from
                 )
         except ValueError:
             pass
 
         try:
-            if timestamp_to:
+            if self.timestamp_to:
                 queryset = queryset.filter(
-                    updated_at__lt=datetime.fromisoformat(timestamp_to)
+                    updated_at__lt=self.timestamp_to
                 )
         except ValueError:
             pass
