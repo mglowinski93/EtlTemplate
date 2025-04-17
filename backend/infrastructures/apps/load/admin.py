@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from import_export import admin as import_export_admin, fields, resources
 from .models import Data
 from datetime import datetime
+from django import forms
 
 class DataResource(resources.ModelResource):
     full_name = fields.Field(column_name='full_name')
@@ -25,7 +26,7 @@ class DataResource(resources.ModelResource):
         return obj.data.get('age')
 
 @admin.register(Data)
-class OutputDataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
+class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
     resource_class = DataResource
  
     list_display = ("id", "full_name", "age", "is_satisfied", "created_at")
@@ -63,3 +64,31 @@ class OutputDataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
             pass  
 
         return query_set
+
+
+class DataAdminForm(forms.ModelForm):
+    class Meta:
+        model = Data
+        fields = "__all__"
+
+    def clean_data(self):
+        data = self.cleaned_data.get("data")
+        if not isinstance(data, dict):
+            raise forms.ValidationError("Invalid JSON data")
+
+
+        required_fields = {
+            "full_name": str,
+            "age": int,
+            "is_satisfied": bool,
+        }
+
+        for field, expected_type in required_fields.items():
+            if field not in data:
+                raise forms.ValidationError(f"Missing field '{field}' in JSON data")
+            if not isinstance(data[field], expected_type):
+                raise forms.ValidationError(
+                    f"Field '{field}' must be of type {expected_type.__name__}"
+                )
+
+        return data
