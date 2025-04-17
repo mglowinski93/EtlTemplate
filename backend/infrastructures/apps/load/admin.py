@@ -1,34 +1,45 @@
+from datetime import datetime
+
+from django import forms
 from django.contrib import admin
 from django.db import models
-from django.utils.translation import gettext_lazy as _
-from import_export import admin as import_export_admin, fields, resources
+from import_export import admin as import_export_admin
+from import_export import fields, resources
+
 from .models import Data
-from datetime import datetime
-from django import forms
+
 
 class DataResource(resources.ModelResource):
-    full_name = fields.Field(column_name='full_name')
-    is_satisfied = fields.Field(column_name='is_satisfied')
-    age = fields.Field(column_name='age')    
-    
+    full_name = fields.Field(column_name="full_name")
+    is_satisfied = fields.Field(column_name="is_satisfied")
+    age = fields.Field(column_name="age")
+
     class Meta:
         model = Data
-        fields = ('id', 'full_name', 'is_satisfied', 'age', 'created_at', 'updated_at')
-        export_order = ('id', 'full_name', 'is_satisfied', 'age', 'created_at', 'updated_at')        
+        fields = ("id", "full_name", "is_satisfied", "age", "created_at", "updated_at")
+        export_order = (
+            "id",
+            "full_name",
+            "is_satisfied",
+            "age",
+            "created_at",
+            "updated_at",
+        )
 
     def dehydrate_full_name(self, obj):
-        return obj.data.get('full_name')
+        return obj.data.get("full_name")
 
     def dehydrate_is_satisfied(self, obj):
-        return obj.data.get('is_satisfied')
+        return obj.data.get("is_satisfied")
 
     def dehydrate_age(self, obj):
-        return obj.data.get('age')
+        return obj.data.get("age")
+
 
 @admin.register(Data)
 class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
     resource_class = DataResource
- 
+
     list_display = ("id", "full_name", "age", "is_satisfied", "created_at")
     search_fields = ("id", "full_name", "age", "is_satisfied", "created_at")
     ordering = ("-created_at",)
@@ -46,7 +57,7 @@ class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
     def age(self, data: Data) -> int:
         return data.data["age"]
 
-    def created_at(self, data: Data) -> int:
+    def created_at(self, data: Data) -> datetime:
         return data.created_at
 
     def get_export_queryset(self, request):
@@ -57,11 +68,15 @@ class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
 
         try:
             if timestamp_from:
-                query_set = query_set.filter(updated_at__gte=datetime.fromisoformat(timestamp_from))
+                query_set = query_set.filter(
+                    updated_at__gte=datetime.fromisoformat(timestamp_from)
+                )
             if timestamp_to:
-                query_set = query_set.filter(updated_at__lt=datetime.fromisoformat(timestamp_to))
+                query_set = query_set.filter(
+                    updated_at__lt=datetime.fromisoformat(timestamp_to)
+                )
         except ValueError:
-            pass  
+            pass
 
         return query_set
 
@@ -75,7 +90,6 @@ class DataAdminForm(forms.ModelForm):
         data = self.cleaned_data.get("data")
         if not isinstance(data, dict):
             raise forms.ValidationError("Invalid JSON data")
-
 
         required_fields = {
             "full_name": str,

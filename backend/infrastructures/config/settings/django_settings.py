@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "infrastructures.apps.load",
     "infrastructures.apps.extract",
-    "import_export"
+    "import_export",
 ]
 
 MIDDLEWARE = [
