@@ -36,6 +36,36 @@ class DataResource(resources.ModelResource):
         return obj.data["age"]
 
 
+
+class DataAdminForm(forms.ModelForm):
+    class Meta:
+        model = Data
+        fields = "__all__"
+
+    def clean_data(self):
+        data = self.cleaned_data.get("data")
+        if not isinstance(data, dict):
+            raise forms.ValidationError(_("Invalid JSON data."))
+
+        required_fields = {
+            "full_name": str,
+            "age": int,
+            "is_satisfied": bool,
+        }
+
+        for field, expected_type in required_fields.items():
+            if field not in data:
+                raise forms.ValidationError(_(f"Missing field '{field}' in JSON data."))
+            if not isinstance(data[field], expected_type):
+                raise forms.ValidationError(
+                    f"Field '{field}' must be of type {expected_type.__name__}"
+                )
+
+        return data
+
+
+
+
 @admin.register(Data)
 class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
     resource_class = DataResource
@@ -84,29 +114,3 @@ class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
 
         return query_set
 
-
-class DataAdminForm(forms.ModelForm):
-    class Meta:
-        model = Data
-        fields = "__all__"
-
-    def clean_data(self):
-        data = self.cleaned_data.get("data")
-        if not isinstance(data, dict):
-            raise forms.ValidationError(_("Invalid JSON data."))
-
-        required_fields = {
-            "full_name": str,
-            "age": int,
-            "is_satisfied": bool,
-        }
-
-        for field, expected_type in required_fields.items():
-            if field not in data:
-                raise forms.ValidationError(_(f"Missing field '{field}' in JSON data."))
-            if not isinstance(data[field], expected_type):
-                raise forms.ValidationError(
-                    f"Field '{field}' must be of type {expected_type.__name__}"
-                )
-
-        return data
