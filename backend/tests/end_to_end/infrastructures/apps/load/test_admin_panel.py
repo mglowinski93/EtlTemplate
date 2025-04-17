@@ -16,7 +16,6 @@ def test_saving_new_data(
     # Given
     client = unauthenticated_client.client
 
-
     data: Data = model_factories.DataFactory.create()
 
     form = admin.DataAdminForm(
@@ -49,3 +48,40 @@ def test_saving_new_data(
     assert response.status_code == HTTPStatus.OK
     assert response.data["full_name"] == data.data["full_name"]
 
+
+
+
+def test_editing_data(
+    unauthenticated_client: APIClientData,
+    data_admin_panel: admin.DataAdmin,
+):
+    # Given
+    client = unauthenticated_client.client
+
+    data: Data = model_factories.DataFactory.create()
+    
+    new_full_name = "New Full_Name"
+    form = admin.DataAdminForm(
+        data={
+            "data": {
+                "full_name": new_full_name,
+                "age": data.data["age"],
+                "is_satisfied": data.data["is_satisfied"],
+            },
+        },
+        instance=data
+    )
+
+    with transaction.atomic():
+        form.is_valid()
+        assert not form.errors
+    change = True
+
+    # When
+    data_admin_panel.save_model(
+        request=HttpRequest(), obj=data, form=form, change=change
+    )
+
+    # Then
+    data.refresh_from_db()
+    assert data.data["full_name"] == new_full_name
