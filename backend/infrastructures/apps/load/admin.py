@@ -36,6 +36,55 @@ class DataResource(resources.ModelResource):
         return obj.data["age"]
 
 
+@admin.register(Data)
+class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
+    resource_class = DataResource
+
+    list_display = ("id", "full_name", "age", "is_satisfied", "created_at")
+    search_fields = ("id", "full_name", "age", "is_satisfied", "created_at")
+    ordering = ("-created_at",)
+    readonly_fields = ("id", "created_at", "updated_at")
+
+    def id(self, data: Data) -> models.UUIDField:
+        return data.data["id"]
+
+    def full_name(self, data: Data) -> str:
+        return data.data["full_name"]
+
+    def is_satisfied(self, data: Data) -> bool:
+        return data.data["is_satisfied"]
+
+    def age(self, data: Data) -> int:
+        return data.data["age"]
+
+    def created_at(self, data: Data) -> datetime:
+        return data.created_at
+
+    def get_export_queryset(self, request):
+        query_set = self.model.objects.all()
+
+        timestamp_from = request.GET.get("timestamp_from")
+        timestamp_to = request.GET.get("timestamp_to")
+
+        try:
+            if timestamp_from:
+                query_set = query_set.filter(
+                    updated_at__gte=datetime.fromisoformat(timestamp_from)
+                )
+        except ValueError:
+            pass
+
+        try:
+            if timestamp_to:
+                query_set = query_set.filter(
+                    updated_at__lt=datetime.fromisoformat(timestamp_to)
+                )
+        except ValueError:
+            pass
+
+        return query_set
+
+
 class DataAdminForm(forms.ModelForm):
     class Meta:
         model = Data
