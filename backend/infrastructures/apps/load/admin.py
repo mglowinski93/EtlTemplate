@@ -6,8 +6,14 @@ from django.db import models
 from import_export import admin as import_export_admin
 from import_export import fields, resources
 from django.utils.translation import gettext_lazy as _
+from import_export.forms import ExportForm
 
 from .models import Data
+
+
+class CustomExportForm(ExportForm):
+    timestamp_from = forms.DateTimeField(label="timestamp_from")
+    timestamp_to = forms.DateTimeField(label="timestamp_to")
 
 
 class DataResource(resources.ModelResource):
@@ -35,7 +41,27 @@ class DataResource(resources.ModelResource):
     def dehydrate_age(self, obj):
         return obj.data["age"]
 
+    def filter_export(self, queryset, **kwargs):
+        timestamp_from = kwargs.get("timestamp_from")
+        timestamp_to = kwargs.get("timestamp_to")
 
+        try:
+            if timestamp_from:
+                queryset = queryset.filter(
+                    updated_at__gte=datetime.fromisoformat(timestamp_from)
+                )
+        except ValueError:
+            pass
+
+        try:
+            if timestamp_to:
+                queryset = queryset.filter(
+                    updated_at__lt=datetime.fromisoformat(timestamp_to)
+                )
+        except ValueError:
+            pass
+
+        return queryset
 
 class DataAdminForm(forms.ModelForm):
     class Meta:
@@ -66,9 +92,11 @@ class DataAdminForm(forms.ModelForm):
 
 
 
-@admin.register(Data)
+
 class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
     resource_class = DataResource
+    export_form_class = CustomExportForm
+
 
     list_display = ("id", "full_name", "age", "is_satisfied", "created_at")
     search_fields = ("id", "full_name", "age", "is_satisfied", "created_at")
@@ -90,27 +118,46 @@ class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
     def created_at(self, data: Data) -> datetime:
         return data.created_at
 
-    def get_export_queryset(self, request):
-        query_set = self.model.objects.all()
+    def get_export_resource_kwargs(self, request, **kwargs):
+        export_form = kwargs.get("export_form")
+        if export_form:
+            kwargs.update(timestamp_from=export_form.cleaned_data["timestamp_from"])
+            kwargs.update(timestamp_to=export_form.cleaned_data["timestamp_to"])
+        return kwargs
 
-        timestamp_from = request.GET.get("timestamp_from")
-        timestamp_to = request.GET.get("timestamp_to")
+admin.site.register(Data, DataAdmin)
 
-        try:
-            if timestamp_from:
-                query_set = query_set.filter(
-                    updated_at__gte=datetime.fromisoformat(timestamp_from)
-                )
-        except ValueError:
-            pass
 
-        try:
-            if timestamp_to:
-                query_set = query_set.filter(
-                    updated_at__lt=datetime.fromisoformat(timestamp_to)
-                )
-        except ValueError:
-            pass
 
-        return query_set
+
+
+
+
+
+
+
+
+    # def get_export_queryset(self, request):
+    #     query_set = self.model.objects.all()
+
+    #     timestamp_from = request.GET.get("timestamp_from")
+    #     timestamp_to = request.GET.get("timestamp_to")
+
+    #     try:
+    #         if timestamp_from:
+    #             query_set = query_set.filter(
+    #                 updated_at__gte=datetime.fromisoformat(timestamp_from)
+    #             )
+    #     except ValueError:
+    #         pass
+
+    #     try:
+    #         if timestamp_to:
+    #             query_set = query_set.filter(
+    #                 updated_at__lt=datetime.fromisoformat(timestamp_to)
+    #             )
+    #     except ValueError:
+    #         pass
+
+    #     return query_set
 
