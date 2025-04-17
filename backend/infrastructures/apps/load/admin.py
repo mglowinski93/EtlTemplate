@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.db import models
 from import_export import admin as import_export_admin
 from import_export import fields, resources
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Data
 
@@ -16,24 +17,23 @@ class DataResource(resources.ModelResource):
 
     class Meta:
         model = Data
-        fields = ("id", "full_name", "is_satisfied", "age", "created_at", "updated_at")
+        fields = ("id", "full_name", "is_satisfied", "age", "created_at")
         export_order = (
             "id",
             "full_name",
             "is_satisfied",
             "age",
             "created_at",
-            "updated_at",
         )
 
     def dehydrate_full_name(self, obj):
-        return obj.data.get("full_name")
+        return obj.data["full_name"]
 
     def dehydrate_is_satisfied(self, obj):
-        return obj.data.get("is_satisfied")
+        return obj.data["is_satisfied"]
 
     def dehydrate_age(self, obj):
-        return obj.data.get("age")
+        return obj.data["age"]
 
 
 @admin.register(Data)
@@ -71,6 +71,10 @@ class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
                 query_set = query_set.filter(
                     updated_at__gte=datetime.fromisoformat(timestamp_from)
                 )
+        except ValueError:
+            pass
+
+        try:
             if timestamp_to:
                 query_set = query_set.filter(
                     updated_at__lt=datetime.fromisoformat(timestamp_to)
@@ -89,7 +93,7 @@ class DataAdminForm(forms.ModelForm):
     def clean_data(self):
         data = self.cleaned_data.get("data")
         if not isinstance(data, dict):
-            raise forms.ValidationError("Invalid JSON data")
+            raise forms.ValidationError(_("Invalid JSON data."))
 
         required_fields = {
             "full_name": str,
@@ -99,7 +103,7 @@ class DataAdminForm(forms.ModelForm):
 
         for field, expected_type in required_fields.items():
             if field not in data:
-                raise forms.ValidationError(f"Missing field '{field}' in JSON data")
+                raise forms.ValidationError(_(f"Missing field '{field}' in JSON data."))
             if not isinstance(data[field], expected_type):
                 raise forms.ValidationError(
                     f"Field '{field}' must be of type {expected_type.__name__}"

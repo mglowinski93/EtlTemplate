@@ -40,9 +40,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "drf_spectacular",
+    "import_export",    
     "infrastructures.apps.load",
     "infrastructures.apps.extract",
-    "import_export",
 ]
 
 MIDDLEWARE = [
