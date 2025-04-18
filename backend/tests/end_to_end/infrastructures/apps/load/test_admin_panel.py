@@ -11,6 +11,8 @@ from ....dtos import APIClientData, Client
 from ....utils import get_url
 import csv
 import io
+from . import fakers
+from datetime import datetime
 
 
 def test_saving_new_data(
@@ -204,7 +206,40 @@ def test_export_to_excel(
                 response.content.decode("utf-8"))))
 
     assert len(rows) == row_number + 1 # row with columns included
-    expected_headers = ["id","full_name","is_satisfied","age","created_at"]
-    assert all(header in rows[0] for header in expected_headers)
+    expected_columns = ["id","full_name","is_satisfied","age","created_at"]
+    assert all(column in rows[0] for column in expected_columns)
 
 
+def test_export_to_excel_correct_row_exported_for_given_time_range(
+    authenticated_client: Client,
+):  
+    # Given
+    model_factories.DataFactory.create(created_at=datetime(2023, 6, 1, 0, 0, 0))
+    data2: Data = model_factories.DataFactory.create()
+    data2.created_at = datetime(2024, 6, 1, 0, 0, 0)
+    data2.save()
+    model_factories.DataFactory.create(created_at=datetime(2023, 6, 1, 0, 0, 0))    
+    
+    # When
+    response = authenticated_client.post(
+        get_url(
+            path_name="admin:load_data_export",
+        ),
+            {
+                "timestamp_from": "2023-12-31T00:00:00",
+                "timestamp_to": "2025-01-01T00:00:00",
+                "format": "0",  # CSV format
+                "resource": "",
+                "_export": "Export",
+            }, follow=True
+        )
+
+    # Then
+    assert response.status_code == HTTPStatus.OK
+    rows = list(
+        csv.reader(
+            io.StringIO(
+                response.content.decode("utf-8"))))
+
+    assert len(rows) == 2 # row with columns included
+    assert str(data2.id) in rows[1]

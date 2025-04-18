@@ -49,13 +49,13 @@ class DataResource(resources.ModelResource):
     def filter_export(self, queryset, **kwargs):
         try:
             if self.timestamp_from:
-                queryset = queryset.filter(updated_at__gte=self.timestamp_from)
+                queryset = queryset.filter(created_at__gte=self.timestamp_from)
         except ValueError:
             pass
 
         try:
             if self.timestamp_to:
-                queryset = queryset.filter(updated_at__lt=self.timestamp_to)
+                queryset = queryset.filter(created_at__lt=self.timestamp_to)
         except ValueError:
             pass
 
