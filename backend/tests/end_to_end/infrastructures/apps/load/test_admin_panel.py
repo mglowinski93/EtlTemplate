@@ -7,11 +7,11 @@ from infrastructures.apps.load import admin
 from infrastructures.apps.load.models import Data
 from tests import model_factories
 
-from ....dtos import APIClientData
+from ....dtos import APIClientData, Client
 from ....utils import get_url
+import csv
+import io
 
-import openpyxl
-from io import BytesIO
 
 def test_saving_new_data(
     unauthenticated_client: APIClientData,
@@ -173,3 +173,38 @@ def test_admin_form_raises_validation_error_when_name_is_satisfied_is_not_bool()
     # Then
     assert not form.is_valid()
     assert "data" in form.errors
+
+def test_export_to_excel(
+    authenticated_client: Client,
+):  
+    # Given
+    row_number = 5
+    for _ in range(row_number): model_factories.DataFactory.create() 
+    
+    # When
+    response = authenticated_client.post(
+        get_url(
+            path_name="admin:load_data_export",
+        ),
+            {
+                "timestamp_from": "",
+                "timestamp_to": "",
+                "format": "0",  # CSV format
+                "resource": "",
+                "_export": "Export",
+            }, follow=True
+        )
+
+    # Then
+    assert response.status_code == HTTPStatus.OK
+
+    rows = list(
+        csv.reader(
+            io.StringIO(
+                response.content.decode("utf-8"))))
+
+    assert len(rows) == row_number + 1 # row with columns included
+    expected_headers = ["id","full_name","is_satisfied","age","created_at"]
+    assert all(header in rows[0] for header in expected_headers)
+
+

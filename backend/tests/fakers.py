@@ -31,3 +31,7 @@ def fake_transformed_data() -> transform_value_objects.TransformedData:
     return transform_value_objects.TransformedData(
         full_name=fake_full_name(), age=fake_age(), is_satisfied=fake_is_satisfied()
     )
+
+
+def fake_username() -> str:
+    return fake.first_name()
