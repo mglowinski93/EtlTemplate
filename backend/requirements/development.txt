@@ -14,3 +14,4 @@ isort==6.0.*
 types-python-dateutil==2.9.0.*
 pytest-mock==3.14.*
 django-import-export[xlsx]==4.1.*
+freezegun==1.5.*

@@ -64,6 +64,7 @@ class UserFactory(GenerateDataMixin, factory.django.DjangoModelFactory):
     is_staff = True
     is_superuser = True
 
+
 class DataFactory(GenerateDataMixin, factory.django.DjangoModelFactory):
     class Meta:
         model = load_models.Data
