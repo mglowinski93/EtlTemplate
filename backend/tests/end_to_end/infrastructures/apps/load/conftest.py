@@ -5,6 +5,7 @@ from infrastructures.apps.load import admin
 from infrastructures.apps.load.models import Data
 
 from .....common.annotations import YieldFixture
+from .....common.conftest import set_test_media_root_directory  # noqa: F401
 
 
 @pytest.fixture
