@@ -55,6 +55,14 @@ class GenerateDataMixin:
         return partial(dict_factory, cls)()
 
 
+class UserFactory(GenerateDataMixin, factory.django.DjangoModelFactory):
+    class Meta:
+        model = User
+
+    username = factory.LazyFunction(fakers.fake_username)
+    password = factory.Faker("password")
+
+
 class DataFactory(GenerateDataMixin, factory.django.DjangoModelFactory):
     class Meta:
         model = load_models.Data
