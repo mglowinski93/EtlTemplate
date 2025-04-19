@@ -15,10 +15,7 @@ def unauthenticated_client() -> YieldFixture[APIClientData]:
 
 @pytest.fixture
 def authenticated_client() -> YieldFixture[Client]:
-    user = UserFactory.create(
-        is_staff=True,
-        is_superuser=True,
-    )
+    user = UserFactory.create(is_admin=True)
 
     client = Client()
     client.force_login(user)

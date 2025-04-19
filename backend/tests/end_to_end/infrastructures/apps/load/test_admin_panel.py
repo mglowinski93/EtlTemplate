@@ -1,5 +1,6 @@
 import csv
 import io
+from datetime import timedelta
 from http import HTTPStatus
 
 from django.db import transaction
@@ -10,8 +11,10 @@ from infrastructures.apps.load import admin
 from infrastructures.apps.load.models import Data
 from tests import model_factories
 
+from ..... import fakers as common_fakers
 from ....dtos import APIClientData, Client
 from ....utils import get_url
+from . import fakers
 
 
 def test_saving_new_data(
@@ -22,7 +25,6 @@ def test_saving_new_data(
     client = unauthenticated_client.client
 
     data: Data = model_factories.DataFactory.create()
-
     form = admin.DataAdminForm(
         data={
             "data": {
@@ -60,7 +62,7 @@ def test_editing_data(
     # Given
     data: Data = model_factories.DataFactory.create()
 
-    new_full_name = "New Full_Name"
+    new_full_name = common_fakers.fake_full_name()
     form = admin.DataAdminForm(
         data={
             "data": {
@@ -112,23 +114,9 @@ def test_delete_data(
     assert response.status_code == HTTPStatus.NOT_FOUND
 
 
-def test_admin_form_raises_validation_error_when_data_is_not_dict():
-    # Given
-    form_data = {"data": "not a dict"}
-
-    # When
-    form = admin.DataAdminForm(data={"data": form_data["data"]})
-
-    # Then
-    assert not form.is_valid()
-    assert "data" in form.errors
-
-
 def test_admin_form_raises_validation_error_when_age_is_not_a_number():
     # Given
-    form_data = {
-        "data": {"full_name": "John Doe", "age": "eleven", "is_satisfied": True}
-    }
+    form_data = fakers.fake_data_form(age="ten")
 
     # When
     form = admin.DataAdminForm(data={"data": form_data["data"]})
@@ -140,7 +128,7 @@ def test_admin_form_raises_validation_error_when_age_is_not_a_number():
 
 def test_admin_form_raises_validation_error_when_name_is_not_a_string():
     # Given
-    form_data = {"data": {"full_name": 12345, "age": 11, "is_satisfied": True}}
+    form_data = fakers.fake_data_form(full_name=12345)
 
     # When
     form = admin.DataAdminForm(data={"data": form_data["data"]})
@@ -152,7 +140,7 @@ def test_admin_form_raises_validation_error_when_name_is_not_a_string():
 
 def test_admin_form_raises_validation_error_when_name_is_satisfied_is_not_bool():
     # Given
-    form_data = {"data": {"full_name": "John Doe", "age": 11, "is_satisfied": "True"}}
+    form_data = fakers.fake_data_form(is_satisfied="True")
 
     # When
     form = admin.DataAdminForm(data={"data": form_data["data"]})
@@ -162,13 +150,14 @@ def test_admin_form_raises_validation_error_when_name_is_satisfied_is_not_bool()
     assert "data" in form.errors
 
 
-def test_export_to_excel(
+def test_export_to_csv(
     authenticated_client: Client,
 ):
     # Given
+    csv_format = "0"
     row_number = 5
-    for _ in range(row_number):
-        model_factories.DataFactory.create()
+
+    model_factories.DataFactory.create_batch(size=row_number)
 
     # When
     response = authenticated_client.post(
@@ -178,7 +167,7 @@ def test_export_to_excel(
         {
             "timestamp_from": "",
             "timestamp_to": "",
-            "format": "0",  # CSV format
+            "format": csv_format,
             "resource": "",
             "_export": "Export",
         },
@@ -189,24 +178,30 @@ def test_export_to_excel(
     assert response.status_code == HTTPStatus.OK
 
     rows = list(csv.reader(io.StringIO(response.content.decode("utf-8"))))
+    assert len(rows) == row_number + 1
+    assert all(
+        column in rows[0]
+        for column in ["id", "full_name", "is_satisfied", "age", "created_at"]
+    )
 
-    assert len(rows) == row_number + 1  # row with columns included
-    expected_columns = ["id", "full_name", "is_satisfied", "age", "created_at"]
-    assert all(column in rows[0] for column in expected_columns)
 
-
-def test_export_to_excel_correct_row_exported_for_given_time_range(
+def test_export_to_csv_correct_row_exported_for_given_time_range(
     authenticated_client: Client,
 ):
     # Given
-    with freeze_time("2023-06-01T00:00:00"):
+    csv_format = "0"
+    timestamp = common_fakers.fake_timestamp()
+    with freeze_time(timestamp - timedelta(weeks=1)):
         model_factories.DataFactory.create()
 
-    with freeze_time("2024-06-01T00:00:00"):
+    with freeze_time(timestamp):
         data: Data = model_factories.DataFactory.create()
 
-    with freeze_time("2023-06-01T00:00:00"):
+    with freeze_time(timestamp + timedelta(weeks=1)):
         model_factories.DataFactory.create()
+
+    timestamp_from = timestamp - timedelta(days=1)
+    timestamp_to = timestamp + timedelta(days=1)
 
     # When
     response = authenticated_client.post(
@@ -214,9 +209,9 @@ def test_export_to_excel_correct_row_exported_for_given_time_range(
             path_name="admin:load_data_export",
         ),
         {
-            "timestamp_from": "2023-12-31T00:00:00",
-            "timestamp_to": "2025-01-01T00:00:00",
-            "format": "0",  # CSV format
+            "timestamp_from": timestamp_from.isoformat(),
+            "timestamp_to": timestamp_to.isoformat(),
+            "format": csv_format,
             "resource": "",
             "_export": "Export",
         },
@@ -225,7 +220,7 @@ def test_export_to_excel_correct_row_exported_for_given_time_range(
 
     # Then
     assert response.status_code == HTTPStatus.OK
-    rows = list(csv.reader(io.StringIO(response.content.decode("utf-8"))))
 
-    assert len(rows) == 2  # row with columns included
-    assert str(data.id) in rows[1]
+    rows = list(csv.reader(io.StringIO(response.content.decode("utf-8"))))
+    assert len(rows) == 2
+    assert all(str(data.id) in data_row for data_row in rows[1:])

@@ -34,4 +34,4 @@ def fake_transformed_data() -> transform_value_objects.TransformedData:
 
 
 def fake_username() -> str:
-    return fake.first_name()
+    return fake.text(max_nb_chars=20)

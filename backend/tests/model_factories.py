@@ -61,8 +61,6 @@ class UserFactory(GenerateDataMixin, factory.django.DjangoModelFactory):
 
     username = factory.LazyFunction(fakers.fake_username)
     password = factory.Faker("password")
-    is_staff = True
-    is_superuser = True
 
 
 class DataFactory(GenerateDataMixin, factory.django.DjangoModelFactory):

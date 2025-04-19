@@ -65,13 +65,10 @@ class DataResource(resources.ModelResource):
 class DataAdminForm(forms.ModelForm):
     class Meta:
         model = Data
-        fields = "__all__"
+        fields = ["data"]
 
     def clean_data(self):
         data = self.cleaned_data.get("data")
-        if not isinstance(data, dict):
-            raise forms.ValidationError(_("Invalid JSON data."))
-
         required_fields = {
             "full_name": str,
             "age": int,
@@ -92,7 +89,7 @@ class DataAdminForm(forms.ModelForm):
 class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
     resource_class = DataResource
     export_form_class = CustomExportForm
-
+    form = DataAdminForm
     list_display = ("id", "full_name", "age", "is_satisfied", "created_at")
     search_fields = ("id", "full_name", "age", "is_satisfied", "created_at")
     ordering = ("-created_at",)

@@ -25,3 +25,5 @@ NOT_SUPPORTED_INPUT = (
 TRANSFORM_CORRECT_INPUT_CSV = (
     pathlib.Path(__file__).parent / "test_files" / "transform" / "correct_input.csv"
 )
+
+EXPORT_FORM_DICT_NAME = "data"
