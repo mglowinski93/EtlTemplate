@@ -11,7 +11,7 @@ from infrastructures.apps.extract import exceptions, models
 from modules.extract.domain import ports
 from tests import consts
 
-from ..fakers import fake_extract_history
+from .. import fakers
 
 
 def test_django_file_domain_repository_save_method_saves_file(
@@ -59,7 +59,7 @@ def test_django_extract_domain_repository_create_method_creates_record(
     test_django_extract_domain_repository: ports.AbstractExtractDomainRepository,
 ):
     # Given
-    extract_history = fake_extract_history()
+    extract_history = fakers.fake_extract_history()
 
     # When
     test_django_extract_domain_repository.create(extract_history)
@@ -75,7 +75,7 @@ def test_django_extract_domain_repository_create_method_raises_custom_exception_
     test_django_extract_domain_repository: ports.AbstractExtractDomainRepository,
 ):
     # Given
-    extract_history = fake_extract_history()
+    extract_history = fakers.fake_extract_history()
 
     side_effect = DatabaseError
     mocker.patch.object(

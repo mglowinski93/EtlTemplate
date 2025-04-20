@@ -18,11 +18,11 @@ from . import fakers
 
 
 def test_saving_new_data(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
     data_admin_panel: admin.DataAdmin,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     data: Data = model_factories.DataFactory.create()
     form = admin.DataAdminForm(
@@ -90,11 +90,11 @@ def test_editing_data(
 
 
 def test_delete_data(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
     data_admin_panel: admin.DataAdmin,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     data: Data = model_factories.DataFactory.create()
 
@@ -151,16 +151,16 @@ def test_admin_form_raises_validation_error_when_name_is_satisfied_is_not_bool()
 
 
 def test_export_to_csv(
-    authenticated_client: Client,
+    authenticated_staff_client: Client,
 ):
     # Given
     csv_format = "0"
-    row_number = 5
+    data_number = 5
 
-    model_factories.DataFactory.create_batch(size=row_number)
+    model_factories.DataFactory.create_batch(size=data_number)
 
     # When
-    response = authenticated_client.post(
+    response = authenticated_staff_client.post(
         get_url(
             path_name="admin:load_data_export",
         ),
@@ -178,7 +178,7 @@ def test_export_to_csv(
     assert response.status_code == HTTPStatus.OK
 
     rows = list(csv.reader(io.StringIO(response.content.decode("utf-8"))))
-    assert len(rows) == row_number + 1
+    assert len(rows) == data_number + 1
     assert all(
         column in rows[0]
         for column in ["id", "full_name", "is_satisfied", "age", "created_at"]
@@ -186,7 +186,7 @@ def test_export_to_csv(
 
 
 def test_export_to_csv_correct_row_exported_for_given_time_range(
-    authenticated_client: Client,
+    authenticated_staff_client: Client,
 ):
     # Given
     csv_format = "0"
@@ -204,7 +204,7 @@ def test_export_to_csv_correct_row_exported_for_given_time_range(
     timestamp_to = timestamp + timedelta(days=1)
 
     # When
-    response = authenticated_client.post(
+    response = authenticated_staff_client.post(
         get_url(
             path_name="admin:load_data_export",
         ),

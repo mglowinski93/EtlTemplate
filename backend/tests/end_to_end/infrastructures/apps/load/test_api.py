@@ -15,10 +15,10 @@ from . import fakers
 
 
 def test_get_data_endpoint_returns_data_when_specified_data_exists(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     data = model_factories.DataFactory.create()
 
@@ -39,10 +39,10 @@ def test_get_data_endpoint_returns_data_when_specified_data_exists(
 
 
 def test_get_data_endpoint_returns_404_when_specified_data_does_not_exist(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     data_id = fakers.fake_data_id()
 
@@ -55,10 +55,10 @@ def test_get_data_endpoint_returns_404_when_specified_data_does_not_exist(
 
 
 def test_get_data_endpoint_returns_404_when_data_id_has_invalid_format(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     data_id = "invalid-format-data-id"
 
@@ -71,10 +71,10 @@ def test_get_data_endpoint_returns_404_when_data_id_has_invalid_format(
 
 
 def test_list_data_endpoint_returns_empty_list_when_no_data_exists(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     # When
     response = client.get(get_url(path_name="load-list"))
@@ -90,10 +90,10 @@ def test_list_data_endpoint_returns_empty_list_when_no_data_exists(
 
 
 def test_list_data_endpoint_returns_data_when_data_exists(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     data_number = 3
     model_factories.DataFactory.create_batch(data_number)
@@ -123,10 +123,10 @@ def test_list_data_endpoint_returns_data_when_data_exists(
 
 
 def test_list_data_endpoint_pagination(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     data_number = 20
     pagination_offset = 1
@@ -160,10 +160,10 @@ def test_list_data_endpoint_pagination(
 
 
 def test_list_data_endpoint_pagination_next_link(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     pagination_limit = 1
     data_1 = model_factories.DataFactory.create()
@@ -236,10 +236,12 @@ def test_list_data_endpoint_pagination_next_link(
     ),
 )
 def test_list_data_endpoint_handles_invalid_pagination_parameters(
-    unauthenticated_client: APIClientData, pagination_key: str, pagination_value: str
+    unauthenticated_api_client: APIClientData,
+    pagination_key: str,
+    pagination_value: str,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     # When
     response = client.get(
@@ -257,10 +259,10 @@ def test_list_data_endpoint_handles_invalid_pagination_parameters(
 
 
 def test_list_data_endpoint_filtering_by_is_satisfied(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     data = model_factories.DataFactory.create(data=fakers.fake_data(is_satisfied=True))
     model_factories.DataFactory.create(data=fakers.fake_data(is_satisfied=False))
@@ -283,10 +285,10 @@ def test_list_data_endpoint_filtering_by_is_satisfied(
 
 
 def test_list_data_endpoint_filtering_by_timestamp_to(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     data = model_factories.DataFactory.create()
     model_factories.DataFactory.create()
@@ -309,10 +311,10 @@ def test_list_data_endpoint_filtering_by_timestamp_to(
 
 
 def test_list_data_endpoint_filtering_by_timestamp_from(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     model_factories.DataFactory.create()
     data = model_factories.DataFactory.create()
@@ -335,10 +337,10 @@ def test_list_data_endpoint_filtering_by_timestamp_from(
 
 
 def test_list_data_endpoint_filtering_by_a_few_attributes(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     model_factories.DataFactory.create(data=fakers.fake_data(is_satisfied=False))
     data = model_factories.DataFactory.create(data=fakers.fake_data(is_satisfied=False))
@@ -373,10 +375,10 @@ def test_list_data_endpoint_filtering_by_a_few_attributes(
     ),
 )
 def test_list_data_endpoint_returns_400_when_invalid_value_passed_as_query_filter_parameter(
-    unauthenticated_client: APIClientData, filter_key: str, filter_value: str
+    unauthenticated_api_client: APIClientData, filter_key: str, filter_value: str
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     # When
     response = client.get(
@@ -392,10 +394,10 @@ def test_list_data_endpoint_returns_400_when_invalid_value_passed_as_query_filte
 
 
 def test_list_data_endpoint_skip_unsupported_query_parameter(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     # When
     response = client.get(
@@ -413,10 +415,10 @@ def test_list_data_endpoint_skip_unsupported_query_parameter(
     "order_by", ("full_name", "-full_name", "timestamp", "-timestamp")
 )
 def test_list_data_endpoint_ordering(
-    unauthenticated_client: APIClientData, order_by: str
+    unauthenticated_api_client: APIClientData, order_by: str
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     batch_size = 5
     model_factories.DataFactory.create_batch(batch_size)
@@ -441,10 +443,10 @@ def test_list_data_endpoint_ordering(
 
 
 def test_list_data_endpoint_ordering_by_a_few_attributes(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     batch_size = 5
     model_factories.DataFactory.create_batch(batch_size)
@@ -470,10 +472,10 @@ def test_list_data_endpoint_ordering_by_a_few_attributes(
 
 
 def test_list_data_endpoint_ordering_skip_unsupported_ordering(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     # When
     response = client.get(

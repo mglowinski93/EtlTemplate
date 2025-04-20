@@ -13,9 +13,9 @@ from ..dtos import APIClientData
 from ..utils import get_url
 
 
-def test_etl_process(unauthenticated_client: APIClientData):
+def test_etl_process(unauthenticated_api_client: APIClientData):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     with open(consts.CORRECT_INPUT_CSV, "rb") as _file:
         content = _file.read()
@@ -33,7 +33,7 @@ def test_etl_process(unauthenticated_client: APIClientData):
         )
 
     # Then
-    assert response.status_code == HTTPStatus.CREATED
+    assert response.status_code == HTTPStatus.OK
 
     # When
     response = client.get(get_url("load-list"))

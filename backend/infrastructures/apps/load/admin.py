@@ -87,7 +87,7 @@ class DataAdminForm(forms.ModelForm):
 
 
 class DataAdmin(import_export_admin.ExportMixin, admin.ModelAdmin):
-    resource_class = DataResource
+    resource_classes = (DataResource,)
     export_form_class = CustomExportForm
     form = DataAdminForm
     list_display = ("id", "full_name", "age", "is_satisfied", "created_at")

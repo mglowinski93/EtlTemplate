@@ -26,4 +26,4 @@ TRANSFORM_CORRECT_INPUT_CSV = (
     pathlib.Path(__file__).parent / "test_files" / "transform" / "correct_input.csv"
 )
 
-EXPORT_FORM_DICT_NAME = "data"
+EXPORT_FORM_DATA_NAME = "data"

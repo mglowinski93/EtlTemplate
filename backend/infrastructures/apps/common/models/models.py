@@ -13,7 +13,7 @@ class AutomaticallyTimestampedModel(models.Model):
 
 class ManuallyTimestampedModel(models.Model):
     created_at = models.DateTimeField(
-        default=time.get_currect_timestamp, editable=False
+        default=time.get_current_timestamp, editable=False
     )
     updated_at = models.DateTimeField(auto_now=True)
 

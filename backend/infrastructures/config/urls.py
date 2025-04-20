@@ -56,7 +56,7 @@ if settings.DEBUG:
         ),
     ]
 urlpatterns = [
-    path("admin-admin/", admin.site.urls),
+    path("admin/", admin.site.urls),
     path("health-check/", health_check, name="health_check"),
     path("api/", include(api_urlpatterns)),
 ]

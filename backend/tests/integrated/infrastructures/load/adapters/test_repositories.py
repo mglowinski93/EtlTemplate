@@ -12,7 +12,7 @@ from modules.load.services.queries import queries as query_dtos
 from modules.load.services.queries.ports import repositories as query_repositories
 from tests.model_factories import DataFactory
 
-from .....fakers import fake_transformed_data
+from ..... import fakers as common_fakers
 
 
 def test_django_data_domain_repository_create_method_creates_records(
@@ -20,7 +20,7 @@ def test_django_data_domain_repository_create_method_creates_records(
 ):
     # Given
     records_number = 5
-    data = [fake_transformed_data() for _ in range(records_number)]
+    data = [common_fakers.fake_transformed_data() for _ in range(records_number)]
 
     # When
     test_django_data_domain_repository.create(data)
@@ -49,7 +49,9 @@ def test_django_data_domain_repository_create_method_raises_custom_exception_on_
 
     # When and then
     with pytest.raises(common_exceptions.DatabaseError):
-        test_django_data_domain_repository.create([fake_transformed_data()])
+        test_django_data_domain_repository.create(
+            [common_fakers.fake_transformed_data()]
+        )
     assert not models.Data.objects.exists()
 
 

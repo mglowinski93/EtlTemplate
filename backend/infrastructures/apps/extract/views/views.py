@@ -29,7 +29,7 @@ class ExtractViewSet(
 ):
     @swagger_utils.extend_schema(
         responses={
-            status.HTTP_201_CREATED: swagger_utils.OpenApiResponse(
+            status.HTTP_200_OK: swagger_utils.OpenApiResponse(
                 description="Transformed and saved data successfully.",
             ),
             status.HTTP_400_BAD_REQUEST: swagger_utils.OpenApiResponse(
@@ -126,4 +126,4 @@ class ExtractViewSet(
             )
         logger.info("Dataset saved.")
 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_200_OK)

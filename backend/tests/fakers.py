@@ -2,6 +2,7 @@ from datetime import datetime
 
 from faker import Faker
 
+from modules.common import time
 from modules.transform.domain import value_objects as transform_value_objects
 
 fake = Faker()
@@ -24,7 +25,7 @@ def fake_file_name() -> str:
 
 
 def fake_timestamp() -> datetime:
-    return fake.date_time()
+    return time.get_current_timestamp()
 
 
 def fake_transformed_data() -> transform_value_objects.TransformedData:

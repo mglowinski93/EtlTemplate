@@ -1,11 +1,11 @@
 import logging
-from datetime import datetime
 from pathlib import Path
 from typing import cast
 
 import pandas as pd
 import pandera as pa
 
+from ....common import time
 from ...domain.commands import ExtractData
 from ...domain.exceptions import DataValidationError
 from ...domain.ports.units_of_work import AbstractExtractUnitOfWork
@@ -30,7 +30,7 @@ def extract(
             ExtractHistory(
                 input_file_name=command.file_name,
                 saved_file_name=saved_file_name,
-                timestamp=datetime.now(),
+                timestamp=time.get_current_timestamp(),
             )
         )
         logger.info("Extract history saved.")

@@ -13,10 +13,10 @@ from ...utils import get_url
 
 @pytest.mark.parametrize("path_name", ["schema", "swagger-ui", "redoc"])
 def test_documentation_endpoint_not_available_in_not_development_environment(
-    unauthenticated_client: APIClientData, path_name: str
+    unauthenticated_api_client: APIClientData, path_name: str
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     # When and then
     with pytest.raises(exceptions.NoReverseMatch):
@@ -26,10 +26,10 @@ def test_documentation_endpoint_not_available_in_not_development_environment(
 @override_settings(DEBUG=True)
 @pytest.mark.parametrize("path_name", ["schema", "swagger-ui", "redoc"])
 def test_documentation_endpoint_not_available_in_development_environment(
-    unauthenticated_client: APIClientData, path_name: str
+    unauthenticated_api_client: APIClientData, path_name: str
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
     clear_url_caches()
     reload(sys.modules[settings.ROOT_URLCONF])
 

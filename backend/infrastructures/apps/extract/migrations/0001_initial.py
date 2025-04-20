@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 (
                     "created_at",
                     models.DateTimeField(
-                        default=modules.common.time.get_currect_timestamp,
+                        default=modules.common.time.get_current_timestamp,
                         editable=False,
                     ),
                 ),

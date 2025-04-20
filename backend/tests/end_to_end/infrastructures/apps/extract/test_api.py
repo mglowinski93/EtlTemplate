@@ -15,10 +15,10 @@ from ....utils import get_url
     (consts.CORRECT_INPUT_CSV, consts.CORRECT_INPUT_XLS, consts.CORRECT_INPUT_XLSX),
 )
 def test_create_data_endpoint_returns_201_created(
-    unauthenticated_client: APIClientData, file_path: Path
+    unauthenticated_api_client: APIClientData, file_path: Path
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     with open(file_path, "rb") as f:
         file_data = SimpleUploadedFile(name=file_path.name, content=f.read())
@@ -29,24 +29,24 @@ def test_create_data_endpoint_returns_201_created(
         )
 
     # Then
-    assert response.status_code == HTTPStatus.CREATED
+    assert response.status_code == HTTPStatus.OK
 
 
 def test_create_data_endpoint_returns_422_unprocessable_entity_when_file_not_attached(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # When
-    response = unauthenticated_client.client.post(get_url("extract-list"))
+    response = unauthenticated_api_client.client.post(get_url("extract-list"))
 
     # Then
     assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
 
 
 def test_create_data_endpoint_returns_400_when_extension_not_supported(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     with open(consts.CORRECT_INPUT_CSV, "rb") as f:
         file_data = SimpleUploadedFile(
@@ -63,10 +63,10 @@ def test_create_data_endpoint_returns_400_when_extension_not_supported(
 
 
 def test_create_data_endpoint_returns_400_when_invalid_data(
-    unauthenticated_client: APIClientData,
+    unauthenticated_api_client: APIClientData,
 ):
     # Given
-    client = unauthenticated_client.client
+    client = unauthenticated_api_client.client
 
     with open(consts.INCORRECT_INPUT, "rb") as f:
         file_data = SimpleUploadedFile(
