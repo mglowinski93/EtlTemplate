@@ -13,5 +13,6 @@ factory-boy==3.3.*
 isort==6.0.*
 types-python-dateutil==2.9.0.*
 pytest-mock==3.14.*
-django-import-export[xlsx]==4.1.*
 freezegun==1.5.*
+pandas-stubs==2.2.3.*
+types-openpyxl==3.1.*

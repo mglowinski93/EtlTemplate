@@ -13,4 +13,12 @@ class Data(common_models.AutomaticallyTimestampedModel):
         editable=False,
         verbose_name=_("ID"),
     )
-    data = models.JSONField()
+    data = models.JSONField(
+        help_text=_(
+            'Example: {"full_name": "John Doe", "age": 30, "is_satisfied": true}'
+        )
+    )
+
+    class Meta:
+        verbose_name = _("Data")
+        verbose_name_plural = _("Data")

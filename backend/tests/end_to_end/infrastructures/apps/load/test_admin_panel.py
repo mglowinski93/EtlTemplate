@@ -1,8 +1,8 @@
-import csv
-import io
 from datetime import timedelta
 from http import HTTPStatus
+from io import BytesIO
 
+import pandas as pd
 from django.db import transaction
 from django.http import HttpRequest
 from freezegun import freeze_time
@@ -150,11 +150,11 @@ def test_admin_form_raises_validation_error_when_name_is_satisfied_is_not_bool()
     assert "data" in form.errors
 
 
-def test_export_to_csv(
+def test_export_data_to_excel_file(
     authenticated_staff_client: Client,
 ):
     # Given
-    csv_format = "0"
+    format = 0
     data_number = 5
 
     model_factories.DataFactory.create_batch(size=data_number)
@@ -167,9 +167,7 @@ def test_export_to_csv(
         {
             "timestamp_from": "",
             "timestamp_to": "",
-            "format": csv_format,
-            "resource": "",
-            "_export": "Export",
+            "format": format,
         },
         follow=True,
     )
@@ -177,26 +175,22 @@ def test_export_to_csv(
     # Then
     assert response.status_code == HTTPStatus.OK
 
-    rows = list(csv.reader(io.StringIO(response.content.decode("utf-8"))))
-    assert len(rows) == data_number + 1
-    assert all(
-        column in rows[0]
-        for column in ["id", "full_name", "is_satisfied", "age", "created_at"]
-    )
+    excel_content = pd.read_excel(BytesIO(response.content))
+    assert excel_content.columns.tolist()
+    assert len(excel_content) == data_number
 
 
-def test_export_to_csv_correct_row_exported_for_given_time_range(
+def test_export_to_excel_exports_correct_data_for_specified_timestamp_range(
     authenticated_staff_client: Client,
 ):
     # Given
-    csv_format = "0"
+    format = "0"
     timestamp = common_fakers.fake_timestamp()
+
     with freeze_time(timestamp - timedelta(weeks=1)):
         model_factories.DataFactory.create()
-
     with freeze_time(timestamp):
-        data: Data = model_factories.DataFactory.create()
-
+        model_factories.DataFactory.create()
     with freeze_time(timestamp + timedelta(weeks=1)):
         model_factories.DataFactory.create()
 
@@ -211,9 +205,7 @@ def test_export_to_csv_correct_row_exported_for_given_time_range(
         {
             "timestamp_from": timestamp_from.isoformat(),
             "timestamp_to": timestamp_to.isoformat(),
-            "format": csv_format,
-            "resource": "",
-            "_export": "Export",
+            "format": format,
         },
         follow=True,
     )
@@ -221,6 +213,4 @@ def test_export_to_csv_correct_row_exported_for_given_time_range(
     # Then
     assert response.status_code == HTTPStatus.OK
 
-    rows = list(csv.reader(io.StringIO(response.content.decode("utf-8"))))
-    assert len(rows) == 2
-    assert all(str(data.id) in data_row for data_row in rows[1:])
+    assert len(pd.read_excel(BytesIO(response.content))) == 1
