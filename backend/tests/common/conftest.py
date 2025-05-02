@@ -1,11 +1,11 @@
 import pytest
 from django.conf import settings
 
-from ..common.annotations import YieldFixture
+from ..common import annotations
 
 
 @pytest.fixture(autouse=True)
-def enable_db_access(transactional_db) -> YieldFixture:
+def enable_db_access(transactional_db) -> annotations.YieldFixture:
     # Enable database access for all tests.
     yield
 

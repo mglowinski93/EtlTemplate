@@ -1,13 +1,13 @@
 from modules.common import pagination as pagination_dtos
 from modules.load.domain import value_objects
 from modules.load.services import queries
-from modules.load.services.queries import ports
+from modules.load.services.queries import ports as query_ports
 
 from ...... import fakers as common_fakers
 
 
 def test_returned_data_is_of_correct_type(
-    test_data_query_repository: ports.AbstractDataQueryRepository,
+    test_data_query_repository: query_ports.AbstractDataQueryRepository,
 ):
     # Given
     data_id = value_objects.DataId.new()
@@ -29,7 +29,7 @@ def test_returned_data_is_of_correct_type(
 
 
 def test_returned_data_list_is_of_correct_type(
-    test_data_query_repository: ports.AbstractDataQueryRepository,
+    test_data_query_repository: query_ports.AbstractDataQueryRepository,
 ):
     # Given
     data_id = value_objects.DataId.new()
@@ -45,8 +45,8 @@ def test_returned_data_list_is_of_correct_type(
     # When
     results, size = queries.list_data(
         repository=test_data_query_repository,
-        filters=ports.DataFilters(),
-        ordering=ports.DataOrdering(),
+        filters=query_ports.DataFilters(),
+        ordering=query_ports.DataOrdering(),
         pagination=pagination_dtos.Pagination(
             offset=pagination_dtos.PAGINATION_DEFAULT_OFFSET,
             records_per_page=pagination_dtos.PAGINATION_DEFAULT_LIMIT,

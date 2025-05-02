@@ -5,14 +5,18 @@ from infrastructures.apps.load.adapters.repositories import (
     DjangoDataQueryRepository,
 )
 
-from ...common.annotations import YieldFixture
+from ...common import annotations
 
 
 @pytest.fixture
-def test_django_data_domain_repository() -> YieldFixture[DjangoDataDomainRepository]:
+def test_django_data_domain_repository() -> (
+    annotations.YieldFixture[DjangoDataDomainRepository]
+):
     yield DjangoDataDomainRepository()
 
 
 @pytest.fixture
-def test_django_data_query_repository() -> YieldFixture[DjangoDataQueryRepository]:
+def test_django_data_query_repository() -> (
+    annotations.YieldFixture[DjangoDataQueryRepository]
+):
     yield DjangoDataQueryRepository()

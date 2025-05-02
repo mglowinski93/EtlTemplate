@@ -5,16 +5,18 @@ from infrastructures.apps.extract.adapters.repositories import (
     DjangoFileDomainRepository,
 )
 
-from ....common.annotations import YieldFixture
+from ....common import annotations
 
 
 @pytest.fixture
-def test_django_file_domain_repository() -> YieldFixture[DjangoFileDomainRepository]:
+def test_django_file_domain_repository() -> (
+    annotations.YieldFixture[DjangoFileDomainRepository]
+):
     yield DjangoFileDomainRepository()
 
 
 @pytest.fixture
 def test_django_extract_domain_repository() -> (
-    YieldFixture[DjangoExtractDomainRepository]
+    annotations.YieldFixture[DjangoExtractDomainRepository]
 ):
     yield DjangoExtractDomainRepository()
