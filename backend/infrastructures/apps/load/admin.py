@@ -45,7 +45,7 @@ class DataResource(resources.ModelResource):
 
     class Meta:
         model = Data
-        fields = ("full_name", "age", "is_satisfied", "age", "created_at")
+        fields = ("full_name", "age", "is_satisfied", "created_at")
         export_order = (
             "full_name",
             "age",
