@@ -17,6 +17,12 @@ class CustomExportForm(ExportForm):
     timestamp_from = forms.DateTimeField(label=_("Timestamp from"), required=False)
     timestamp_to = forms.DateTimeField(label=_("Timestamp to"), required=False)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields[  # Hides the resource field on admin panel UI.
+            "resource"
+        ].widget = forms.HiddenInput()
+
 
 class DataResource(resources.ModelResource):
     def __init__(self, **kwargs):
