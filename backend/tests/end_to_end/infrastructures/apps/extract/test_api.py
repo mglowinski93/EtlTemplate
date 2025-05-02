@@ -4,8 +4,7 @@ from pathlib import Path
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from tests import consts
-
+from ..... import consts
 from ....dtos import APIClientData
 from ....utils import get_url
 

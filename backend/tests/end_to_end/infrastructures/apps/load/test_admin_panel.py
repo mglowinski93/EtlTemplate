@@ -9,9 +9,9 @@ from freezegun import freeze_time
 
 from infrastructures.apps.load import admin
 from infrastructures.apps.load.models import Data
-from tests import model_factories
 
 from ..... import fakers as common_fakers
+from ..... import model_factories
 from ....dtos import APIClientData, Client
 from ....utils import get_url
 from . import fakers

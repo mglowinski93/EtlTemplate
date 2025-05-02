@@ -2,7 +2,8 @@ from modules.common import pagination as pagination_dtos
 from modules.load.domain import value_objects
 from modules.load.services import queries
 from modules.load.services.queries import ports
-from tests import fakers
+
+from ...... import fakers
 
 
 def test_returned_data_is_of_correct_type(

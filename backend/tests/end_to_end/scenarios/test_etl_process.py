@@ -7,8 +7,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from infrastructures.apps.common import consts as infrastructure_common_consts
 from infrastructures.apps.load.views import serializers
-from tests import consts
 
+from ... import consts
 from ..dtos import APIClientData
 from ..utils import get_url
 

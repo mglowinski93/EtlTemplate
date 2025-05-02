@@ -10,9 +10,9 @@ from modules.load.services import queries
 from modules.load.services.queries import ports as query_ports
 from modules.load.services.queries import queries as query_dtos
 from modules.load.services.queries.ports import repositories as query_repositories
-from tests.model_factories import DataFactory
 
 from ..... import fakers as common_fakers
+from ..... import model_factories
 
 
 def test_django_data_domain_repository_create_method_creates_records(
@@ -59,7 +59,7 @@ def test_django_data_query_repository_get_method_returns_detailed_record_when_re
     test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
 ):
     # Given
-    data: models.Data = DataFactory.create()
+    data: models.Data = model_factories.DataFactory.create()
 
     # When
     result = test_django_data_query_repository.get(
@@ -108,7 +108,7 @@ def test_django_data_query_repository_list_method_queries_all_records(
 ):
     # Given
     data_number = 5
-    DataFactory.create_batch(size=data_number)
+    model_factories.DataFactory.create_batch(size=data_number)
 
     # When
     results, count = test_django_data_query_repository.list(

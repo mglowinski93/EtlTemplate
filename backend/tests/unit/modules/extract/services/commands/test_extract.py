@@ -7,7 +7,8 @@ from modules.extract.domain import commands
 from modules.extract.domain import exceptions as domain_exceptions
 from modules.extract.domain import ports, value_objects
 from modules.extract.services.commands import extract
-from tests import consts
+
+from ...... import consts
 
 
 def test_extract_successfully_read_csv_file(

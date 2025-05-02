@@ -9,8 +9,8 @@ from pytest_mock import MockFixture
 from infrastructures.apps.common import exceptions as common_exceptions
 from infrastructures.apps.extract import exceptions, models
 from modules.extract.domain import ports
-from tests import consts
 
+from ..... import consts
 from .. import fakers
 
 

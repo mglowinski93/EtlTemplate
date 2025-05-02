@@ -4,7 +4,8 @@ from infrastructures.apps.extract.adapters.repositories import (
     DjangoExtractDomainRepository,
     DjangoFileDomainRepository,
 )
-from tests.common.annotations import YieldFixture
+
+from ....common.annotations import YieldFixture
 
 
 @pytest.fixture

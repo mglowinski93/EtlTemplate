@@ -4,7 +4,8 @@ from infrastructures.apps.load.adapters.repositories import (
     DjangoDataDomainRepository,
     DjangoDataQueryRepository,
 )
-from tests.common.annotations import YieldFixture
+
+from ...common.annotations import YieldFixture
 
 
 @pytest.fixture
