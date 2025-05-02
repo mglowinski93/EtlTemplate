@@ -11,7 +11,7 @@ from modules.extract.services.commands import extract
 from ...... import consts
 
 
-def test_extract_successfully_read_csv_file(
+def test_extract_reads_csv_file(
     test_extract_unit_of_work: ports.AbstractExtractUnitOfWork,
 ):
     # When
@@ -37,7 +37,7 @@ def test_extract_successfully_read_csv_file(
     )
 
 
-def test_extract_successfully_read_xlsx_file(
+def test_extract_reads_xlsx_file(
     test_extract_unit_of_work: ports.AbstractExtractUnitOfWork,
 ):
     # When
@@ -63,7 +63,7 @@ def test_extract_successfully_read_xlsx_file(
     )
 
 
-def test_extract_successfully_read_xls_file(
+def test_extract_reads_xls_file(
     test_extract_unit_of_work: ports.AbstractExtractUnitOfWork,
 ):
     # When
@@ -86,6 +86,33 @@ def test_extract_successfully_read_xls_file(
         extract_history.input_file_name == consts.CORRECT_INPUT_XLS.name
         and extract_history.saved_file_name == consts.CORRECT_INPUT_XLS.name
         for extract_history in extract_history_results
+    )
+
+
+def test_extract_guesses_valid_file_extension(
+    test_extract_unit_of_work: ports.AbstractExtractUnitOfWork,
+):
+    # When
+    input_data: value_objects.InputData = extract(
+        extract_unit_of_work=test_extract_unit_of_work,
+        command=commands.ExtractData(
+            file=consts.CORRECT_INPUT_WITHOUT_EXTENSION.read_bytes(),
+            file_name=consts.CORRECT_INPUT_WITHOUT_EXTENSION.name,
+        ),
+    )
+
+    # Then
+    assert not input_data.empty  # type: ignore[attr-defined]
+    assert len(cast(pd.DataFrame, input_data)) == consts.DATASET_INPUT_SIZE
+
+    assert test_extract_unit_of_work.file.file_exists(consts.CORRECT_INPUT_WITHOUT_EXTENSION.name)  # type: ignore[attr-defined]
+
+    assert len(test_extract_unit_of_work.extract.list()) == 1  # type: ignore[attr-defined]
+    assert all(
+        extract_history.input_file_name == consts.CORRECT_INPUT_WITHOUT_EXTENSION.name
+        and extract_history.saved_file_name
+        == consts.CORRECT_INPUT_WITHOUT_EXTENSION.name
+        for extract_history in test_extract_unit_of_work.extract.list()  # type: ignore[attr-defined]
     )
 
 
