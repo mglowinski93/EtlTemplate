@@ -1,7 +1,9 @@
 import logging
+import mimetypes
 from pathlib import Path
 from typing import cast
 
+import magic
 import pandas as pd
 import pandera as pa
 
@@ -38,6 +40,8 @@ def extract(
     logger.info("Started data extraction.")
     read_strategy: AbstractExtraction = choose_strategy(
         Path(command.file_name).suffix
+        or mimetypes.guess_extension(magic.from_buffer(buffer=command.file, mime=True))
+        or ""
     )()
     df: pd.DataFrame = read_strategy.read(command.file)
     try:

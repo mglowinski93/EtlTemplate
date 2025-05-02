@@ -39,15 +39,14 @@ class ExcelExtraction(AbstractExtraction):
 
 
 def choose_strategy(file_extension: str) -> type[AbstractExtraction]:
-    if file_extension not in SUPPORTED_EXTENSIONS:
+    try:
+        return {
+            ".csv": CsvExtraction,
+            ".xls": ExcelExtraction,
+            ".xlsx": ExcelExtraction,
+        }[file_extension]
+    except KeyError as err:
         raise FileExtensionNotSupportedError(
-            message="Data format '%s' is not supported.", file_extension=file_extension
-        )
-    return SUPPORTED_EXTENSIONS[file_extension]
-
-
-SUPPORTED_EXTENSIONS = {
-    ".csv": CsvExtraction,
-    ".xls": ExcelExtraction,
-    ".xlsx": ExcelExtraction,
-}
+            message=f"Data format '{file_extension}' is not supported.",
+            file_extension=file_extension,
+        ) from err

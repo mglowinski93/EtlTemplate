@@ -10,6 +10,12 @@ CORRECT_INPUT_XLS = (
 CORRECT_INPUT_XLSX = (
     pathlib.Path(__file__).parent / "test_files" / "extract" / "correct_input.xlsx"
 )
+CORRECT_INPUT_WITHOUT_EXTENSION = (
+    pathlib.Path(__file__).parent
+    / "test_files"
+    / "extract"
+    / "correct_input_without_extension"
+)
 INCORRECT_INPUT = (
     pathlib.Path(__file__).parent
     / "test_files"
