@@ -14,8 +14,16 @@ from .models import Data
 
 
 class CustomExportForm(ExportForm):
-    timestamp_from = forms.DateTimeField(label=_("Timestamp from"), required=False)
-    timestamp_to = forms.DateTimeField(label=_("Timestamp to"), required=False)
+    timestamp_from = forms.DateTimeField(
+        label=_("Timestamp from (Optional)"),
+        required=False,
+        widget=forms.DateTimeInput(attrs={"type": "datetime-local"}),
+    )
+    timestamp_to = forms.DateTimeField(
+        label=_("Timestamp to (Optional)"),
+        required=False,
+        widget=forms.DateTimeInput(attrs={"type": "datetime-local"}),
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
