@@ -9,14 +9,14 @@ from ...common import annotations
 
 
 @pytest.fixture
-def test_django_data_domain_repository() -> (
+def django_data_domain_repository() -> (
     annotations.YieldFixture[DjangoDataDomainRepository]
 ):
     yield DjangoDataDomainRepository()
 
 
 @pytest.fixture
-def test_django_data_query_repository() -> (
+def django_data_query_repository() -> (
     annotations.YieldFixture[DjangoDataQueryRepository]
 ):
     yield DjangoDataQueryRepository()

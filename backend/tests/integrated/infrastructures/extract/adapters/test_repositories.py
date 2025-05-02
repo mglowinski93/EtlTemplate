@@ -16,14 +16,14 @@ from .. import fakers
 
 def test_django_file_domain_repository_save_method_saves_file(
     tmp_path,
-    test_django_file_domain_repository: ports.AbstractFileDomainRepository,
+    django_file_domain_repository: ports.AbstractFileDomainRepository,
 ):
     # Given
     with open(consts.CORRECT_INPUT_CSV, "rb") as file:
         file_bytes = file.read()
 
     # When
-    result = test_django_file_domain_repository.save(
+    result = django_file_domain_repository.save(
         file_name=os.path.basename(consts.CORRECT_INPUT_CSV),
         file=file_bytes,
     )
@@ -38,7 +38,7 @@ def test_django_file_domain_repository_save_method_saves_file(
 )
 def test_django_file_domain_repository_save_method_raises_custom_exception_on_database_exception(
     mocker: MockFixture,
-    test_django_file_domain_repository: ports.AbstractFileDomainRepository,
+    django_file_domain_repository: ports.AbstractFileDomainRepository,
     side_effect,
 ):
     # Given
@@ -49,20 +49,20 @@ def test_django_file_domain_repository_save_method_raises_custom_exception_on_da
 
     # When and then
     with pytest.raises(exceptions.FileSaveError):
-        test_django_file_domain_repository.save(
+        django_file_domain_repository.save(
             file_name=os.path.basename(consts.INCORRECT_INPUT),
             file=file_bytes,
         )
 
 
 def test_django_extract_domain_repository_create_method_creates_record(
-    test_django_extract_domain_repository: ports.AbstractExtractDomainRepository,
+    django_extract_domain_repository: ports.AbstractExtractDomainRepository,
 ):
     # Given
     extract_history = fakers.fake_extract_history()
 
     # When
-    test_django_extract_domain_repository.create(extract_history)
+    django_extract_domain_repository.create(extract_history)
 
     # Then
     assert models.ExtractHistory.objects.filter(
@@ -72,7 +72,7 @@ def test_django_extract_domain_repository_create_method_creates_record(
 
 def test_django_extract_domain_repository_create_method_raises_custom_exception_on_database_exception(
     mocker: MockFixture,
-    test_django_extract_domain_repository: ports.AbstractExtractDomainRepository,
+    django_extract_domain_repository: ports.AbstractExtractDomainRepository,
 ):
     # Given
     extract_history = fakers.fake_extract_history()
@@ -86,5 +86,5 @@ def test_django_extract_domain_repository_create_method_raises_custom_exception_
 
     # When and then
     with pytest.raises(common_exceptions.DatabaseError):
-        test_django_extract_domain_repository.create(extract_history)
+        django_extract_domain_repository.create(extract_history)
     assert not models.ExtractHistory.objects.exists()

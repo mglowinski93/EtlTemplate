@@ -16,13 +16,13 @@ from .... import model_factories
 
 
 def test_django_data_domain_repository_create_method_creates_record(
-    test_django_data_domain_repository: ports.AbstractDataDomainRepository,
+    django_data_domain_repository: ports.AbstractDataDomainRepository,
 ):
     # Given
     data = [common_fakers.fake_transformed_data()]
 
     # When
-    test_django_data_domain_repository.create(data)
+    django_data_domain_repository.create(data)
 
     # Then
     assert all(
@@ -35,7 +35,7 @@ def test_django_data_domain_repository_create_method_creates_record(
 
 def test_django_data_domain_repository_create_method_raises_custom_exception_on_django_exception(
     mocker: MockFixture,
-    test_django_data_domain_repository: ports.AbstractDataDomainRepository,
+    django_data_domain_repository: ports.AbstractDataDomainRepository,
 ):
     # Given
     side_effect = DatabaseError
@@ -47,21 +47,19 @@ def test_django_data_domain_repository_create_method_raises_custom_exception_on_
 
     # When and Then
     with pytest.raises(common_exceptions.DatabaseError):
-        test_django_data_domain_repository.create(
-            [common_fakers.fake_transformed_data()]
-        )
+        django_data_domain_repository.create([common_fakers.fake_transformed_data()])
     assert not models.Data.objects.exists()
 
 
 def test_django_data_query_repository_list_method_queries_all_records(
-    test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
+    django_data_query_repository: query_repositories.AbstractDataQueryRepository,
 ):
     # Given
     data_number = 1
     model_factories.DataFactory.create_batch(size=data_number)
 
     # When
-    results, count = test_django_data_query_repository.list(
+    results, count = django_data_query_repository.list(
         filters=query_ports.DataFilters(),
         ordering=query_ports.DataOrdering(),
         pagination=pagination_dtos.Pagination(
@@ -78,7 +76,7 @@ def test_django_data_query_repository_list_method_queries_all_records(
 
 def test_django_data_query_repository_list_method_raises_custom_exception_on_django_exception(
     mocker: MockFixture,
-    test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
+    django_data_query_repository: query_repositories.AbstractDataQueryRepository,
 ):
     # Given
     side_effect = DatabaseError
@@ -90,7 +88,7 @@ def test_django_data_query_repository_list_method_raises_custom_exception_on_dja
 
     # When and Then
     with pytest.raises(common_exceptions.DatabaseError):
-        test_django_data_query_repository.list(
+        django_data_query_repository.list(
             filters=query_ports.DataFilters(),
             ordering=query_ports.DataOrdering(),
             pagination=pagination_dtos.Pagination(
@@ -101,13 +99,13 @@ def test_django_data_query_repository_list_method_raises_custom_exception_on_dja
 
 
 def test_django_data_query_repository_get_method_returns_detailed_record_when_record_exists(
-    test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
+    django_data_query_repository: query_repositories.AbstractDataQueryRepository,
 ):
     # Given
     data: models.Data = model_factories.DataFactory.create()
 
     # When
-    result = test_django_data_query_repository.get(
+    result = django_data_query_repository.get(
         value_objects.DataId.from_hex(data.id.hex)
     )
 
@@ -125,7 +123,7 @@ def test_django_data_query_repository_get_method_returns_detailed_record_when_re
 )
 def test_django_data_query_repository_get_method_raises_custom_exception_on_django_exception(
     mocker: MockFixture,
-    test_django_data_query_repository: query_repositories.AbstractDataQueryRepository,
+    django_data_query_repository: query_repositories.AbstractDataQueryRepository,
     side_effect,
     expected_exception,
 ):
@@ -138,4 +136,4 @@ def test_django_data_query_repository_get_method_raises_custom_exception_on_djan
 
     # When and Then
     with pytest.raises(expected_exception):
-        test_django_data_query_repository.get(data_id=value_objects.DataId.new())
+        django_data_query_repository.get(data_id=value_objects.DataId.new())
