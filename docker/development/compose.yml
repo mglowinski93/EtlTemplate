@@ -1,23 +1,23 @@
 version: "3.9"
 
 networks:
-  etc-template:
+  etl-template:
 
 volumes:
-  etc-template-backend-cache:
-  etc-template-db-volume:
+  etl-template-backend-cache:
+  etl-template-db-volume:
 
 services:
-  etc-template-db:
+  etl-template-db:
     restart: "no"
     image: "postgres:15-alpine"
-    container_name: etc-template-db-development
+    container_name: etl-template-db-development
     networks:
-      etc-template:
+      etl-template:
     ports:
       - "5432:5432"
     volumes:
-      - "etc-template-db-volume:/var/lib/postgresql/data"
+      - "etl-template-db-volume:/var/lib/postgresql/data"
     environment:
       POSTGRES_DB: "etl_template"
       POSTGRES_USER: "etl_template_user"
@@ -30,25 +30,25 @@ services:
       timeout: 5s
       retries: 5
 
-  etc-template-backend:
+  etl-template-backend:
     restart: "no"
     build:
       context: ../../backend/
       dockerfile: ../docker/development/backend/Dockerfile
-    container_name: etc-template-backend-development
+    container_name: etl-template-backend-development
     depends_on:
-      - etc-template-db
+      - etl-template-db
     networks:
-      etc-template:
+      etl-template:
     ports:
         - "8000:8000"
     volumes:
       - "../../backend/:/app/"
       - "./backend/scripts/:/scripts/"
-      - "etc-template-backend-cache:$HOME/.cache/pip"
+      - "etl-template-backend-cache:$HOME/.cache/pip"
     environment:
       SECRET_KEY: "fd!=^e#_pukzl#+2@apf-i2x7e*-%6@ucwg%fo9@ic-s(*t7jh"
-      POSTGRES_DB_HOST: "etc-template-db"
+      POSTGRES_DB_HOST: "etl-template-db"
       POSTGRES_DB_PORT: 5432
       POSTGRES_DB_NAME: "etl_template"
       POSTGRES_DB_USER: "etl_template_user"
