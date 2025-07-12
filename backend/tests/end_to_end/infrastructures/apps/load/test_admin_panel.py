@@ -1,3 +1,4 @@
+import json
 from datetime import timedelta
 from http import HTTPStatus
 from io import BytesIO
@@ -12,17 +13,17 @@ from infrastructures.apps.load.models import Data
 
 from ..... import fakers as common_fakers
 from ..... import model_factories
-from ....dtos import APIClientData, Client
+from ....dtos import ClientData
 from ....utils import get_url
 from . import fakers
 
 
 def test_saving_new_data(
-    unauthenticated_api_client: APIClientData,
+    authenticated_admin_client: ClientData,
     data_admin_panel: admin.DataAdmin,
 ):
     # Given
-    client = unauthenticated_api_client.client
+    client = authenticated_admin_client.client
 
     data: Data = model_factories.DataFactory.create()
     form = admin.DataAdminForm(
@@ -53,7 +54,7 @@ def test_saving_new_data(
         )
     )
     assert response.status_code == HTTPStatus.OK
-    assert response.data["full_name"] == data.data["full_name"]
+    assert json.loads(response.content)["full_name"] == data.data["full_name"]
 
 
 def test_editing_data(
@@ -90,11 +91,11 @@ def test_editing_data(
 
 
 def test_delete_data(
-    unauthenticated_api_client: APIClientData,
+    authenticated_admin_client: ClientData,
     data_admin_panel: admin.DataAdmin,
 ):
     # Given
-    client = unauthenticated_api_client.client
+    client = authenticated_admin_client.client
 
     data: Data = model_factories.DataFactory.create()
 
@@ -116,7 +117,7 @@ def test_delete_data(
 
 def test_admin_form_raises_validation_error_when_age_is_not_a_number():
     # Given
-    form_data = fakers.fake_data_form(age="ten")
+    form_data = fakers.fake_data_form(age=common_fakers.fake_full_name())
 
     # When
     form = admin.DataAdminForm(data={"data": form_data["data"]})
@@ -128,7 +129,7 @@ def test_admin_form_raises_validation_error_when_age_is_not_a_number():
 
 def test_admin_form_raises_validation_error_when_name_is_not_a_string():
     # Given
-    form_data = fakers.fake_data_form(full_name=12345)
+    form_data = fakers.fake_data_form(full_name=common_fakers.fake_age())
 
     # When
     form = admin.DataAdminForm(data={"data": form_data["data"]})
@@ -140,7 +141,7 @@ def test_admin_form_raises_validation_error_when_name_is_not_a_string():
 
 def test_admin_form_raises_validation_error_when_name_is_satisfied_is_not_bool():
     # Given
-    form_data = fakers.fake_data_form(is_satisfied="True")
+    form_data = fakers.fake_data_form(is_satisfied=common_fakers.fake_full_name())
 
     # When
     form = admin.DataAdminForm(data={"data": form_data["data"]})
@@ -151,16 +152,18 @@ def test_admin_form_raises_validation_error_when_name_is_satisfied_is_not_bool()
 
 
 def test_export_data_to_excel_file(
-    authenticated_staff_client: Client,
+    authenticated_admin_client: ClientData,
 ):
     # Given
+    client = authenticated_admin_client.client
+
     format = 0
     data_number = 5
 
     model_factories.DataFactory.create_batch(size=data_number)
 
     # When
-    response = authenticated_staff_client.post(
+    response = client.post(
         get_url(
             path_name="admin:load_data_export",
         ),
@@ -181,9 +184,11 @@ def test_export_data_to_excel_file(
 
 
 def test_export_to_excel_exports_correct_data_for_specified_timestamp_range(
-    authenticated_staff_client: Client,
+    authenticated_admin_client: ClientData,
 ):
     # Given
+    client = authenticated_admin_client.client
+
     format = "0"
     timestamp = common_fakers.fake_timestamp()
 
@@ -198,7 +203,7 @@ def test_export_to_excel_exports_correct_data_for_specified_timestamp_range(
     timestamp_to = timestamp + timedelta(days=1)
 
     # When
-    response = authenticated_staff_client.post(
+    response = client.post(
         get_url(
             path_name="admin:load_data_export",
         ),

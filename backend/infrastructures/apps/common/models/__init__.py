@@ -1,7 +1,4 @@
-from .models import (
-    AutomaticallyTimestampedModel,
-    ManuallyTimestampedModel,
-)
+from .models import AutomaticallyTimestampedModel, ManuallyTimestampedModel
 
 __all__ = [
     "AutomaticallyTimestampedModel",

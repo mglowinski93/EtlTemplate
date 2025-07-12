@@ -17,7 +17,7 @@ class InputData(pa.DataFrameModel):
     is_satisfied: bool
 
 
-@dataclass
+@dataclass(frozen=True)
 class ExtractHistory:
     input_file_name: str
     saved_file_name: str
