@@ -1,7 +1,7 @@
 import pytest
 from django.db import IntegrityError
 
-from ... import model_factories
+from .... import model_factories
 
 
 @pytest.mark.parametrize("field", ("data",))
